@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>傷寒·溫病 연습</title>
+<style>
+  :root{
+    --paper:#E9EDE5; --raised:#F6F8F2; --raised2:#FCFDF9;
+    --ink:#1F2E27; --ink-soft:#566159; --ink-faint:#8A958C;
+    --line:#D3DACB; --line-soft:#E2E7DA;
+    --seal:#B23A2E; --seal-deep:#8C291F; --seal-tint:#F2E1DD;
+    --indigo:#33506E; --gold:#A9802F;
+    --ok:#356B4A; --ok-bg:#E1EBDF; --ok-line:#9BBFA3;
+    --no:#7C8A80; --no-bg:#EAEDE6; --no-line:#C3CBBC;
+    --serif:'Nanum Myeongjo','Noto Serif KR','AppleMyungjo','Songti SC','SimSun',serif;
+    --sans:'Pretendard','Malgun Gothic','Apple SD Gothic Neo','Segoe UI',system-ui,sans-serif;
+    --r:13px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{font-family:var(--sans);background:var(--paper);color:var(--ink);line-height:1.6;
+    -webkit-text-size-adjust:100%;padding:max(14px,env(safe-area-inset-top)) 14px calc(40px + env(safe-area-inset-bottom));}
+  .wrap{max-width:680px;margin:0 auto}
+
+  header{display:flex;gap:14px;align-items:center;padding:4px 2px 14px}
+  .seal{flex:0 0 auto;width:46px;height:46px;border-radius:9px;background:var(--seal);color:#fff;
+    display:grid;place-items:center;font-family:var(--serif);font-size:25px;
+    box-shadow:0 2px 0 var(--seal-deep);transform:rotate(-3deg);user-select:none}
+  .htxt h1{font-family:var(--serif);font-size:23px;margin:0 0 1px;letter-spacing:.5px;font-weight:800}
+  .htxt p{margin:0;color:var(--ink-soft);font-size:13px}
+
+  .view{display:none}
+  .view.on{display:block;animation:fade .22s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+  /* chips */
+  .chips{display:flex;gap:8px;margin:0 0 18px;flex-wrap:wrap}
+  .chip{flex:1 1 0;min-width:96px;background:var(--raised);border:1px solid var(--line);
+    border-radius:11px;padding:9px 12px;display:flex;flex-direction:column;gap:1px}
+  .chip .v{font-family:var(--serif);font-size:21px;font-weight:800;line-height:1.1}
+  .chip .k{font-size:11.5px;color:var(--ink-faint);letter-spacing:.3px}
+  .chip.accent .v{color:var(--seal)}
+
+  /* home grid */
+  .sec{font-family:var(--serif);font-size:14px;font-weight:800;color:var(--ink-soft);
+    letter-spacing:1px;margin:16px 3px 9px;display:flex;align-items:center;gap:8px}
+  .sec::after{content:"";flex:1;height:1px;background:var(--line)}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .gcard{display:flex;align-items:center;gap:11px;text-align:left;cursor:pointer;width:100%;
+    background:var(--raised);border:1px solid var(--line);border-radius:12px;padding:12px 13px;
+    transition:border-color .12s,transform .08s,box-shadow .12s;color:var(--ink)}
+  
+  .gcard:active{transform:translateY(1px)}
+  .gcard:focus-visible{outline:2px solid var(--seal);outline-offset:2px}
+  .gcn{flex:0 0 auto;width:40px;height:40px;border-radius:9px;background:var(--paper);
+    border:1px solid var(--line);display:grid;place-items:center;font-family:var(--serif);
+    font-size:17px;font-weight:800;color:var(--ink)}
+  .gtx{display:flex;flex-direction:column;min-width:0;flex:1}
+  .gnm{font-size:14px;font-weight:700;line-height:1.25}
+  .gds{font-size:11px;color:var(--ink-faint);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .grt{flex:0 0 auto;font-family:var(--serif);font-size:13px;font-weight:700;color:var(--seal);margin-left:auto}
+  .reccard{grid-column:1/-1;margin-top:10px}
+  .reccard .gcn{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .reccard .grt{color:var(--ink-faint)}
+
+  /* backbar */
+  .backbar{display:flex;align-items:center;gap:11px;margin:0 0 14px}
+  .back{background:var(--raised);border:1px solid var(--line);color:var(--ink-soft);cursor:pointer;
+    font-family:var(--sans);font-size:13px;font-weight:700;padding:8px 13px;border-radius:9px}
+  
+  .back:focus-visible{outline:2px solid var(--seal);outline-offset:1px}
+  .backbar .bt{font-family:var(--serif);font-size:16px;font-weight:800}
+
+  /* card */
+  .card{background:var(--raised);border:1px solid var(--line);border-radius:var(--r);padding:18px 17px;margin-bottom:14px}
+  .eyebrow{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;
+    letter-spacing:.6px;color:var(--ink-faint);margin-bottom:9px}
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--seal)}
+  .stem{font-family:var(--serif);font-size:20px;line-height:1.5;font-weight:700;letter-spacing:.2px}
+  .stem .lead{display:block;font-family:var(--sans);font-size:12.5px;font-weight:600;color:var(--indigo);letter-spacing:.3px;margin-bottom:5px}
+  .qtext{font-family:var(--serif);font-size:21px;line-height:1.7;font-weight:700;letter-spacing:.3px;margin:2px 0 4px}
+  .qtext .blank{color:var(--seal);border-bottom:2px solid var(--seal);padding:0 4px;font-weight:800}
+
+  /* choices */
+  .choices{display:grid;gap:9px;margin-top:4px}
+  .opt{display:flex;align-items:center;gap:11px;text-align:left;width:100%;cursor:pointer;
+    background:var(--raised2);border:1.5px solid var(--line);border-radius:11px;padding:12px 13px;
+    font-family:var(--serif);font-size:17px;font-weight:600;color:var(--ink);
+    transition:border-color .12s,background .12s;position:relative}
+  .opt .mk{flex:0 0 auto;width:23px;height:23px;border-radius:6px;background:var(--paper);
+    border:1px solid var(--line);display:grid;place-items:center;font-family:var(--sans);font-size:12px;font-weight:700;color:var(--ink-soft)}
+  
+  .opt:focus-visible{outline:2px solid var(--seal);outline-offset:1px}
+  .opt:disabled{cursor:default}
+  .opt.correct{background:var(--ok-bg);border-color:var(--ok-line);color:var(--ok)}
+  .opt.correct .mk{background:var(--ok);border-color:var(--ok);color:#fff}
+  .opt.wrong{background:var(--no-bg);border-color:var(--no-line);color:var(--ink-soft)}
+  .opt.wrong .mk{background:var(--no);border-color:var(--no);color:#fff}
+  .stamp{position:absolute;right:11px;top:50%;transform:translateY(-50%) rotate(-9deg);
+    width:30px;height:30px;border-radius:7px;background:var(--seal);color:#fff;display:grid;place-items:center;
+    font-family:var(--serif);font-size:17px;font-weight:800;box-shadow:0 1px 0 var(--seal-deep)}
+
+  .explain{margin-top:13px;padding:12px 13px;border-radius:11px;background:var(--raised2);
+    border:1px solid var(--line);font-size:13.5px;color:var(--ink-soft);display:none}
+  .explain.show{display:block;animation:fade .2s ease}
+  .explain b{color:var(--ink)}
+  .explain .ans{font-family:var(--serif);font-size:15px;color:var(--ok);font-weight:700}
+  .explain .flag{color:var(--seal);font-style:italic}
+
+  .actions{display:flex;gap:9px;margin-top:13px}
+  .btn{flex:1;border:0;cursor:pointer;font-family:var(--sans);font-size:14.5px;font-weight:700;padding:12px;border-radius:11px;transition:filter .12s,background .12s}
+  .btn:focus-visible{outline:2px solid var(--seal);outline-offset:1px}
+  .btn-primary{background:var(--ink);color:var(--raised2)}
+  
+  .btn-ghost{flex:0 0 auto;background:transparent;border:1.5px solid var(--line);color:var(--ink-soft);padding:12px 16px}
+  
+  .btn[disabled]{opacity:.4;cursor:default}
+
+  .hintbox{margin-top:10px;font-size:13px;color:var(--gold);background:#F6EFE0;border:1px solid #E7D8B8;border-radius:9px;padding:9px 12px;display:none}
+  .hintbox.show{display:block}
+
+  .pbar{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--ink-faint);margin-top:4px;padding:0 3px}
+  .pbar .track{flex:1;height:6px;border-radius:4px;background:var(--line-soft);overflow:hidden}
+  .pbar .fill{height:100%;background:var(--seal);width:0;transition:width .3s}
+
+  /* g2 tiles */
+  .tilebank,.tileans{display:flex;flex-wrap:wrap;gap:8px;min-height:48px}
+  .tileans{background:var(--raised2);border:1.5px dashed var(--line);border-radius:11px;padding:10px;margin:4px 0 12px;align-content:flex-start}
+  .tlabel{font-size:12px;color:var(--ink-faint);font-weight:700;margin:10px 0 5px}
+  .tile{cursor:pointer;background:var(--raised2);border:1.5px solid var(--line);border-radius:9px;
+    padding:9px 13px;font-family:var(--serif);font-size:16px;font-weight:700;color:var(--ink);transition:border-color .12s,background .12s}
+  
+  .tile:focus-visible{outline:2px solid var(--seal);outline-offset:1px}
+  .tileans .tile{background:var(--paper);border-color:var(--ink-faint)}
+  .tileans.correct .tile{background:var(--ok-bg);border-color:var(--ok-line);color:var(--ok)}
+  .tileans.wrong .tile{background:var(--no-bg);border-color:var(--no-line)}
+
+  /* g3 meridian buttons */
+  .meri-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-top:6px}
+  .meri{cursor:pointer;background:var(--raised2);border:1.5px solid var(--line);border-radius:11px;
+    padding:14px 6px;font-family:var(--serif);font-size:17px;font-weight:800;color:var(--ink);transition:border-color .12s,background .12s}
+  
+  .meri:focus-visible{outline:2px solid var(--seal);outline-offset:1px}
+  .meri:disabled{cursor:default}
+  .meri.correct{background:var(--ok-bg);border-color:var(--ok-line);color:var(--ok)}
+  .meri.wrong{background:var(--no-bg);border-color:var(--no-line);color:var(--ink-soft);text-decoration:line-through}
+  .meri.reveal{border-style:dashed;border-color:var(--ok-line);color:var(--ok)}
+
+  /* g15 buckets */
+  .axis{margin-top:14px}
+  .axis .q{font-size:13px;font-weight:700;color:var(--ink-soft);margin-bottom:7px}
+  .axis .q .co{font-family:var(--serif);color:var(--ink)}
+  .buckets{display:flex;gap:8px;flex-wrap:wrap}
+  .bucket{cursor:pointer;border:1.5px solid var(--line);background:var(--raised2);border-radius:10px;
+    padding:10px 15px;font-family:var(--serif);font-size:16px;font-weight:700;color:var(--ink);
+    transition:border-color .12s,background .12s;flex:1 1 auto;text-align:center;min-width:74px}
+  
+  .bucket:focus-visible{outline:2px solid var(--seal);outline-offset:1px}
+  .bucket:disabled{cursor:default}
+  .bucket.correct{background:var(--ok-bg);border-color:var(--ok-line);color:var(--ok)}
+  .bucket.wrong{background:var(--no-bg);border-color:var(--no-line);color:var(--ink-soft);text-decoration:line-through}
+  .bucket.reveal{border-style:dashed;border-color:var(--ok-line);color:var(--ok)}
+  .alias{display:inline-flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .alias .a{font-size:12px;color:var(--ink-faint);background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:2px 10px}
+  .trap{margin-top:11px;font-size:13px;color:var(--seal);background:var(--seal-tint);border:1px solid #E3C7C1;border-radius:9px;padding:9px 12px;display:none}
+  .trap.show{display:block}
+  .ref{margin-top:8px;font-size:12.5px;color:var(--ink-soft);background:var(--raised2);border:1px dashed var(--line);
+    border-radius:10px;padding:0 13px;max-height:0;overflow:hidden;transition:max-height .25s,padding .25s}
+  .ref.open{max-height:360px;padding:11px 13px}
+  .ref b{color:var(--ink)}
+  .reftog{background:none;border:0;color:var(--indigo);font-family:var(--sans);font-size:12.5px;font-weight:700;cursor:pointer;padding:6px 2px;text-decoration:underline}
+
+  /* g21 rows */
+  .mm-lead{font-size:13.5px;color:var(--ink-soft);margin:0 0 12px}
+  .rows{display:grid;gap:9px}
+  .row{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;align-items:center;cursor:pointer;
+    background:var(--raised2);border:1.5px solid var(--line);border-radius:11px;padding:11px 14px;transition:border-color .12s,background .12s}
+  
+  .row:focus-visible{outline:2px solid var(--seal);outline-offset:1px}
+  .row.locked{cursor:default}
+  .row .who{font-family:var(--serif);font-size:17px;font-weight:800;grid-row:span 2;align-self:center}
+  .row .era{font-size:11px;color:var(--ink-faint);font-weight:600;margin-left:6px}
+  .row .link{font-family:var(--serif);font-size:15px;color:var(--ink-soft);font-weight:600}
+  .row .link .bk{color:var(--indigo)}
+  .row.bad{background:var(--no-bg);border-color:var(--seal)}
+  .row.bad .who,.row.bad .link{color:var(--seal)}
+  .row.good{background:var(--ok-bg);border-color:var(--ok-line)}
+  .fix{margin-top:12px;font-size:13.5px;color:var(--ink-soft);background:var(--raised2);border:1px solid var(--line);border-radius:11px;padding:12px 13px;display:none}
+  .fix.show{display:block}
+  .fix b{color:var(--seal)} .fix .corr{color:var(--ok);font-family:var(--serif);font-weight:700}
+
+  /* g23 연표 */
+  .tl{display:flex;flex-direction:column;margin-top:6px}
+  .tlrow{background:var(--raised2);border:1px solid var(--line);border-radius:10px;padding:9px 13px}
+  .tlrow .me{font-size:11px;color:var(--seal);font-weight:700;font-family:var(--serif);margin-right:4px}
+  .tlrow .mp{font-family:var(--serif);font-weight:800;font-size:15px}
+  .tlrow .mb2{font-size:12px;color:var(--indigo);margin-left:5px}
+  .gapbtn{width:100%;border:1.5px dashed var(--line);background:transparent;color:var(--ink-faint);
+    border-radius:9px;padding:7px;font-size:12.5px;font-weight:700;cursor:pointer;margin:5px 0}
+  
+  .gapbtn:disabled{cursor:default}
+  .gapbtn.gapok{border-style:solid;border-color:var(--ok-line);background:var(--ok-bg);color:var(--ok)}
+  .gapbtn.gapno{border-style:solid;border-color:var(--no-line);background:var(--no-bg);color:var(--ink-soft)}
+  .g23-item-box{background:var(--seal-tint);border:1.5px solid #E3C7C1;border-radius:11px;padding:13px 14px;margin:8px 0 10px;text-align:center}
+  .g23-item-box .mp{font-family:var(--serif);font-weight:800;font-size:19px}
+  .g23-item-box .mb2{font-size:12.5px;color:var(--ink-soft);display:block;margin-top:3px}
+
+  /* g22 카드 매칭 */
+  .match-wrap{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:8px}
+  .match-col{display:flex;flex-direction:column;gap:8px}
+  .mcard{cursor:pointer;border:1.5px solid var(--line);background:var(--raised2);border-radius:11px;padding:10px 12px;
+    text-align:left;transition:border-color .12s,background .12s;min-height:56px;display:flex;flex-direction:column;justify-content:center;gap:1px}
+  
+  .mcard:focus-visible{outline:2px solid var(--seal);outline-offset:1px}
+  .mcard:disabled{cursor:default}
+  .mcard.sel{border-color:var(--seal);background:var(--seal-tint)}
+  .mcard.done{background:var(--ok-bg);border-color:var(--ok-line);opacity:.8}
+  .mcard.miss{animation:shake .3s}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+  .mcard .mp{font-family:var(--serif);font-size:16px;font-weight:800}
+  .mcard .me{font-size:11px;color:var(--ink-faint)}
+  .mcard .mb{font-family:var(--serif);font-size:14px;font-weight:700;color:var(--indigo);line-height:1.3}
+  .mcard .mt{font-size:11.5px;color:var(--ink-soft)}
+
+  /* g17 사다리 */
+  .ladder{display:flex;align-items:center;gap:5px;margin:11px 0 3px}
+  .rung{font-family:var(--serif);font-weight:800;font-size:15px;width:30px;height:30px;display:grid;place-items:center;border-radius:8px;background:var(--paper);border:1px solid var(--line);color:var(--ink-faint)}
+  .rung.on{background:var(--seal);color:#fff;border-color:var(--seal)}
+  .arr{color:var(--ink-faint);font-size:12px}
+  .trans{margin-top:7px;font-size:12.5px;color:var(--indigo)}
+
+  /* g16 舌象 */
+  .tongue-wrap{display:flex;justify-content:center;padding:8px 0 2px}
+  .tongue-card{background:radial-gradient(circle at 50% 38%, #FBF6F0, #ECE6DC);border:1px solid var(--line);border-radius:18px;padding:14px 34px;box-shadow:inset 0 1px 6px rgba(31,46,39,.05)}
+  .stage-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
+
+  /* g6 로그라이크 */
+  .g6-hud{display:flex;align-items:center;gap:13px;background:var(--raised);border:1px solid var(--line);border-radius:11px;padding:9px 14px;margin-bottom:12px}
+  .hearts{font-size:15px;letter-spacing:3px}
+  .heart-on{color:var(--seal)} .heart-off{color:var(--line)}
+  .hud-x{font-size:12.5px;color:var(--ink-soft)} .hud-x b{font-family:var(--serif);font-size:16px;color:var(--ink)}
+  .g6-quit{margin-left:auto;background:none;border:1px solid var(--line);color:var(--ink-faint);border-radius:8px;padding:5px 11px;font-size:12px;font-weight:700;cursor:pointer}
+  
+  .chips-sx{display:flex;flex-wrap:wrap;gap:6px;margin:11px 0 2px}
+  .chips-sx .t{font-size:12px;font-weight:700;color:var(--indigo);background:#E7EDF2;border:1px solid #CBD8E2;border-radius:7px;padding:3px 9px}
+  .ward{display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer;background:var(--raised2);
+    border:1.5px solid var(--line);border-radius:11px;padding:13px;margin-top:9px;transition:border-color .12s}
+   .ward:focus-visible{outline:2px solid var(--seal);outline-offset:1px}
+  .ward .wn{font-family:var(--serif);font-size:17px;font-weight:800}
+  .ward .wb{font-size:12px;color:var(--ink-faint)}
+  .ward .wc{margin-left:auto;font-family:var(--serif);font-weight:700;color:var(--seal);font-size:14px}
+  .g6-final{display:flex;align-items:baseline;gap:9px;justify-content:center;margin:10px 0 4px}
+  .g6-final .big{font-family:var(--serif);font-size:54px;font-weight:800;color:var(--seal);line-height:1}
+  .g6-final .fl{font-size:15px;color:var(--ink-soft)}
+
+  /* stat */
+  .stat-list{display:flex;flex-direction:column;gap:8px}
+  .stat-row{display:flex;align-items:center;gap:12px;background:var(--raised);border:1px solid var(--line);border-radius:11px;padding:11px 14px}
+  .stat-row .scn{font-family:var(--serif);font-size:15px;font-weight:800;width:34px}
+  .stat-row .snm{font-size:13.5px;font-weight:600;flex:1}
+  .stat-row .srt{font-family:var(--serif);font-size:15px;font-weight:800;color:var(--seal)}
+  .stat-row .sct{font-size:11.5px;color:var(--ink-faint);width:64px;text-align:right}
+  .summary{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-top:14px}
+  .summary .sm{background:var(--raised);border:1px solid var(--line);border-radius:11px;padding:11px;text-align:center}
+  .summary .sm .v{font-family:var(--serif);font-size:19px;font-weight:800}
+  .summary .sm .k{font-size:11px;color:var(--ink-faint)}
+  .reset{margin-top:16px;width:100%;background:transparent;border:1.5px solid var(--no-line);color:var(--ink-soft);
+    border-radius:11px;padding:11px;font-family:var(--sans);font-weight:700;font-size:13.5px;cursor:pointer}
+  
+  .note{font-size:12px;color:var(--ink-faint);margin-top:14px;line-height:1.55}
+  .note code{font-family:var(--serif);color:var(--ink-soft)}
+
+  @media (max-width:430px){
+    .stem,.qtext{font-size:18px}.opt{font-size:16px}.htxt h1{font-size:21px}
+    .grid{grid-template-columns:1fr}.summary{grid-template-columns:1fr 1fr 1fr}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+  /* ===== iPad / 터치 포팅 ===== */
+  html{-webkit-tap-highlight-color:transparent}
+  button{touch-action:manipulation;-webkit-touch-callout:none}
+  .opt,.meri,.bucket,.tile,.gcard,.mcard,.ward,.gapbtn,.row,.back,.btn,.reftog,.reset,.g6-quit,.chip,.seal{
+    -webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+  /* 끈적한 hover 방지: 마우스 환경에서만 hover 효과 */
+  @media (hover:hover){
+    .gcard:hover{border-color:var(--ink-faint);box-shadow:0 2px 8px rgba(31,46,39,.06)}
+    .back:hover{border-color:var(--ink-faint)}
+    .opt:hover:not(:disabled){border-color:var(--ink-faint)}
+    .btn-primary:hover{filter:brightness(1.12)}
+    .btn-ghost:hover{border-color:var(--ink-faint)}
+    .tile:hover{border-color:var(--ink-faint)}
+    .meri:hover:not(:disabled){border-color:var(--ink-faint)}
+    .bucket:hover:not(:disabled){border-color:var(--ink-faint)}
+    .row:hover:not(.locked){border-color:var(--ink-faint)}
+    .gapbtn:hover:not(:disabled){border-color:var(--seal);color:var(--seal)}
+    .mcard:hover:not(:disabled){border-color:var(--ink-faint)}
+    .g6-quit:hover{border-color:var(--seal);color:var(--seal)}
+    .ward:hover{border-color:var(--ink-faint)}
+    .reset:hover{border-color:var(--seal);color:var(--seal)}
+  }
+  /* 태블릿(iPad) 레이아웃 */
+  @media (min-width:768px){
+    .wrap{max-width:744px}
+    body{padding:max(26px,env(safe-area-inset-top)) 22px calc(54px + env(safe-area-inset-bottom))}
+    header{padding:6px 2px 18px}
+    .htxt h1{font-size:26px} .htxt p{font-size:14px}
+    .seal{width:52px;height:52px;font-size:28px}
+    .chip{padding:11px 14px} .chip .v{font-size:23px} .chip .k{font-size:12px}
+    .sec{font-size:15px;margin:20px 3px 11px}
+    .gcn{width:46px;height:46px;font-size:18px}
+    .gnm{font-size:15px} .gds{font-size:12px} .grt{font-size:14px}
+    .gcard{padding:14px 16px}
+    .backbar .bt{font-size:18px}
+    .eyebrow{font-size:12.5px}
+    .stem,.qtext{font-size:22px} .stem .lead{font-size:13px}
+    .opt{font-size:18px;padding:14px 16px} .opt .mk{width:25px;height:25px}
+    .meri{font-size:19px;padding:16px 8px}
+    .bucket{font-size:18px;padding:12px 17px}
+    .tile{font-size:17px;padding:10px 15px}
+    .tlrow .mp{font-size:16px} .tlrow .mb2{font-size:13px}
+    .mcard{min-height:60px} .mcard .mp{font-size:17px} .mcard .mb{font-size:15px}
+    .g6-final .big{font-size:60px}
+    .explain{font-size:14px} .mm-lead{font-size:14px}
+    .btn{font-size:15px;padding:13px}
+  }
+  /* 가로(landscape) iPad */
+  @media (min-width:980px){
+    .wrap{max-width:824px}
+  }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="seal">醫</div>
+    <div class="htxt"><h1>傷寒·溫病 연습</h1><p>六經·方劑·溫病·醫家를 게임으로.</p></div>
+  </header>
+
+  <!-- ════ HOME ════ -->
+  <section class="view on" id="home">
+    <div class="chips">
+      <div class="chip accent"><span class="v" id="st-rate">—</span><span class="k">전체 정답률</span></div>
+      <div class="chip"><span class="v" id="st-streak">0</span><span class="k">연속 정답</span></div>
+      <div class="chip"><span class="v" id="st-today">0</span><span class="k">오늘 푼 문항</span></div>
+    </div>
+    <div id="home-grid"></div>
+  </section>
+
+  <!-- ════ G1 제강 빈칸 ════ -->
+  <section class="view" id="g1">
+    <div class="backbar"><button class="back" data-go="home">← 게임 목록</button><span class="bt">提綱 · 제강 빈칸</span></div>
+    <div class="card">
+      <span class="eyebrow"><span class="dot"></span><span id="g1-meri">六經</span> 제강</span>
+      <div class="qtext" id="g1-text">…</div>
+      <div class="choices" id="g1-choices"></div>
+      <div class="explain" id="g1-explain"></div>
+      <div class="actions"><button class="btn-primary btn" id="g1-next" disabled>다음 문항</button></div>
+    </div>
+    <div class="pbar"><span id="g1-score">정답률 —</span><span class="track"><span class="fill" id="g1-fill"></span></span></div>
+  </section>
+
+  <!-- ════ G2 제강 타일 ════ -->
+  <section class="view" id="g2">
+    <div class="backbar"><button class="back" data-go="home">← 게임 목록</button><span class="bt">排列 · 제강 타일</span></div>
+    <div class="card">
+      <span class="eyebrow"><span class="dot"></span><span id="g2-meri">제강</span></span>
+      <div class="tlabel">완성</div>
+      <div class="tileans" id="g2-answer"></div>
+      <div class="tlabel">조각 (눌러서 순서대로)</div>
+      <div class="tilebank" id="g2-bank"></div>
+      <div class="explain" id="g2-explain"></div>
+      <div class="actions">
+        <button class="btn-ghost btn" id="g2-clear">비우기</button>
+        <button class="btn-primary btn" id="g2-check" disabled>확인</button>
+      </div>
+    </div>
+    <div class="pbar"><span id="g2-score">정답률 —</span><span class="track"><span class="fill" id="g2-fill"></span></span></div>
+  </section>
+
+  <!-- ════ G3 증상→경 ════ -->
+  <section class="view" id="g3">
+    <div class="backbar"><button class="back" data-go="home">← 게임 목록</button><span class="bt">歸經 · 증상→경</span></div>
+    <div class="card">
+      <span class="eyebrow"><span class="dot"></span>이 증상은 어느 病인가</span>
+      <div class="stem"><span id="g3-kw">…</span></div>
+      <div class="meri-grid" id="g3-meris"></div>
+      <div class="explain" id="g3-explain"></div>
+      <div class="actions"><button class="btn-primary btn" id="g3-next" disabled>다음 문항</button></div>
+    </div>
+    <div class="pbar"><span id="g3-score">정답률 —</span><span class="track"><span class="fill" id="g3-fill"></span></span></div>
+  </section>
+
+  <!-- ════ G4 傳變 용어 ════ -->
+  <section class="view" id="g4">
+    <div class="backbar"><button class="back" data-go="home">← 게임 목록</button><span class="bt">傳變 · 용어 판별</span></div>
+    <div class="card">
+      <span class="eyebrow"><span class="dot"></span>이 정의에 맞는 용어는</span>
+      <div class="stem"><span id="g4-def">…</span></div>
+      <div class="choices" id="g4-choices"></div>
+      <div class="explain" id="g4-explain"></div>
+      <div class="actions"><button class="btn-primary btn" id="g4-next" disabled>다음 문항</button></div>
+    </div>
+    <div class="pbar"><span id="g4-score">정답률 —</span><span class="track"><span class="fill" id="g4-fill"></span></span></div>
+  </section>
+
+  <!-- ════ G6 辨證 진료 로그라이크 ════ -->
+  <section class="view" id="g6">
+    <div class="backbar"><button class="back" data-go="home">← 게임 목록</button><span class="bt">診療 · 辨證 로그라이크</span></div>
+    <div class="card" id="g6-select">
+      <span class="eyebrow"><span class="dot"></span>병동을 골라 진료 시작</span>
+      <p class="mm-lead">증후와 <b>환자 상태</b>를 읽고 손패에서 맞는 方劑를 내세요. 손패는 헷갈리는 처방들로 채워집니다. 醫力 ●●● 을 다 잃으면 진료 종료.</p>
+      <div id="g6-wards"></div>
+    </div>
+    <div id="g6-play" style="display:none">
+      <div class="g6-hud">
+        <span class="hearts" id="g6-hearts"></span>
+        <span class="hud-x">治癒 <b id="g6-cure">0</b></span>
+        <span class="hud-x">연속 <b id="g6-streak">0</b></span>
+        <button class="g6-quit" id="g6-quit">그만</button>
+      </div>
+      <div class="card">
+        <span class="eyebrow"><span class="dot"></span><span id="g6-ward">병동</span> · 환자 <span id="g6-no">1</span></span>
+        <div class="stem" id="g6-sx">…</div>
+        <div class="chips-sx" id="g6-tags"></div>
+        <div class="tlabel">손패 — 方劑를 선택</div>
+        <div class="choices" id="g6-hand"></div>
+        <div class="explain" id="g6-fb"></div>
+        <div class="actions"><button class="btn-primary btn" id="g6-next" disabled>다음 환자</button></div>
+      </div>
+    </div>
+    <div class="card" id="g6-result" style="display:none">
+      <span class="eyebrow"><span class="dot"></span>진료 종료</span>
+      <div class="g6-final"><span class="big" id="g6-final-cure">0</span><span class="fl">명 치유</span></div>
+      <p class="mm-lead" id="g6-final-sub">—</p>
+      <div class="actions">
+        <button class="btn-ghost btn" id="g6-again">같은 병동 재도전</button>
+        <button class="btn-primary btn" id="g6-back">병동 선택</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════ G7 증후→방제 ════ -->
+  <section class="view" id="g7">
+    <div class="backbar"><button class="back" data-go="home">← 게임 목록</button><span class="bt">證·方 · 증후→방제</span></div>
+    <div class="card">
+      <span class="eyebrow"><span class="dot"></span><span id="g7-ctx">證候 변별</span></span>
+      <div class="stem" id="g7-stem">…</div>
+      <div class="choices" id="g7-choices"></div>
+      <div class="hintbox" id="g7-hint"></div>
+      <div class="explain" id="g7-explain"></div>
+      <div class="actions">
+        <button class="btn-ghost btn" id="g7-hintbtn">힌트</button>
+        <button class="btn-primary btn" id="g7-next" disabled>다음 문항</button>
+      </div>
+    </div>
+    <div class="pbar"><span id="g7-score">정답률 —</span><span class="track"><span class="fill" id="g7-fill"></span></span><span id="g7-box">숙련 0/5</span></div>
+  </section>
+
+  <!-- ════ G9 처방군 변별 ════ -->
+  <section class="view" id="g9">
+    <div class="backbar"><button class="back" data-go="home">← 게임 목록</button><span class="bt">方鑑 · 처방군 변별</span></div>
+    <div class="card">
+      <span class="eyebrow"><span class="dot"></span><span id="g9-grp">처방군</span></span>
+      <div class="stem"><span class="lead" id="g9-axis">변별축</span><span id="g9-cue">…</span></div>
+      <div class="choices" id="g9-choices"></div>
+      <div class="explain" id="g9-explain"></div>
+      <div class="actions"><button class="btn-primary btn" id="g9-next" disabled>다음 문항</button></div>
+    </div>
+    <div class="pbar"><span id="g9-score">정답률 —</span><span class="track"><span class="fill" id="g9-fill"></span></span></div>
+  </section>
+
+  <!-- ════ G15 溫病 분류 ════ -->
+  <section class="view" id="g15">
+    <div class="backbar"><button class="back" data-go="home">← 게임 목록</button><span class="bt">分類 · 溫病 함정</span></div>
+    <div class="card">
+      <span class="eyebrow"><span class="dot"></span>溫病 분류 — 性質·類型·季節</span>
+      <div class="stem"><span class="lead">이 溫病을 분류하시오</span><span id="g15-name">…</span></div>
+      <div class="alias" id="g15-alias"></div>
+      <div class="axis" id="g15-ax-nature"></div>
+      <div class="axis" id="g15-ax-onset"></div>
+      <div class="axis" id="g15-ax-season"></div>
+      <div class="trap" id="g15-trap"></div>
+      <div class="actions"><button class="btn-primary btn" id="g15-next" disabled>다음 溫病</button></div>
+      <button class="reftog" id="g15-reftog">분류 규칙 보기 ▾</button>
+      <div class="ref" id="g15-ref"></div>
+    </div>
+    <div class="pbar"><span id="g15-score">정답률 —</span><span class="track"><span class="fill" id="g15-fill"></span></span><span id="g15-round">8병 중 0</span></div>
+  </section>
+
+  <!-- ════ G16 舌象 즉별 ════ -->
+  <section class="view" id="g16">
+    <div class="backbar"><button class="back" data-go="home">← 게임 목록</button><span class="bt">舌診 · 위기영혈 즉별</span></div>
+    <div class="card">
+      <span class="eyebrow"><span class="dot"></span>이 舌象은 어느 단계인가</span>
+      <div class="tongue-wrap"><div class="tongue-card" id="g16-tongue"></div></div>
+      <div class="stage-grid" id="g16-opts"></div>
+      <div class="explain" id="g16-explain"></div>
+      <div class="actions"><button class="btn-primary btn" id="g16-next" disabled>다음 舌象</button></div>
+      <button class="reftog" id="g16-reftog">舌絳 변주·傷寒 비교 보기 ▾</button>
+      <div class="ref" id="g16-ref"></div>
+    </div>
+    <div class="pbar"><span id="g16-score">정답률 —</span><span class="track"><span class="fill" id="g16-fill"></span></span><span id="g16-streak">연속 0</span></div>
+  </section>
+
+  <!-- ════ G17 위기영혈 사다리 ════ -->
+  <section class="view" id="g17">
+    <div class="backbar"><button class="back" data-go="home">← 게임 목록</button><span class="bt">階梯 · 위기영혈 사다리</span></div>
+    <div class="card">
+      <span class="eyebrow"><span class="dot"></span>이 증상의 단계와 대표방은</span>
+      <div class="stem" id="g17-sx">…</div>
+      <div class="choices" id="g17-opts"></div>
+      <div class="explain" id="g17-explain"></div>
+      <div class="actions"><button class="btn-primary btn" id="g17-next" disabled>다음 증상</button></div>
+    </div>
+    <div class="pbar"><span id="g17-score">정답률 —</span><span class="track"><span class="fill" id="g17-fill"></span></span></div>
+  </section>
+
+  <!-- ════ G19 헷갈리는 쌍 ════ -->
+  <section class="view" id="g19">
+    <div class="backbar"><button class="back" data-go="home">← 게임 목록</button><span class="bt">辨別 · 헷갈리는 쌍</span></div>
+    <div class="card">
+      <span class="eyebrow"><span class="dot"></span><span id="g19-topic">변별 주제</span></span>
+      <div class="stem"><span class="lead">이 단서는 어느 쪽?</span><span id="g19-cue">…</span></div>
+      <div class="stage-grid" id="g19-opts"></div>
+      <div class="explain" id="g19-explain"></div>
+      <div class="actions"><button class="btn-primary btn" id="g19-next" disabled>다음 문항</button></div>
+    </div>
+    <div class="pbar"><span id="g19-score">정답률 —</span><span class="track"><span class="fill" id="g19-fill"></span></span></div>
+  </section>
+
+  <!-- ════ G21 醫家 ════ -->
+  <section class="view" id="g21">
+    <div class="backbar"><button class="back" data-go="home">← 게임 목록</button><span class="bt">醫家 · 연결 찾기</span></div>
+    <div class="card">
+      <span class="eyebrow"><span class="dot"></span>醫家 — 저서·개념 연결</span>
+      <p class="mm-lead">네 줄 중 <b>잘못 연결된 하나</b>를 고르세요. (人物 — 著書 — 개념)</p>
+      <div class="rows" id="g21-rows"></div>
+      <div class="fix" id="g21-fix"></div>
+      <div class="actions"><button class="btn-primary btn" id="g21-next" disabled>다음 문제</button></div>
+    </div>
+    <div class="pbar"><span id="g21-score">정답률 —</span><span class="track"><span class="fill" id="g21-fill"></span></span><span id="g21-streak">연속 0</span></div>
+  </section>
+
+  <!-- ════ G22 카드 매칭 ════ -->
+  <section class="view" id="g22">
+    <div class="backbar"><button class="back" data-go="home">← 게임 목록</button><span class="bt">人物 · 카드 매칭</span></div>
+    <div class="card">
+      <span class="eyebrow"><span class="dot"></span>인물과 著書·개념을 잇기</span>
+      <p class="mm-lead">왼쪽 <b>人物</b>을 누르고, 오른쪽에서 그의 <b>著書·개념</b> 카드를 누르세요.</p>
+      <div class="match-wrap"><div class="match-col" id="g22-people"></div><div class="match-col" id="g22-combos"></div></div>
+      <div class="explain" id="g22-explain"></div>
+      <div class="actions"><button class="btn-primary btn" id="g22-next" disabled>다음 세트</button></div>
+    </div>
+    <div class="pbar"><span id="g22-score">정답률 —</span><span class="track"><span class="fill" id="g22-fill"></span></span></div>
+  </section>
+
+  <!-- ════ G23 연표 ════ -->
+  <section class="view" id="g23">
+    <div class="backbar"><button class="back" data-go="home">← 게임 목록</button><span class="bt">年表 · 시대순 배치</span></div>
+    <div class="card">
+      <span class="eyebrow"><span class="dot"></span>이 인물은 연표의 어디에 들어갈까</span>
+      <div class="g23-item-box" id="g23-item">…</div>
+      <div class="tl" id="g23-timeline"></div>
+      <div class="explain" id="g23-explain"></div>
+      <div class="actions"><button class="btn-primary btn" id="g23-next" disabled>다음 인물</button></div>
+    </div>
+    <div class="pbar"><span id="g23-score">정답률 —</span><span class="track"><span class="fill" id="g23-fill"></span></span></div>
+  </section>
+
+  <!-- ════ G24 대표어 빈칸 ════ -->
+  <section class="view" id="g24">
+    <div class="backbar"><button class="back" data-go="home">← 게임 목록</button><span class="bt">名言 · 대표어 빈칸</span></div>
+    <div class="card">
+      <span class="eyebrow"><span class="dot"></span><span id="g24-book">저서</span></span>
+      <div class="qtext" id="g24-line">…</div>
+      <div class="choices" id="g24-choices"></div>
+      <div class="explain" id="g24-explain"></div>
+      <div class="actions"><button class="btn-primary btn" id="g24-next" disabled>다음 문항</button></div>
+    </div>
+    <div class="pbar"><span id="g24-score">정답률 —</span><span class="track"><span class="fill" id="g24-fill"></span></span></div>
+  </section>
+
+  <!-- ════ STAT ════ -->
+  <section class="view" id="stat">
+    <div class="backbar"><button class="back" data-go="home">← 게임 목록</button><span class="bt">記錄</span></div>
+    <div class="stat-list" id="stat-list"></div>
+    <div class="summary">
+      <div class="sm"><span class="v" id="sm-r">0</span><span class="k">총 정답</span></div>
+      <div class="sm"><span class="v" id="sm-w">0</span><span class="k">총 오답</span></div>
+      <div class="sm"><span class="v" id="sm-day">0</span><span class="k">오늘</span></div>
+    </div>
+    <button class="reset" id="reset">기록 초기화</button>
+    <p class="note">진도는 이 브라우저에 저장됩니다(<code>shdb_v1</code>). 파일을 내려받아 열면 이어집니다.
+      출전: 한의학총강 제9장·한의학개론. 提綱·원문은 기본서 표기 기준.</p>
+  </section>
+</div>
+
+<script>
+const DATA = {"g7": [{"id": "q1", "stem": "頭痛·發熱惡風寒·自汗出·脈浮緩(弱)", "ctx": "太陽病 · 本證", "answer": "桂枝湯", "hint": "病機 衛强營弱·營衛不和 · 治法 解肌祛風·調和營衛", "explain": "病機: 衛强營弱·營衛不和 · 治法: 解肌祛風·調和營衛<br>진정한 虛證 아님(無汗 표실과 상대)", "flag": "", "must": [], "pool": ["桂枝加厚朴杏子湯", "大靑龍湯", "麻黃湯", "小靑龍湯", "五苓散", "三物白散", "四逆湯", "眞武湯"]}, {"id": "q2", "stem": "發熱惡風寒·頭痛·身疼腰痛·無汗而喘·脈浮緊", "ctx": "太陽病 · 本證", "answer": "麻黃湯", "hint": "病機 衛陽閉遏·營陰鬱滯 · 治法 發汗解表·宣肺平喘", "explain": "病機: 衛陽閉遏·營陰鬱滯 · 治法: 發汗解表·宣肺平喘<br>正氣虛 시 禁", "flag": "", "must": [], "pool": ["大靑龍湯", "小靑龍湯", "桂枝加厚朴杏子湯", "桂枝湯", "五苓散", "三物白散", "當歸四逆湯", "桂枝加大黃湯"]}, {"id": "q3", "stem": "發熱惡風寒·汗出脈浮緩 + 氣喘", "ctx": "太陽病 · 兼證", "answer": "桂枝加厚朴杏子湯", "hint": "病機 營衛不和·肺氣上逆 · 治法 解肌祛風·降氣定喘", "explain": "病機: 營衛不和·肺氣上逆 · 治法: 解肌祛風·降氣定喘<br>오랜 喘疾 촉발 or 誤下 후", "flag": "", "must": [], "pool": ["桂枝湯", "小靑龍湯", "大靑龍湯", "麻黃湯", "五苓散", "三物白散", "通脈四逆湯", "四逆湯"]}, {"id": "q4", "stem": "惡寒發熱無汗 + 咳而氣喘·乾嘔不渴", "ctx": "太陽病 · 兼證", "answer": "小靑龍湯", "hint": "病機 外感風寒 + 裏有水飮 · 治法 外解風寒·溫陽化飮", "explain": "病機: 外感風寒 + 裏有水飮 · 治法: 外解風寒·溫陽化飮<br>大靑龍과 변별축=裏熱vs裏飮", "flag": "", "must": [], "pool": ["麻黃湯", "大靑龍湯", "桂枝加厚朴杏子湯", "桂枝湯", "五苓散", "眞武湯", "三物白散", "理中湯"]}, {"id": "q5", "stem": "惡寒發熱·身疼·無汗·脈浮緊 + 煩躁不安", "ctx": "太陽病 · 兼證", "answer": "大靑龍湯", "hint": "病機 表寒 + 裏鬱熱 · 治法 外散風寒·內淸鬱熱", "explain": "病機: 表寒 + 裏鬱熱 · 治法: 外散風寒·內淸鬱熱<br>無汗而煩躁=변증요점. 表裏俱實에만, 허약 절대禁(過汗亡陽)", "flag": "", "must": [], "pool": ["小靑龍湯", "麻黃湯", "桂枝湯", "桂枝加厚朴杏子湯", "五苓散", "三物白散", "理中湯", "眞武湯"]}, {"id": "q6", "stem": "脈結代·心動悸", "ctx": "太陽病 · 兼證", "answer": "炙甘草湯", "hint": "病機 心陰心陽兩虛 · 治法 通陽益氣·滋陰養血", "explain": "病機: 心陰心陽兩虛 · 治法: 通陽益氣·滋陰養血<br>裏虛者 先治裏", "flag": "", "must": [], "pool": ["小建中湯", "小靑龍湯", "附子瀉心湯", "大靑龍湯", "生薑瀉心湯", "大黃黃連瀉心湯", "三物白散", "桂枝加厚朴杏子湯"]}, {"id": "q7", "stem": "表證 + 心悸·心煩", "ctx": "太陽病 · 兼證", "answer": "小建中湯", "hint": "病機 脾胃虛弱·氣血부족 + 邪侵 · 治法 溫中健脾·助補氣血", "explain": "病機: 脾胃虛弱·氣血부족 + 邪侵 · 治法: 溫中健脾·助補氣血<br>표증 있어도 發汗 不可", "flag": "", "must": [], "pool": ["旋覆代赭石湯", "炙甘草湯", "生薑瀉心湯", "麻黃湯", "大黃黃連瀉心湯", "三物白散", "附子瀉心湯", "大陷胸湯"]}, {"id": "q8", "stem": "小便不利·渴欲飮水·水入卽吐·脈浮", "ctx": "太陽病 · 兼證", "answer": "五苓散", "hint": "病機 膀胱 氣化不利 · 治法 溫陽化氣·利水和表", "explain": "病機: 膀胱 氣化不利 · 治法: 溫陽化氣·利水和表<br>蓄血과 구별: 小便不利(기분)", "flag": "", "must": [], "pool": ["小靑龍湯", "桂枝加厚朴杏子湯", "大靑龍湯", "桂枝湯", "麻黃湯", "眞武湯", "旋覆代赭石湯", "大陷胸湯"]}, {"id": "q9", "stem": "心下痞·按之濡軟·關脈浮", "ctx": "太陽病 · 變證·痞", "answer": "大黃黃連瀉心湯", "hint": "病機 無形 邪熱 壅滯 · 治法 泄熱消痞", "explain": "病機: 無形 邪熱 壅滯 · 治法: 泄熱消痞", "flag": "", "must": [], "pool": ["生薑瀉心湯", "大陷胸湯", "小陷胸湯", "附子瀉心湯", "旋覆代赭石湯", "小承氣湯", "白頭翁湯", "調胃承氣湯"]}, {"id": "q10", "stem": "心下痞硬·嘔逆·腸鳴·下利", "ctx": "太陽病 · 變證·痞", "answer": "生薑瀉心湯", "hint": "病機 脾胃虛弱 + 邪熱壅滯 · 治法 苦泄辛開·甘溫益氣", "explain": "病機: 脾胃虛弱 + 邪熱壅滯 · 治法: 苦泄辛開·甘溫益氣<br>三瀉心 변별 핵심", "flag": "", "must": [], "pool": ["附子瀉心湯", "旋覆代赭石湯", "大黃黃連瀉心湯", "烏梅丸", "大陷胸湯", "小建中湯", "三物白散", "小陷胸湯"]}, {"id": "q11", "stem": "心下痞·按之濡軟 + 汗出惡寒", "ctx": "太陽病 · 變證·痞", "answer": "附子瀉心湯", "hint": "病機 胃熱氣滯 + 陽氣不足 · 治法 泄熱消痞·溫經扶陽", "explain": "病機: 胃熱氣滯 + 陽氣不足 · 治法: 泄熱消痞·溫經扶陽", "flag": "", "must": [], "pool": ["生薑瀉心湯", "大黃黃連瀉心湯", "旋覆代赭石湯", "烏梅丸", "三物白散", "小陷胸湯", "大陷胸湯", "通脈四逆湯"]}, {"id": "q12", "stem": "心下痞硬·噫氣不除", "ctx": "太陽病 · 變證·痞", "answer": "旋覆代赭石湯", "hint": "病機 胃氣虛弱·痰飮停聚 · 治法 和胃補中·滌痰降逆", "explain": "病機: 胃氣虛弱·痰飮停聚 · 治法: 和胃補中·滌痰降逆", "flag": "", "must": [], "pool": ["生薑瀉心湯", "附子瀉心湯", "大黃黃連瀉心湯", "大陷胸湯", "小建中湯", "小陷胸湯", "三物白散", "調胃承氣湯"]}, {"id": "q13", "stem": "心下→小腹 硬滿疼痛 拒按·脈沈緊", "ctx": "太陽病 · 變證·結胸", "answer": "大陷胸湯", "hint": "病機 熱 + 水 결합 · 治法 瀉熱逐水", "explain": "病機: 熱 + 水 결합 · 治法: 瀉熱逐水", "flag": "", "must": [], "pool": ["小陷胸湯", "三物白散", "大黃黃連瀉心湯", "白頭翁湯", "白虎湯", "大承氣湯", "小承氣湯", "黃連阿膠湯"]}, {"id": "q14", "stem": "부위 心下 국한·按之則痛·脈浮滑", "ctx": "太陽病 · 變證·結胸", "answer": "小陷胸湯", "hint": "病機 痰 + 熱 결합 · 治法 淸熱滌痰開結", "explain": "病機: 痰 + 熱 결합 · 治法: 淸熱滌痰開結", "flag": "", "must": [], "pool": ["大陷胸湯", "大黃黃連瀉心湯", "三物白散", "白虎湯", "白頭翁湯", "小承氣湯", "黃連阿膠湯", "調胃承氣湯"]}, {"id": "q15", "stem": "心下硬滿·열상 없음·苔白膩而滑", "ctx": "太陽病 · 變證·結胸", "answer": "三物白散", "hint": "病機 寒 + 水 결합 · 治法 破寒實·逐水飮", "explain": "病機: 寒 + 水 결합 · 治法: 破寒實·逐水飮", "flag": "", "must": [], "pool": ["大陷胸湯", "小陷胸湯", "通脈四逆湯", "吳茱萸湯", "當歸四逆湯", "四逆湯", "眞武湯", "桂枝加大黃湯"]}, {"id": "q16", "stem": "口苦咽乾目眩·往來寒熱·胸脇苦滿·黙黙不欲飮食·心煩喜嘔·脈弦", "ctx": "少陽病 · 本證", "answer": "小柴胡湯", "hint": "病機 經氣鬱滯·樞機不利 · 治法 和解少陽", "explain": "病機: 經氣鬱滯·樞機不利 · 治法: 和解少陽<br>汗·吐·下 三禁", "flag": "", "must": [], "pool": ["柴胡桂枝湯", "大柴胡湯", "甘露消毒丹", "蔘附湯", "淸營湯", "麻黃湯", "加減復脈湯", "桂枝加大黃湯"]}, {"id": "q17", "stem": "發熱微惡寒·肢節煩疼·微嘔·心下支結", "ctx": "少陽病 · 兼證", "answer": "柴胡桂枝湯", "hint": "病機 太陽·少陽 合病 · 治法 和解 + 解表", "explain": "病機: 太陽·少陽 合病 · 治法: 和解 + 解表", "flag": "", "must": [], "pool": ["小柴胡湯", "大柴胡湯", "四逆湯", "五苓散", "蒿芩淸膽湯", "炙甘草湯", "羚羊鉤藤湯", "淸凉滌暑法"]}, {"id": "q18", "stem": "胸脇滿而嘔·心下急·鬱鬱微煩·潮熱·大便秘結", "ctx": "少陽病 · 兼證", "answer": "大柴胡湯", "hint": "病機 少陽 + 陽明腑實 · 治法 和解 + 攻裏實", "explain": "病機: 少陽 + 陽明腑實 · 治法: 和解 + 攻裏實", "flag": "", "must": [], "pool": ["小柴胡湯", "柴胡桂枝湯", "三仁湯", "當歸四逆湯", "羚羊鉤藤湯", "生薑瀉心湯", "淸營湯", "神犀丹"]}, {"id": "q19", "stem": "身大熱·汗大出·大煩渴·脈洪大", "ctx": "陽明病 · 熱證", "answer": "白虎湯", "hint": "病機 無形 邪熱 충만 · 治法 淸熱保津", "explain": "病機: 無形 邪熱 충만 · 治法: 淸熱保津<br>背微惡寒은 한출과다 탓(표증 오한과 본질 차이)", "flag": "", "must": [], "pool": ["調胃承氣湯", "大陷胸湯", "白頭翁湯", "大承氣湯", "大黃黃連瀉心湯", "小承氣湯", "小陷胸湯", "黃連阿膠湯"]}, {"id": "q20", "stem": "不能食·噦逆·食穀欲嘔·舌淡苔白", "ctx": "陽明病 · 虛寒證", "answer": "吳茱萸湯", "hint": "病機 체질 胃陽 부족 · 治法 溫胃散寒·降逆止嘔", "explain": "病機: 체질 胃陽 부족 · 治法: 溫胃散寒·降逆止嘔<br>吳茱萸湯 두 자리(↔厥陰 肝寒濁陰上逆)", "flag": "", "must": [], "pool": ["四逆湯", "理中湯", "眞武湯", "白通湯", "通脈四逆湯", "三物白散", "桂枝加大黃湯", "當歸四逆湯"]}, {"id": "q21", "stem": "腹滿而吐·食不下·自利口不渴·脈緩弱", "ctx": "太陰病 · 本證", "answer": "理中湯", "hint": "病機 脾虛中寒·健運失常 · 治法 溫中散寒·健脾燥濕", "explain": "病機: 脾虛中寒·健運失常 · 治法: 溫中散寒·健脾燥濕<br>三陰 중 病情 最輕", "flag": "", "must": [], "pool": ["四逆湯", "眞武湯", "吳茱萸湯", "桂枝加大黃湯", "通脈四逆湯", "白通湯", "當歸四逆湯", "三物白散"]}, {"id": "q22", "stem": "腹滿大實痛", "ctx": "太陰病 · 兼證", "answer": "桂枝加大黃湯", "hint": "病機 脾土虛寒 + 食滯 · 治法 調和脾胃·通裏實", "explain": "病機: 脾土虛寒 + 食滯 · 治法: 調和脾胃·通裏實", "flag": "", "must": [], "pool": ["理中湯", "吳茱萸湯", "三物白散", "眞武湯", "白通湯", "當歸四逆湯", "四逆湯", "通脈四逆湯"]}, {"id": "q23", "stem": "惡寒踡臥·手足厥冷·下利淸穀·脈沈微細", "ctx": "少陰病 · 寒化", "answer": "四逆湯", "hint": "病機 陽氣衰微·陰寒內盛 · 治法 急溫回陽", "explain": "病機: 陽氣衰微·陰寒內盛 · 治法: 急溫回陽", "flag": "", "must": [], "pool": ["眞武湯", "吳茱萸湯", "理中湯", "通脈四逆湯", "白通湯", "桂枝加大黃湯", "三物白散", "當歸四逆湯"]}, {"id": "q24", "stem": "內眞寒 + 身反不惡寒(外假熱)", "ctx": "少陰病 · 寒化", "answer": "通脈四逆湯", "hint": "病機 陰盛於內·陽格於外 · 治法 破陰回陽·通達內外", "explain": "病機: 陰盛於內·陽格於外 · 治法: 破陰回陽·通達內外<br>戴陽과 구별=外假熱", "flag": "", "must": [], "pool": ["白通湯", "眞武湯", "四逆湯", "桂枝加大黃湯", "三物白散", "吳茱萸湯", "當歸四逆湯", "理中湯"]}, {"id": "q25", "stem": "內眞寒 + 面赤(假熱)", "ctx": "少陰病 · 寒化", "answer": "白通湯", "hint": "病機 陰盛於下·陽格於上 · 治法 破陰回陽·宣通上下", "explain": "病機: 陰盛於下·陽格於上 · 治法: 破陰回陽·宣通上下<br>格陽과 구별=面赤(上)", "flag": "", "must": [], "pool": ["通脈四逆湯", "眞武湯", "四逆湯", "理中湯", "三物白散", "當歸四逆湯", "桂枝加大黃湯", "吳茱萸湯"]}, {"id": "q26", "stem": "心下悸·頭眩·身瞤動·振振欲擗地·小便不利", "ctx": "少陰病 · 寒化", "answer": "眞武湯", "hint": "病機 腎陽虛·水氣不化 · 治法 溫腎陽·散水氣", "explain": "病機: 腎陽虛·水氣不化 · 治法: 溫腎陽·散水氣", "flag": "", "must": [], "pool": ["四逆湯", "理中湯", "吳茱萸湯", "白通湯", "通脈四逆湯", "小靑龍湯", "三物白散", "當歸四逆湯"]}, {"id": "q27", "stem": "心煩不得臥·口燥咽乾·舌紅·脈沈細數", "ctx": "少陰病 · 熱化", "answer": "黃連阿膠湯", "hint": "病機 腎陰부족·心陽항성 · 治法 育陰淸熱", "explain": "病機: 腎陰부족·心陽항성 · 治法: 育陰淸熱", "flag": "", "must": [], "pool": ["大黃黃連瀉心湯", "小承氣湯", "大承氣湯", "調胃承氣湯", "白虎湯", "小陷胸湯", "白頭翁湯", "大陷胸湯"]}, {"id": "q28", "stem": "消渴·氣上撞心·心中疼熱·飢而不欲食·食則吐蛔", "ctx": "厥陰病 · 寒熱錯雜", "answer": "烏梅丸", "hint": "病機 肝木克土·上熱下寒 · 治法 淸上溫下", "explain": "病機: 肝木克土·上熱下寒 · 治法: 淸上溫下<br>蛔厥", "flag": "", "must": [], "pool": ["生薑瀉心湯", "附子瀉心湯", "白頭翁湯", "當歸四逆湯", "黃連阿膠湯", "桂枝加大黃湯", "四逆湯", "大承氣湯"]}, {"id": "q29", "stem": "手足厥寒·脈細欲絶", "ctx": "厥陰病 · 寒證", "answer": "當歸四逆湯", "hint": "病機 血虛 + 寒凝 · 治法 養血通脈·溫經散寒", "explain": "病機: 血虛 + 寒凝 · 治法: 養血通脈·溫經散寒", "flag": "", "must": [], "pool": ["三物白散", "桂枝加大黃湯", "白通湯", "四逆湯", "理中湯", "吳茱萸湯", "眞武湯", "通脈四逆湯"]}, {"id": "q30", "stem": "乾嘔·吐涎沫·巓頂痛", "ctx": "厥陰病 · 寒證", "answer": "吳茱萸湯", "hint": "病機 肝寒犯胃·濁陰上逆 · 治法 溫降肝胃·通陽泄濁", "explain": "病機: 肝寒犯胃·濁陰上逆 · 治法: 溫降肝胃·通陽泄濁<br>吳茱萸湯 두 자리(↔陽明虛寒)", "flag": "", "must": [], "pool": ["當歸四逆湯", "四逆湯", "三物白散", "理中湯", "白通湯", "眞武湯", "通脈四逆湯", "桂枝加大黃湯"]}, {"id": "q31", "stem": "下利膿血·裏急後重·肛門灼熱·渴欲飮水·舌紅苔黃膩", "ctx": "厥陰病 · 熱利", "answer": "白頭翁湯", "hint": "病機 肝熱下迫·濕熱鬱蒸 · 治法 淸熱燥濕·凉肝解毒", "explain": "病機: 肝熱下迫·濕熱鬱蒸 · 治法: 淸熱燥濕·凉肝解毒<br>太陰·少陰 虛寒下利와 본질 차이", "flag": "", "must": [], "pool": ["調胃承氣湯", "小陷胸湯", "大陷胸湯", "大承氣湯", "小承氣湯", "大黃黃連瀉心湯", "白虎湯", "黃連阿膠湯"]}, {"id": "q32", "stem": "發熱·微惡風寒·咳嗽·口微渴·脈浮數", "ctx": "風溫 · 邪襲肺衛", "answer": "銀翹散", "hint": "溫病 風溫 · 단계 邪襲肺衛", "explain": "溫病 風溫 · 邪襲肺衛", "flag": "", "must": [], "pool": ["宣白承氣湯", "牛黃承氣湯", "淸營湯", "麻杏甘石湯", "杏蘇散", "桑杏湯", "白虎湯", "沙參麥冬湯"]}, {"id": "q33", "stem": "身熱·咳喘·氣急鼻煽·口渴", "ctx": "風溫 · 邪熱壅肺", "answer": "麻杏甘石湯", "hint": "溫病 風溫 · 단계 邪熱壅肺", "explain": "溫病 風溫 · 邪熱壅肺", "flag": "", "must": [], "pool": ["宣白承氣湯", "白虎湯", "淸燥救肺湯", "牛黃承氣湯", "淸營湯", "銀翹散", "普濟消毒飮+三黃二香散", "生脈散"]}, {"id": "q34", "stem": "壯熱·汗出·口渴·脈洪大", "ctx": "風溫 · 邪傳陽明(氣分熱盛)", "answer": "白虎湯", "hint": "溫病 風溫 · 단계 邪傳陽明(氣分熱盛)", "explain": "溫病 風溫 · 邪傳陽明(氣分熱盛)", "flag": "", "must": [], "pool": ["宣白承氣湯", "麻杏甘石湯", "銀翹散", "淸營湯", "牛黃承氣湯", "導赤承氣湯", "加減玉女煎", "新加黃龍湯"]}, {"id": "q35", "stem": "潮熱·便秘·喘促", "ctx": "風溫 · 邪熱阻肺·腑有熱結", "answer": "宣白承氣湯", "hint": "溫病 風溫 · 단계 邪熱阻肺·腑有熱結", "explain": "溫病 風溫 · 邪熱阻肺·腑有熱結", "flag": "", "must": [], "pool": ["牛黃承氣湯", "麻杏甘石湯", "新加黃龍湯", "調胃承氣湯", "凉膈散", "導赤承氣湯", "增液承氣湯", "白虎湯"]}, {"id": "q36", "stem": "神昏譫語 + 腑實", "ctx": "風溫 · 熱入心包 兼腑實", "answer": "牛黃承氣湯", "hint": "溫病 風溫 · 단계 熱入心包 兼腑實", "explain": "溫病 風溫 · 熱入心包 兼腑實", "flag": "", "must": [], "pool": ["淸營湯", "宣白承氣湯", "菖蒲鬱金湯", "麻杏甘石湯", "銀翹散", "白虎湯", "安宮牛黃丸", "導赤承氣湯"]}, {"id": "q37", "stem": "神昏·舌絳", "ctx": "風溫 · 逆傳心包", "answer": "淸營湯", "hint": "溫病 風溫 · 단계 逆傳心包", "explain": "溫病 風溫 · 逆傳心包", "flag": "", "must": [], "pool": ["牛黃承氣湯", "菖蒲鬱金湯", "銀翹散", "宣白承氣湯", "麻杏甘石湯", "犀地淸絡飮", "加減玉女煎", "導赤淸心湯"]}, {"id": "q38", "stem": "低熱·乾咳·口乾", "ctx": "風溫 · 餘熱未淨·肺胃陰傷", "answer": "沙參麥冬湯", "hint": "溫病 風溫 · 단계 餘熱未淨·肺胃陰傷", "explain": "溫病 風溫 · 餘熱未淨·肺胃陰傷", "flag": "", "must": [], "pool": ["淸咽養陰湯", "增液承氣湯", "調胃承氣湯", "加減復脈湯", "薛氏五汁蘆根湯", "牛黃承氣湯", "麻杏甘石湯", "銀翹散"]}, {"id": "q39", "stem": "腑實 + 胸膈煩熱", "ctx": "春溫 · 陽明腑實 兼熱灼胸膈", "answer": "凉膈散", "hint": "溫病 春溫 · 단계 陽明腑實 兼熱灼胸膈", "explain": "溫病 春溫 · 陽明腑實 兼熱灼胸膈", "flag": "", "must": [], "pool": ["導赤承氣湯", "新加黃龍湯", "增液承氣湯", "宣白承氣湯", "調胃承氣湯", "加減玉女煎", "生脈散", "白虎湯"]}, {"id": "q40", "stem": "腑實 + 陰液虧", "ctx": "春溫 · 腑實 兼陰液虧損", "answer": "增液承氣湯", "hint": "溫病 春溫 · 단계 腑實 兼陰液虧損", "explain": "溫病 春溫 · 腑實 兼陰液虧損", "flag": "", "must": [], "pool": ["調胃承氣湯", "導赤承氣湯", "新加黃龍湯", "凉膈散", "宣白承氣湯", "加減玉女煎", "加減復脈湯", "王氏淸暑益氣湯"]}, {"id": "q41", "stem": "腑實 + 氣液兩虛", "ctx": "春溫 · 腑實 兼氣液兩虛", "answer": "新加黃龍湯", "hint": "溫病 春溫 · 단계 腑實 兼氣液兩虛", "explain": "溫病 春溫 · 腑實 兼氣液兩虛", "flag": "", "must": [], "pool": ["凉膈散", "增液承氣湯", "導赤承氣湯", "宣白承氣湯", "調胃承氣湯", "加減玉女煎", "甘露消毒丹", "白虎湯"]}, {"id": "q42", "stem": "腑實 + 小腸熱", "ctx": "春溫 · 腑實 兼下焦熱盛", "answer": "導赤承氣湯", "hint": "溫病 春溫 · 단계 腑實 兼下焦熱盛", "explain": "溫病 春溫 · 腑實 兼下焦熱盛", "flag": "", "must": [], "pool": ["增液承氣湯", "新加黃龍湯", "凉膈散", "調胃承氣湯", "宣白承氣湯", "加減玉女煎", "淸燥救肺湯", "蒿芩淸膽湯"]}, {"id": "q43", "stem": "氣分·營分 동시 熱熾", "ctx": "春溫 · 氣營(血)兩燔", "answer": "加減玉女煎", "hint": "溫病 春溫 · 단계 氣營(血)兩燔", "explain": "溫病 春溫 · 氣營(血)兩燔", "flag": "", "must": [], "pool": ["新加黃龍湯", "凉膈散", "增液承氣湯", "導赤承氣湯", "宣白承氣湯", "菖蒲鬱金湯", "白虎湯", "調胃承氣湯"]}, {"id": "q44", "stem": "發斑·出血·舌深絳", "ctx": "春溫 · 熱盛動血", "answer": "犀角地黃湯", "hint": "溫病 春溫 · 단계 熱盛動血", "explain": "溫病 春溫 · 熱盛動血", "flag": "", "must": [], "pool": ["羚角鉤藤湯", "桃仁承氣湯", "神犀丹", "凉膈散", "靑蒿鱉甲湯", "導赤承氣湯", "加減復脈湯", "新加黃龍湯"]}, {"id": "q45", "stem": "身熱·小腹硬滿·大便色黑·如狂·舌瘀斑", "ctx": "春溫 · 熱與血結", "answer": "桃仁承氣湯", "hint": "溫病 春溫 · 단계 熱與血結", "explain": "溫病 春溫 · 熱與血結", "flag": "★溫病條辨 方(傷寒 桃核承氣湯과 구별)", "must": [], "pool": ["羚角鉤藤湯", "犀角地黃湯", "神犀丹", "桃核承氣湯", "加減玉女煎", "靑蒿鱉甲湯", "凉膈散", "導赤承氣湯"]}, {"id": "q46", "stem": "高熱·抽搐有力·肢厥·神昏", "ctx": "春溫 · 熱盛動風(實)", "answer": "羚角鉤藤湯", "hint": "溫病 春溫 · 단계 熱盛動風(實)", "explain": "溫病 春溫 · 熱盛動風(實)", "flag": "", "must": [], "pool": ["犀角地黃湯", "桃仁承氣湯", "小承氣湯", "羚羊鉤藤湯", "調胃承氣湯", "神犀丹", "大承氣湯", "導赤承氣湯"]}, {"id": "q47", "stem": "夜熱·舌乾絳而萎·脈虛", "ctx": "春溫 · 腎陰耗損(邪少虛多)", "answer": "加減復脈湯", "hint": "溫病 春溫 · 단계 腎陰耗損(邪少虛多)", "explain": "溫病 春溫 · 腎陰耗損(邪少虛多)<br>炙甘草湯-人蔘桂枝生薑大棗+白芍藥", "flag": "", "must": [], "pool": ["靑蒿鱉甲湯", "增液承氣湯", "淸咽養陰湯", "調胃承氣湯", "沙參麥冬湯", "羚角鉤藤湯", "新加黃龍湯", "桃仁承氣湯"]}, {"id": "q48", "stem": "夜熱早凉·熱退無汗·能食形瘦", "ctx": "春溫 · 餘熱留伏陰分", "answer": "靑蒿鱉甲湯", "hint": "溫病 春溫 · 단계 餘熱留伏陰分", "explain": "溫病 春溫 · 餘熱留伏陰分", "flag": "", "must": [], "pool": ["加減復脈湯", "增液承氣湯", "新加黃龍湯", "導赤承氣湯", "加減玉女煎", "凉膈散", "桃仁承氣湯", "羚角鉤藤湯"]}, {"id": "q49", "stem": "壯熱·自汗·口渴·面赤·脈洪大", "ctx": "暑溫 · 暑入陽明", "answer": "白虎湯", "hint": "溫病 暑溫 · 단계 暑入陽明", "explain": "溫病 暑溫 · 暑入陽明", "flag": "", "must": [], "pool": ["王氏淸暑益氣湯", "生脈散", "羚羊鉤藤湯", "神犀丹", "淸絡飮", "安宮牛黃丸", "調胃承氣湯", "普濟消毒飮+三黃二香散"]}, {"id": "q50", "stem": "身熱·汗多·口渴·神倦", "ctx": "暑溫 · 暑傷津氣", "answer": "王氏淸暑益氣湯", "hint": "溫病 暑溫 · 단계 暑傷津氣", "explain": "溫病 暑溫 · 暑傷津氣", "flag": "", "must": [], "pool": ["生脈散", "白虎湯", "羚羊鉤藤湯", "神犀丹", "淸絡飮", "安宮牛黃丸", "調胃承氣湯", "甘露消毒丹"]}, {"id": "q51", "stem": "津氣耗損 심해 虛脫", "ctx": "暑溫 · 津氣欲脫", "answer": "生脈散", "hint": "溫病 暑溫 · 단계 津氣欲脫", "explain": "溫病 暑溫 · 津氣欲脫<br>斂補劑·暑熱 미제거 시 誤用 害", "flag": "", "must": [], "pool": ["王氏淸暑益氣湯", "白虎湯", "羚羊鉤藤湯", "神犀丹", "淸絡飮", "安宮牛黃丸", "普濟消毒飮+三黃二香散", "調胃承氣湯"]}, {"id": "q52", "stem": "身熱·神昏·舌絳", "ctx": "暑溫 · 暑入心營", "answer": "淸營湯", "hint": "溫病 暑溫 · 단계 暑入心營", "explain": "溫病 暑溫 · 暑入心營", "flag": "", "must": [], "pool": ["導赤淸心湯", "生脈散", "神犀丹", "安宮牛黃丸", "羚羊鉤藤湯", "王氏淸暑益氣湯", "淸絡飮", "牛黃承氣湯"]}, {"id": "q53", "stem": "發斑·出血·神昏", "ctx": "暑溫 · 暑入血分", "answer": "神犀丹", "hint": "溫病 暑溫 · 단계 暑入血分", "explain": "溫病 暑溫 · 暑入血分", "flag": "", "must": [], "pool": ["安宮牛黃丸", "羚羊鉤藤湯", "生脈散", "淸絡飮", "王氏淸暑益氣湯", "淸營湯", "桃仁承氣湯", "犀角地黃湯"]}, {"id": "q54", "stem": "暑濕 경증", "ctx": "暑溫 · 冒暑(變證)", "answer": "淸凉滌暑法", "hint": "溫病 暑溫 · 단계 冒暑(變證)", "explain": "溫病 暑溫 · 冒暑(變證)", "flag": "", "must": [], "pool": ["雷氏芳香化濁法", "淸絡飮", "羚羊鉤藤湯", "安宮牛黃丸", "蔘附湯", "犀角地黃湯", "蒿芩淸膽湯", "王氏淸暑益氣湯"]}, {"id": "q55", "stem": "신혼·肢厥", "ctx": "暑溫 · 暑厥(變證)", "answer": "安宮牛黃丸", "hint": "溫病 暑溫 · 단계 暑厥(變證)", "explain": "溫病 暑溫 · 暑厥(變證)", "flag": "", "must": [], "pool": ["羚羊鉤藤湯", "淸絡飮", "淸營湯", "生脈散", "王氏淸暑益氣湯", "雷氏芳香化濁法", "淸凉滌暑法", "神犀丹"]}, {"id": "q56", "stem": "경궐·抽搐", "ctx": "暑溫 · 暑風(變證)", "answer": "羚羊鉤藤湯", "hint": "溫病 暑溫 · 단계 暑風(變證)", "explain": "溫病 暑溫 · 暑風(變證)", "flag": "", "must": [], "pool": ["安宮牛黃丸", "淸絡飮", "淸凉滌暑法", "雷氏芳香化濁法", "生脈散", "王氏淸暑益氣湯", "神犀丹", "犀角地黃湯"]}, {"id": "q57", "stem": "각혈", "ctx": "暑溫 · 暑瘵(變證)", "answer": "淸絡飮", "hint": "溫病 暑溫 · 단계 暑瘵(變證)", "explain": "溫病 暑溫 · 暑瘵(變證)", "flag": "", "must": [], "pool": ["安宮牛黃丸", "羚羊鉤藤湯", "犀角地黃湯", "王氏淸暑益氣湯", "淸凉滌暑法", "神犀丹", "生脈散", "雷氏芳香化濁法"]}, {"id": "q58", "stem": "暑濕穢濁", "ctx": "暑溫 · 暑穢(變證)", "answer": "雷氏芳香化濁法", "hint": "溫病 暑溫 · 단계 暑穢(變證)", "explain": "溫病 暑溫 · 暑穢(變證)", "flag": "", "must": [], "pool": ["淸凉滌暑法", "羚羊鉤藤湯", "安宮牛黃丸", "淸絡飮", "蔘附湯", "蒿芩淸膽湯", "犀角地黃湯", "王氏淸暑益氣湯"]}, {"id": "q59", "stem": "身熱不揚·胸悶脘痞·苔膩", "ctx": "濕溫 · 邪遏衛氣(濕重于熱)", "answer": "三仁湯", "hint": "溫病 濕溫 · 단계 邪遏衛氣(濕重于熱)", "explain": "溫病 濕溫 · 邪遏衛氣(濕重于熱)", "flag": "", "must": [], "pool": ["達原飮", "杏仁滑石湯", "甘露消毒丹", "王氏連朴飮", "菖蒲鬱金湯", "白頭翁湯", "薛氏五汁蘆根湯", "蔘附湯"]}, {"id": "q60", "stem": "寒熱·苔白厚膩如積粉", "ctx": "濕溫 · 邪在膜原(濕重于熱)", "answer": "達原飮", "hint": "溫病 濕溫 · 단계 邪在膜原(濕重于熱)", "explain": "溫病 濕溫 · 邪在膜原(濕重于熱)", "flag": "", "must": [], "pool": ["三仁湯", "王氏連朴飮", "甘露消毒丹", "菖蒲鬱金湯", "杏仁滑石湯", "白頭翁湯", "薛氏五汁蘆根湯", "蔘附湯"]}, {"id": "q61", "stem": "發熱·咽腫·身黃·苔黃膩", "ctx": "濕溫 · 濕熱蘊毒(濕熱幷重)", "answer": "甘露消毒丹", "hint": "溫病 濕溫 · 단계 濕熱蘊毒(濕熱幷重)", "explain": "溫病 濕溫 · 濕熱蘊毒(濕熱幷重)", "flag": "", "must": [], "pool": ["王氏連朴飮", "杏仁滑石湯", "三仁湯", "達原飮", "菖蒲鬱金湯", "普濟消毒飮+三黃二香散", "調胃承氣湯", "王氏淸暑益氣湯"]}, {"id": "q62", "stem": "脘痞·嘔惡·苔黃膩", "ctx": "濕溫 · 鬱阻中焦(濕熱幷重)", "answer": "王氏連朴飮", "hint": "溫病 濕溫 · 단계 鬱阻中焦(濕熱幷重)", "explain": "溫病 濕溫 · 鬱阻中焦(濕熱幷重)", "flag": "", "must": [], "pool": ["甘露消毒丹", "杏仁滑石湯", "達原飮", "三仁湯", "菖蒲鬱金湯", "白頭翁湯", "蔘附湯", "薛氏五汁蘆根湯"]}, {"id": "q63", "stem": "神識昏蒙·苔垢膩", "ctx": "濕溫 · 釀痰蒙蔽心包(濕熱幷重)", "answer": "菖蒲鬱金湯", "hint": "溫病 濕溫 · 단계 釀痰蒙蔽心包(濕熱幷重)", "explain": "溫病 濕溫 · 釀痰蒙蔽心包(濕熱幷重)", "flag": "", "must": [], "pool": ["牛黃承氣湯", "淸營湯", "王氏連朴飮", "達原飮", "三仁湯", "杏仁滑石湯", "甘露消毒丹", "白頭翁湯"]}, {"id": "q64", "stem": "三焦 濕熱 미만", "ctx": "濕溫 · 蘊阻三焦", "answer": "杏仁滑石湯", "hint": "溫病 濕溫 · 단계 蘊阻三焦", "explain": "溫病 濕溫 · 蘊阻三焦", "flag": "", "must": [], "pool": ["甘露消毒丹", "三仁湯", "達原飮", "菖蒲鬱金湯", "王氏連朴飮", "白頭翁湯", "蔘附湯", "薛氏五汁蘆根湯"]}, {"id": "q65", "stem": "大便下血", "ctx": "濕溫 · 傷絡便血(變證)", "answer": "犀角地黃湯", "hint": "溫病 濕溫 · 단계 傷絡便血(變證)", "explain": "溫病 濕溫 · 傷絡便血(變證)", "flag": "", "must": [], "pool": ["淸絡飮", "蔘附湯", "桃仁承氣湯", "淸凉滌暑法", "神犀丹", "羚羊鉤藤湯", "羚角鉤藤湯", "安宮牛黃丸"]}, {"id": "q66", "stem": "下血과다·氣脫", "ctx": "濕溫 · 氣隨血脫(變證)", "answer": "蔘附湯", "hint": "溫病 濕溫 · 단계 氣隨血脫(變證)", "explain": "溫病 濕溫 · 氣隨血脫(變證)", "flag": "", "must": [], "pool": ["安宮牛黃丸", "淸凉滌暑法", "雷氏芳香化濁法", "犀角地黃湯", "羚羊鉤藤湯", "淸絡飮", "達原飮", "薛氏五汁蘆根湯"]}, {"id": "q67", "stem": "身熱제거·脘悶·知饑不食·苔薄膩", "ctx": "濕溫 · 餘邪未淨(變證)", "answer": "薛氏五汁蘆根湯", "hint": "溫病 濕溫 · 단계 餘邪未淨(變證)", "explain": "溫病 濕溫 · 餘邪未淨(變證)", "flag": "", "must": [], "pool": ["沙參麥冬湯", "淸咽養陰湯", "三仁湯", "蔘附湯", "菖蒲鬱金湯", "甘露消毒丹", "王氏連朴飮", "杏仁滑石湯"]}, {"id": "q68", "stem": "寒熱如瘧·脘痞", "ctx": "伏暑 · 邪在少陽(瘧疾類)", "answer": "蒿芩淸膽湯", "hint": "溫病 伏暑 · 단계 邪在少陽(瘧疾類)", "explain": "溫病 伏暑 · 邪在少陽(瘧疾類)", "flag": "", "must": [], "pool": ["枳實導滯湯", "王氏淸暑益氣湯", "普濟消毒飮+三黃二香散", "導赤承氣湯", "淸燥救肺湯", "新加黃龍湯", "雷氏芳香化濁法", "生脈散"]}, {"id": "q69", "stem": "大便溏滯·胸腹灼熱", "ctx": "伏暑 · 邪結腸腑", "answer": "枳實導滯湯", "hint": "溫病 伏暑 · 단계 邪結腸腑", "explain": "溫病 伏暑 · 邪結腸腑", "flag": "", "must": [], "pool": ["蒿芩淸膽湯", "甘露消毒丹", "麻杏甘石湯", "普濟消毒飮+三黃二香散", "淸燥救肺湯", "增液承氣湯", "新加黃龍湯", "加減玉女煎"]}, {"id": "q70", "stem": "身熱·神昏 + 小便短赤", "ctx": "伏暑 · 熱在心營 下移小腸", "answer": "導赤淸心湯", "hint": "溫病 伏暑 · 단계 熱在心營 下移小腸", "explain": "溫病 伏暑 · 熱在心營 下移小腸", "flag": "", "must": [], "pool": ["淸營湯", "加減玉女煎", "牛黃承氣湯", "菖蒲鬱金湯", "蒿芩淸膽湯", "犀地淸絡飮", "枳實導滯湯", "烏梅丸"]}, {"id": "q71", "stem": "神昏·舌絳無苔而潤(或瘀紫而潤)", "ctx": "伏暑 · 熱閉心包 血絡瘀滯", "answer": "犀地淸絡飮", "hint": "溫病 伏暑 · 단계 熱閉心包 血絡瘀滯", "explain": "溫病 伏暑 · 熱閉心包 血絡瘀滯", "flag": "", "must": [], "pool": ["菖蒲鬱金湯", "安宮牛黃丸", "淸營湯", "牛黃承氣湯", "導赤淸心湯", "蒿芩淸膽湯", "枳實導滯湯", "銀翹散"]}, {"id": "q72", "stem": "發熱·乾咳·口鼻乾燥(風溫 근사)", "ctx": "秋燥 · 溫燥初起·邪襲肺衛", "answer": "桑杏湯", "hint": "溫病 秋燥 · 단계 溫燥初起·邪襲肺衛", "explain": "溫病 秋燥 · 溫燥初起·邪襲肺衛", "flag": "", "must": [], "pool": ["杏蘇散", "銀翹散", "五仁桔皮湯", "調胃承氣湯", "淸燥救肺湯", "阿膠黃芩湯", "白通湯", "蔘附湯"]}, {"id": "q73", "stem": "惡寒·乾咳·無汗(風寒 근사)", "ctx": "秋燥 · 凉燥初起·邪襲肺衛", "answer": "杏蘇散", "hint": "溫病 秋燥 · 단계 凉燥初起·邪襲肺衛", "explain": "溫病 秋燥 · 凉燥初起·邪襲肺衛", "flag": "", "must": [], "pool": ["桑杏湯", "銀翹散", "五仁桔皮湯", "淸燥救肺湯", "阿膠黃芩湯", "調胃承氣湯", "蒿芩淸膽湯", "菖蒲鬱金湯"]}, {"id": "q74", "stem": "身熱·乾咳·氣逆", "ctx": "秋燥 · 燥熱傷肺", "answer": "淸燥救肺湯", "hint": "溫病 秋燥 · 단계 燥熱傷肺", "explain": "溫病 秋燥 · 燥熱傷肺", "flag": "", "must": [], "pool": ["麻杏甘石湯", "調胃承氣湯", "阿膠黃芩湯", "五仁桔皮湯", "甘露消毒丹", "王氏淸暑益氣湯", "凉膈散", "生脈散"]}, {"id": "q75", "stem": "咳血·便血", "ctx": "秋燥 · 肺燥腸熱·絡傷咳血", "answer": "阿膠黃芩湯", "hint": "溫病 秋燥 · 단계 肺燥腸熱·絡傷咳血", "explain": "溫病 秋燥 · 肺燥腸熱·絡傷咳血", "flag": "", "must": [], "pool": ["五仁桔皮湯", "淸燥救肺湯", "犀角地黃湯", "淸絡飮", "調胃承氣湯", "杏蘇散", "桑杏湯", "麻杏甘石湯"]}, {"id": "q76", "stem": "乾咳·大便閉", "ctx": "秋燥 · 肺燥腸閉", "answer": "五仁桔皮湯", "hint": "溫病 秋燥 · 단계 肺燥腸閉", "explain": "溫病 秋燥 · 肺燥腸閉", "flag": "", "must": [], "pool": ["阿膠黃芩湯", "淸燥救肺湯", "調胃承氣湯", "桑杏湯", "杏蘇散", "桃仁承氣湯", "淸絡飮", "通脈四逆湯"]}, {"id": "q77", "stem": "便秘 + 陰傷", "ctx": "秋燥 · 腑實陰傷", "answer": "調胃承氣湯", "hint": "溫病 秋燥 · 단계 腑實陰傷", "explain": "溫病 秋燥 · 腑實陰傷", "flag": "", "must": [], "pool": ["增液承氣湯", "宣白承氣湯", "凉膈散", "導赤承氣湯", "新加黃龍湯", "淸燥救肺湯", "蒿芩淸膽湯", "王氏淸暑益氣湯"]}, {"id": "q78", "stem": "身熱不甚·乾咳·口舌乾燥·舌紅少苔", "ctx": "秋燥 · 肺胃陰傷(後期)", "answer": "沙參麥冬湯", "hint": "溫病 秋燥 · 단계 肺胃陰傷(後期)", "explain": "溫病 秋燥 · 肺胃陰傷(後期)", "flag": "", "must": [], "pool": ["淸咽養陰湯", "調胃承氣湯", "增液承氣湯", "薛氏五汁蘆根湯", "加減復脈湯", "杏蘇散", "五仁桔皮湯", "桑杏湯"]}, {"id": "q79", "stem": "頭面紅腫·咽痛·口渴·舌赤苔黃", "ctx": "大頭溫 · 風熱毒邪·肺胃熱盛", "answer": "普濟消毒飮+三黃二香散", "hint": "溫病 大頭溫 · 단계 風熱毒邪·肺胃熱盛", "explain": "溫病 大頭溫 · 風熱毒邪·肺胃熱盛", "flag": "", "must": [], "pool": ["導赤承氣湯", "調胃承氣湯", "凉膈散", "宣白承氣湯", "枳實導滯湯", "余氏淸心凉膈散", "甘露消毒丹", "蒿芩淸膽湯"]}, {"id": "q80", "stem": "壯熱·咽腫腐·痧疹密布", "ctx": "爛喉痧 · 熱壅氣分", "answer": "余氏淸心凉膈散", "hint": "溫病 爛喉痧 · 단계 熱壅氣分", "explain": "溫病 爛喉痧 · 熱壅氣分", "flag": "", "must": [], "pool": ["增液承氣湯", "宣白承氣湯", "普濟消毒飮+三黃二香散", "導赤承氣湯", "生脈散", "白虎湯", "王氏淸暑益氣湯", "新加黃龍湯"]}, {"id": "q81", "stem": "高熱·神昏·痧疹紫赤·舌乾絳起芒刺 狀如楊梅", "ctx": "爛喉痧 · 毒燔氣營", "answer": "安宮牛黃丸", "hint": "溫病 爛喉痧 · 단계 毒燔氣營", "explain": "溫病 爛喉痧 · 毒燔氣營", "flag": "", "must": [], "pool": ["余氏淸心凉膈散", "淸咽養陰湯", "宣白承氣湯", "犀角地黃湯", "新加黃龍湯", "阿膠黃芩湯", "附子瀉心湯", "吳茱萸湯"]}, {"id": "q82", "stem": "痧疹退·午後低熱·舌乾紅少津", "ctx": "爛喉痧 · 餘毒傷陰", "answer": "淸咽養陰湯", "hint": "溫病 爛喉痧 · 단계 餘毒傷陰", "explain": "溫病 爛喉痧 · 餘毒傷陰", "flag": "", "must": [], "pool": ["沙參麥冬湯", "調胃承氣湯", "增液承氣湯", "薛氏五汁蘆根湯", "加減復脈湯", "余氏淸心凉膈散", "蒿芩淸膽湯", "淸凉滌暑法"]}, {"id": "q83", "stem": "表寒 + 裏鬱熱(無汗而煩躁)", "ctx": "靑龍 변별", "answer": "大靑龍湯", "hint": "변별축 — 裏熱 vs 裏水飮", "explain": "이 단서의 방제. 같은 군(靑龍): 大靑龍湯 · 小靑龍湯. 변별축: 裏熱 vs 裏水飮.", "flag": "", "must": ["小靑龍湯"], "pool": ["麻黃湯", "桂枝加厚朴杏子湯", "桂枝湯", "三物白散", "桂枝加大黃湯", "眞武湯", "白通湯", "五苓散"]}, {"id": "q84", "stem": "表寒 + 裏水飮(咳喘·乾嘔不渴)", "ctx": "靑龍 변별", "answer": "小靑龍湯", "hint": "변별축 — 裏熱 vs 裏水飮", "explain": "이 단서의 방제. 같은 군(靑龍): 大靑龍湯 · 小靑龍湯. 변별축: 裏熱 vs 裏水飮.", "flag": "", "must": ["大靑龍湯"], "pool": ["麻黃湯", "桂枝加厚朴杏子湯", "桂枝湯", "五苓散", "眞武湯", "吳茱萸湯", "當歸四逆湯", "四逆湯"]}, {"id": "q85", "stem": "熱+水, 心下→小腹 硬滿拒按·脈沈緊", "ctx": "陷胸 변별", "answer": "大陷胸湯", "hint": "변별축 — 熱水 / 痰熱 / 寒水", "explain": "이 단서의 방제. 같은 군(陷胸): 大陷胸湯 · 小陷胸湯 · 三物白散. 변별축: 熱水 / 痰熱 / 寒水.", "flag": "", "must": ["小陷胸湯", "三物白散"], "pool": ["大黃黃連瀉心湯", "調胃承氣湯", "小承氣湯", "白頭翁湯", "白虎湯", "大承氣湯", "黃連阿膠湯", "附子瀉心湯"]}, {"id": "q86", "stem": "痰+熱, 心下 국한·按之則痛·脈浮滑", "ctx": "陷胸 변별", "answer": "小陷胸湯", "hint": "변별축 — 熱水 / 痰熱 / 寒水", "explain": "이 단서의 방제. 같은 군(陷胸): 大陷胸湯 · 小陷胸湯 · 三物白散. 변별축: 熱水 / 痰熱 / 寒水.", "flag": "", "must": ["大陷胸湯", "三物白散"], "pool": ["白頭翁湯", "大黃黃連瀉心湯", "大承氣湯", "白虎湯", "小承氣湯", "調胃承氣湯", "黃連阿膠湯", "旋覆代赭石湯"]}, {"id": "q87", "stem": "寒+水(寒實結胸)·열상 없음·苔白膩滑", "ctx": "陷胸 변별", "answer": "三物白散", "hint": "변별축 — 熱水 / 痰熱 / 寒水", "explain": "이 단서의 방제. 같은 군(陷胸): 大陷胸湯 · 小陷胸湯 · 三物白散. 변별축: 熱水 / 痰熱 / 寒水.", "flag": "", "must": ["大陷胸湯", "小陷胸湯"], "pool": ["四逆湯", "當歸四逆湯", "白通湯", "吳茱萸湯", "通脈四逆湯", "理中湯", "眞武湯", "桂枝加大黃湯"]}, {"id": "q88", "stem": "心下痞硬·嘔逆·腸鳴·下利(기본)", "ctx": "瀉心(痞) 변별", "answer": "半夏瀉心湯", "hint": "변별축 — 兼증(水飮/中虛/熱/陽虛)", "explain": "이 단서의 방제. 같은 군(瀉心(痞)): 半夏瀉心湯 · 生薑瀉心湯 · 甘草瀉心湯 · 大黃黃連瀉心湯 · 附子瀉心湯. 변별축: 兼증(水飮/中虛/熱/陽虛).", "flag": "", "must": ["生薑瀉心湯", "甘草瀉心湯", "大黃黃連瀉心湯", "附子瀉心湯"], "pool": ["淸咽養陰湯", "麻黃湯", "靑蒿鱉甲湯", "蔘附湯", "柴胡桂枝湯", "生脈散", "沙參麥冬湯", "白虎湯"]}, {"id": "q89", "stem": "+ 水飮食滯(음식썩은내 트림·腹中雷鳴)", "ctx": "瀉心(痞) 변별", "answer": "生薑瀉心湯", "hint": "변별축 — 兼증(水飮/中虛/熱/陽虛)", "explain": "이 단서의 방제. 같은 군(瀉心(痞)): 半夏瀉心湯 · 生薑瀉心湯 · 甘草瀉心湯 · 大黃黃連瀉心湯 · 附子瀉心湯. 변별축: 兼증(水飮/中虛/熱/陽虛).", "flag": "", "must": ["半夏瀉心湯", "甘草瀉心湯", "大黃黃連瀉心湯", "附子瀉心湯"], "pool": ["旋覆代赭石湯", "烏梅丸", "白通湯", "小陷胸湯", "白虎湯", "小建中湯", "大承氣湯", "通脈四逆湯"]}, {"id": "q90", "stem": "+ 中虛甚(乾嘔·心煩不安 심함)", "ctx": "瀉心(痞) 변별", "answer": "甘草瀉心湯", "hint": "변별축 — 兼증(水飮/中虛/熱/陽虛)", "explain": "이 단서의 방제. 같은 군(瀉心(痞)): 半夏瀉心湯 · 生薑瀉心湯 · 甘草瀉心湯 · 大黃黃連瀉心湯 · 附子瀉心湯. 변별축: 兼증(水飮/中虛/熱/陽虛).", "flag": "", "must": ["半夏瀉心湯", "生薑瀉心湯", "大黃黃連瀉心湯", "附子瀉心湯"], "pool": ["麻黃湯", "小陷胸湯", "大柴胡湯", "大承氣湯", "通脈四逆湯", "桂枝加厚朴杏子湯", "新加黃龍湯", "桃仁承氣湯"]}, {"id": "q91", "stem": "胃熱氣滯(按之濡軟·關脈浮)", "ctx": "瀉心(痞) 변별", "answer": "大黃黃連瀉心湯", "hint": "변별축 — 兼증(水飮/中虛/熱/陽虛)", "explain": "이 단서의 방제. 같은 군(瀉心(痞)): 半夏瀉心湯 · 生薑瀉心湯 · 甘草瀉心湯 · 大黃黃連瀉心湯 · 附子瀉心湯. 변별축: 兼증(水飮/中虛/熱/陽虛).", "flag": "", "must": ["半夏瀉心湯", "生薑瀉心湯", "甘草瀉心湯", "附子瀉心湯"], "pool": ["小承氣湯", "旋覆代赭石湯", "白頭翁湯", "大承氣湯", "白虎湯", "調胃承氣湯", "大陷胸湯", "小陷胸湯"]}, {"id": "q92", "stem": "胃熱 + 陽虛(汗出惡寒)", "ctx": "瀉心(痞) 변별", "answer": "附子瀉心湯", "hint": "변별축 — 兼증(水飮/中虛/熱/陽虛)", "explain": "이 단서의 방제. 같은 군(瀉心(痞)): 半夏瀉心湯 · 生薑瀉心湯 · 甘草瀉心湯 · 大黃黃連瀉心湯 · 附子瀉心湯. 변별축: 兼증(水飮/中虛/熱/陽虛).", "flag": "", "must": ["半夏瀉心湯", "生薑瀉心湯", "甘草瀉心湯", "大黃黃連瀉心湯"], "pool": ["旋覆代赭石湯", "烏梅丸", "桃核承氣湯", "吳茱萸湯", "小承氣湯", "小陷胸湯", "三物白散", "眞武湯"]}, {"id": "q93", "stem": "痞滿燥實 모두 구비·峻下", "ctx": "承氣(陽明實) 변별", "answer": "大承氣湯", "hint": "변별축 — 병정 輕重緩急", "explain": "이 단서의 방제. 같은 군(承氣(陽明實)): 大承氣湯 · 小承氣湯 · 調胃承氣湯. 변별축: 병정 輕重緩急.", "flag": "", "must": ["小承氣湯", "調胃承氣湯"], "pool": ["大陷胸湯", "黃連阿膠湯", "大黃黃連瀉心湯", "白頭翁湯", "小陷胸湯", "白虎湯", "桃核承氣湯", "通脈四逆湯"]}, {"id": "q94", "stem": "痞滿而實·能食·脈滑疾·和下", "ctx": "承氣(陽明實) 변별", "answer": "小承氣湯", "hint": "변별축 — 병정 輕重緩急", "explain": "이 단서의 방제. 같은 군(承氣(陽明實)): 大承氣湯 · 小承氣湯 · 調胃承氣湯. 변별축: 병정 輕重緩急.", "flag": "", "must": ["大承氣湯", "調胃承氣湯"], "pool": ["大黃黃連瀉心湯", "白頭翁湯", "大陷胸湯", "白虎湯", "黃連阿膠湯", "小陷胸湯", "四逆湯", "烏梅丸"]}, {"id": "q95", "stem": "燥實초기·胃氣손상·心煩譫語·緩下", "ctx": "承氣(陽明實) 변별", "answer": "調胃承氣湯", "hint": "변별축 — 병정 輕重緩急", "explain": "이 단서의 방제. 같은 군(承氣(陽明實)): 大承氣湯 · 小承氣湯 · 調胃承氣湯. 변별축: 병정 輕重緩急.", "flag": "", "must": ["大承氣湯", "小承氣湯"], "pool": ["增液承氣湯", "白虎湯", "新加黃龍湯", "小陷胸湯", "白頭翁湯", "大陷胸湯", "大黃黃連瀉心湯", "凉膈散"]}, {"id": "q96", "stem": "陽氣衰·下利淸穀·脈沈微(기본)", "ctx": "四逆(少陰寒化) 변별", "answer": "四逆湯", "hint": "변별축 — 格陽 / 戴陽", "explain": "이 단서의 방제. 같은 군(四逆(少陰寒化)): 四逆湯 · 通脈四逆湯 · 白通湯. 변별축: 格陽 / 戴陽.", "flag": "", "must": ["通脈四逆湯", "白通湯"], "pool": ["眞武湯", "理中湯", "吳茱萸湯", "桂枝加大黃湯", "三物白散", "當歸四逆湯", "調胃承氣湯", "大陷胸湯"]}, {"id": "q97", "stem": "格陽-身反不惡寒(外假熱)", "ctx": "四逆(少陰寒化) 변별", "answer": "通脈四逆湯", "hint": "변별축 — 格陽 / 戴陽", "explain": "이 단서의 방제. 같은 군(四逆(少陰寒化)): 四逆湯 · 通脈四逆湯 · 白通湯. 변별축: 格陽 / 戴陽.", "flag": "", "must": ["四逆湯", "白通湯"], "pool": ["理中湯", "眞武湯", "當歸四逆湯", "桂枝加大黃湯", "三物白散", "吳茱萸湯", "調胃承氣湯", "桃核承氣湯"]}, {"id": "q98", "stem": "戴陽-面赤(假熱)", "ctx": "四逆(少陰寒化) 변별", "answer": "白通湯", "hint": "변별축 — 格陽 / 戴陽", "explain": "이 단서의 방제. 같은 군(四逆(少陰寒化)): 四逆湯 · 通脈四逆湯 · 白通湯. 변별축: 格陽 / 戴陽.", "flag": "", "must": ["四逆湯", "通脈四逆湯"], "pool": ["吳茱萸湯", "眞武湯", "理中湯", "當歸四逆湯", "三物白散", "桂枝加大黃湯", "白頭翁湯", "桂枝湯"]}, {"id": "q99", "stem": "傷寒論 太陽蓄血(如狂·小腹急結)", "ctx": "桃承氣(축혈) ★출전함정 변별", "answer": "桃核承氣湯", "hint": "변별축 — 출전(傷寒論 / 溫病條辨)·한 글자 차이", "explain": "이 단서의 방제. 같은 군(桃承氣(축혈) ★출전함정): 桃核承氣湯 · 桃仁承氣湯. 변별축: 출전(傷寒論 / 溫病條辨)·한 글자 차이.", "flag": "출전·명칭 주의", "must": ["桃仁承氣湯"], "pool": ["白虎湯", "四逆湯", "白頭翁湯", "白通湯", "大黃黃連瀉心湯", "三物白散", "小陷胸湯", "旋覆代赭石湯"]}, {"id": "q100", "stem": "溫病條辨 春溫 熱與血結(身熱·小腹硬滿·舌瘀斑)", "ctx": "桃承氣(축혈) ★출전함정 변별", "answer": "桃仁承氣湯", "hint": "변별축 — 출전(傷寒論 / 溫病條辨)·한 글자 차이", "explain": "이 단서의 방제. 같은 군(桃承氣(축혈) ★출전함정): 桃核承氣湯 · 桃仁承氣湯. 변별축: 출전(傷寒論 / 溫病條辨)·한 글자 차이.", "flag": "출전·명칭 주의", "must": ["桃核承氣湯"], "pool": ["犀角地黃湯", "羚角鉤藤湯", "神犀丹", "麻黃湯", "小承氣湯", "薛氏五汁蘆根湯", "王氏連朴飮", "沙參麥冬湯"]}, {"id": "q101", "stem": "氣分·膀胱기화불리·小便不利·脈浮", "ctx": "蓄水 vs 蓄血 ★ 변별", "answer": "五苓散", "hint": "변별축 — 小便 利/不利", "explain": "이 단서의 방제. 같은 군(蓄水 vs 蓄血 ★): 五苓散 · 桃核承氣湯. 변별축: 小便 利/不利.", "flag": "출전·명칭 주의", "must": ["桃核承氣湯"], "pool": ["小靑龍湯", "麻黃湯", "大靑龍湯", "桂枝湯", "眞武湯", "桂枝加厚朴杏子湯", "蔘附湯", "白虎湯"]}, {"id": "q102", "stem": "血分·기화 무영향·小便自利·脈沈·如狂", "ctx": "蓄水 vs 蓄血 ★ 변별", "answer": "桃核承氣湯", "hint": "변별축 — 小便 利/不利", "explain": "이 단서의 방제. 같은 군(蓄水 vs 蓄血 ★): 五苓散 · 桃核承氣湯. 변별축: 小便 利/不利.", "flag": "출전·명칭 주의", "must": ["五苓散"], "pool": ["桃仁承氣湯", "黃連阿膠湯", "吳茱萸湯", "附子瀉心湯", "生薑瀉心湯", "小陷胸湯", "旋覆代赭石湯", "白頭翁湯"]}], "g15": {"diseases": [{"name": "風溫", "nature": "溫熱", "onset": "新感", "season": "봄", "alias": ["冬溫"], "trap": "발생 계절만 다르고 원인·증후·치법 동일"}, {"name": "春溫", "nature": "溫熱", "onset": "伏邪", "season": "봄", "alias": [], "trap": "\"冬傷于寒 春必病溫\" — 초기부터 裏熱證"}, {"name": "暑溫", "nature": "濕熱", "onset": "新感", "season": "여름", "alias": [], "trap": "초기 陽明氣分熱 왕성하나 感邪 즉발 → 新感 귀속(★함정)"}, {"name": "濕溫", "nature": "濕熱", "onset": "新感", "season": "여름~가을", "alias": [], "trap": "발병 완만·병정 길다 / 三禁(汗下潤)"}, {"name": "伏暑", "nature": "濕熱", "onset": "伏邪", "season": "가을·겨울", "alias": ["晩發", "伏暑秋發", "冬月伏暑"], "trap": "裏의 暑濕 + 시령 邪氣 표침 → 초기 반드시 表裏同病"}, {"name": "秋燥", "nature": "溫熱", "onset": "新感", "season": "가을", "alias": [], "trap": "溫燥(초가을 편열) / 凉燥(늦가을 西風肅殺)"}, {"name": "大頭溫", "nature": "溫熱", "onset": "新感", "season": "겨울·봄", "alias": ["大頭傷寒", "風溫時毒", "大頭風"], "trap": "頭面部 紅腫"}, {"name": "爛喉痧", "nature": "溫熱", "onset": "新感", "season": "겨울·봄", "alias": ["時喉痧", "疫喉痧"], "trap": "성홍열류(디프테리아·풍진)·인후부란+痧疹·소아 多"}], "seasons": ["봄", "여름", "여름~가을", "가을", "가을·겨울", "겨울·봄"], "rules": {"濕熱性": ["暑溫", "濕溫", "伏暑"], "溫熱性": ["風溫", "春溫", "秋燥", "大頭溫", "爛喉痧"], "伏邪": ["春溫", "伏暑"], "新感": ["風溫", "暑溫", "濕溫", "秋燥", "大頭溫", "爛喉痧"], "新感_정의": "발병 초기 表熱證 위주(병이 表에서 발생)", "伏邪_정의": "발병 초기 裏熱證 위주(병이 裏에서 발생). 春溫 純裏熱=伏邪自發, 表證동반=新感引發"}}, "g21": {"cards": [{"person": "秦越人(扁鵲)", "era": "先秦", "book": "難經", "tag": "傷寒 5종", "stream": "상한"}, {"person": "張仲景", "era": "漢", "book": "傷寒論", "tag": "六經辨證", "stream": "상한"}, {"person": "王叔和", "era": "晉", "book": "脈經", "tag": "傷寒論 정리", "stream": "상한"}, {"person": "成無已", "era": "金", "book": "注解傷寒論", "tag": "最初 全面注解", "stream": "상한"}, {"person": "朱肱", "era": "宋", "book": "南陽活人書", "tag": "經絡 중시", "stream": "상한"}, {"person": "龐安時", "era": "宋", "book": "傷寒總病論", "tag": "四時溫病", "stream": "상한"}, {"person": "郭雍", "era": "宋", "book": "傷寒補亡論", "tag": "斑疹 5종", "stream": "상한"}, {"person": "柯琴", "era": "淸", "book": "傷寒來蘇集", "tag": "傷寒 주해", "stream": "상한"}, {"person": "杜本", "era": "元", "book": "敖氏傷寒金鏡錄", "tag": "最初 舌診(36종)", "stream": "진단"}, {"person": "張登", "era": "淸", "book": "傷寒舌鑑", "tag": "舌診 전문", "stream": "진단"}, {"person": "劉完素", "era": "金", "book": "素問玄機原病式", "tag": "寒凉派(主火)", "stream": "온병"}, {"person": "吳有性", "era": "明", "book": "溫疫論", "tag": "戾氣說", "stream": "온병"}, {"person": "戴天章", "era": "淸", "book": "廣溫疫論", "tag": "溫疫論 계승", "stream": "온병"}, {"person": "葉天士", "era": "淸", "book": "溫熱論", "tag": "衛氣營血辨證", "stream": "온병"}, {"person": "薛雪", "era": "淸", "book": "溫熱病篇", "tag": "濕熱辨證", "stream": "온병"}, {"person": "吳鞠通", "era": "淸", "book": "溫病條辨", "tag": "三焦辨證", "stream": "온병"}, {"person": "王士雄", "era": "淸", "book": "溫熱經緯", "tag": "전염병 病例", "stream": "온병"}, {"person": "陳平伯", "era": "淸", "book": "外感溫熱篇", "tag": "風溫 특징", "stream": "온병"}]}, "g6": {"units": [{"id": "taeyang", "title": "太陽病", "badge": "傷寒·太陽", "ids": ["s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9", "s10", "s11", "s12", "s13", "s14", "s15"]}, {"id": "syym", "title": "少陽·陽明", "badge": "傷寒·少陽陽明", "ids": ["s16", "s17", "s18", "s19", "s20"]}, {"id": "samum", "title": "三陰", "badge": "傷寒·三陰", "ids": ["s21", "s22", "s23", "s24", "s25", "s26", "s27", "s28", "s29", "s30", "s31"]}, {"id": "wen", "title": "溫病", "badge": "溫病 각론", "ids": ["s32", "s33", "s34", "s35", "s36", "s37", "s38", "s39", "s40", "s41", "s42", "s43", "s44", "s45", "s46", "s47", "s48", "s49", "s50", "s51", "s52", "s53", "s54", "s55", "s56", "s57", "s58", "s59", "s60", "s61", "s62", "s63", "s64", "s65", "s66", "s67", "s68", "s69", "s70", "s71", "s72", "s73", "s74", "s75", "s76", "s77", "s78", "s79", "s80", "s81", "s82"]}], "states": {"s1": {"sx": "頭痛·發熱惡風寒·自汗出·脈浮緩(弱)", "rx": "桂枝湯", "tags": ["表", "寒", "表虛", "有汗"], "hint": "病機 衛强營弱·營衛不和 · 治法 解肌祛風·調和營衛", "family": "太陽", "name": "太陽中風(表虛)", "note": "진정한 虛證 아님(無汗 표실과 상대)", "flag": ""}, "s2": {"sx": "發熱惡風寒·頭痛·身疼腰痛·無汗而喘·脈浮緊", "rx": "麻黃湯", "tags": ["表", "寒", "表實", "無汗"], "hint": "病機 衛陽閉遏·營陰鬱滯 · 治法 發汗解表·宣肺平喘", "family": "太陽", "name": "太陽傷寒(表實)", "note": "正氣虛 시 禁", "flag": ""}, "s3": {"sx": "發熱惡風寒·汗出脈浮緩 + 氣喘", "rx": "桂枝加厚朴杏子湯", "tags": ["表", "寒", "表虛", "兼喘"], "hint": "病機 營衛不和·肺氣上逆 · 治法 解肌祛風·降氣定喘", "family": "太陽", "name": "兼喘 表虛肺氣上逆", "note": "오랜 喘疾 촉발 or 誤下 후", "flag": ""}, "s4": {"sx": "惡寒發熱無汗 + 咳而氣喘·乾嘔不渴", "rx": "小靑龍湯", "tags": ["表", "寒", "表實", "兼水飮", "兼喘"], "hint": "病機 外感風寒 + 裏有水飮 · 治法 外解風寒·溫陽化飮", "family": "太陽", "name": "兼喘 表實飮停肺寒", "note": "大靑龍과 변별축=裏熱vs裏飮", "flag": ""}, "s5": {"sx": "惡寒發熱·身疼·無汗·脈浮緊 + 煩躁不安", "rx": "大靑龍湯", "tags": ["表", "寒", "表實", "兼裏熱"], "hint": "病機 表寒 + 裏鬱熱 · 治法 外散風寒·內淸鬱熱", "family": "太陽", "name": "兼裏有鬱熱", "note": "無汗而煩躁=변증요점. 表裏俱實에만, 허약 절대禁(過汗亡陽)", "flag": ""}, "s6": {"sx": "脈結代·心動悸", "rx": "炙甘草湯", "tags": ["兼裏虛", "氣血兩虛"], "hint": "病機 心陰心陽兩虛 · 治法 通陽益氣·滋陰養血", "family": "太陽", "name": "兼氣血兩虛心悸", "note": "裏虛者 先治裏", "flag": ""}, "s7": {"sx": "表證 + 心悸·心煩", "rx": "小建中湯", "tags": ["兼裏虛", "中虛"], "hint": "病機 脾胃虛弱·氣血부족 + 邪侵 · 治法 溫中健脾·助補氣血", "family": "太陽", "name": "兼中虛悸煩", "note": "표증 있어도 發汗 不可", "flag": ""}, "s8": {"sx": "小便不利·渴欲飮水·水入卽吐·脈浮", "rx": "五苓散", "tags": ["表", "蓄水", "兼水飮"], "hint": "病機 膀胱 氣化不利 · 治法 溫陽化氣·利水和表", "family": "太陽", "name": "兼膀胱蓄水", "note": "蓄血과 구별: 小便不利(기분)", "flag": ""}, "s9": {"sx": "心下痞·按之濡軟·關脈浮", "rx": "大黃黃連瀉心湯", "tags": ["裏", "熱", "痞"], "hint": "病機 無形 邪熱 壅滯 · 治法 泄熱消痞", "family": "太陽", "name": "胃熱氣滯痞", "note": "", "flag": ""}, "s10": {"sx": "心下痞硬·嘔逆·腸鳴·下利", "rx": "生薑瀉心湯", "tags": ["裏", "寒熱錯雜", "痞", "中虛"], "hint": "病機 脾胃虛弱 + 邪熱壅滯 · 治法 苦泄辛開·甘溫益氣", "family": "太陽", "name": "胃虛寒熱挾雜痞", "note": "三瀉心 변별 핵심", "flag": ""}, "s11": {"sx": "心下痞·按之濡軟 + 汗出惡寒", "rx": "附子瀉心湯", "tags": ["裏", "寒熱錯雜", "痞", "兼陽虛"], "hint": "病機 胃熱氣滯 + 陽氣不足 · 治法 泄熱消痞·溫經扶陽", "family": "太陽", "name": "胃熱氣滯兼陽虛痞", "note": "", "flag": ""}, "s12": {"sx": "心下痞硬·噫氣不除", "rx": "旋覆代赭石湯", "tags": ["裏", "痰飮", "痞", "中虛"], "hint": "病機 胃氣虛弱·痰飮停聚 · 治法 和胃補中·滌痰降逆", "family": "太陽", "name": "中虛氣逆痰飮痞", "note": "", "flag": ""}, "s13": {"sx": "心下→小腹 硬滿疼痛 拒按·脈沈緊", "rx": "大陷胸湯", "tags": ["裏", "熱", "水飮", "結胸"], "hint": "病機 熱 + 水 결합 · 治法 瀉熱逐水", "family": "太陽", "name": "大結胸", "note": "", "flag": ""}, "s14": {"sx": "부위 心下 국한·按之則痛·脈浮滑", "rx": "小陷胸湯", "tags": ["裏", "熱", "痰熱", "結胸"], "hint": "病機 痰 + 熱 결합 · 治法 淸熱滌痰開結", "family": "太陽", "name": "小結胸", "note": "", "flag": ""}, "s15": {"sx": "心下硬滿·열상 없음·苔白膩而滑", "rx": "三物白散", "tags": ["裏", "寒", "水飮", "結胸"], "hint": "病機 寒 + 水 결합 · 治法 破寒實·逐水飮", "family": "太陽", "name": "寒實結胸", "note": "", "flag": ""}, "s16": {"sx": "口苦咽乾目眩·往來寒熱·胸脇苦滿·黙黙不欲飮食·心煩喜嘔·脈弦", "rx": "小柴胡湯", "tags": ["半表半裏"], "hint": "病機 經氣鬱滯·樞機不利 · 治法 和解少陽", "family": "少陽", "name": "少陽 본증", "note": "汗·吐·下 三禁", "flag": ""}, "s17": {"sx": "發熱微惡寒·肢節煩疼·微嘔·心下支結", "rx": "柴胡桂枝湯", "tags": ["半表半裏", "兼表"], "hint": "病機 太陽·少陽 合病 · 治法 和解 + 解表", "family": "少陽", "name": "兼太陽表證", "note": "", "flag": ""}, "s18": {"sx": "胸脇滿而嘔·心下急·鬱鬱微煩·潮熱·大便秘結", "rx": "大柴胡湯", "tags": ["半表半裏", "兼裏實"], "hint": "病機 少陽 + 陽明腑實 · 治法 和解 + 攻裏實", "family": "少陽", "name": "兼裏實", "note": "", "flag": ""}, "s19": {"sx": "身大熱·汗大出·大煩渴·脈洪大", "rx": "白虎湯", "tags": ["裏", "熱", "氣分"], "hint": "病機 無形 邪熱 충만 · 治法 淸熱保津", "family": "陽明", "name": "陽明熱證", "note": "背微惡寒은 한출과다 탓(표증 오한과 본질 차이)", "flag": ""}, "s20": {"sx": "不能食·噦逆·食穀欲嘔·舌淡苔白", "rx": "吳茱萸湯", "tags": ["裏", "寒", "虛"], "hint": "病機 체질 胃陽 부족 · 治法 溫胃散寒·降逆止嘔", "family": "陽明", "name": "陽明虛寒證", "note": "吳茱萸湯 두 자리(↔厥陰 肝寒濁陰上逆)", "flag": ""}, "s21": {"sx": "腹滿而吐·食不下·自利口不渴·脈緩弱", "rx": "理中湯", "tags": ["裏", "寒", "虛"], "hint": "病機 脾虛中寒·健運失常 · 治法 溫中散寒·健脾燥濕", "family": "太陰", "name": "太陰 본증(脾虛寒)", "note": "三陰 중 病情 最輕", "flag": ""}, "s22": {"sx": "腹滿大實痛", "rx": "桂枝加大黃湯", "tags": ["裏", "寒", "兼食滯"], "hint": "病機 脾土虛寒 + 食滯 · 治法 調和脾胃·通裏實", "family": "太陰", "name": "兼食滯腸道", "note": "", "flag": ""}, "s23": {"sx": "惡寒踡臥·手足厥冷·下利淸穀·脈沈微細", "rx": "四逆湯", "tags": ["裏", "寒", "虛"], "hint": "病機 陽氣衰微·陰寒內盛 · 治法 急溫回陽", "family": "少陰", "name": "少陰寒化 본증", "note": "", "flag": ""}, "s24": {"sx": "內眞寒 + 身反不惡寒(外假熱)", "rx": "通脈四逆湯", "tags": ["裏", "寒", "假熱"], "hint": "病機 陰盛於內·陽格於外 · 治法 破陰回陽·通達內外", "family": "少陰", "name": "格陽證", "note": "戴陽과 구별=外假熱", "flag": ""}, "s25": {"sx": "內眞寒 + 面赤(假熱)", "rx": "白通湯", "tags": ["裏", "寒", "假熱"], "hint": "病機 陰盛於下·陽格於上 · 治法 破陰回陽·宣通上下", "family": "少陰", "name": "戴陽證", "note": "格陽과 구별=面赤(上)", "flag": ""}, "s26": {"sx": "心下悸·頭眩·身瞤動·振振欲擗地·小便不利", "rx": "眞武湯", "tags": ["裏", "寒", "虛", "兼水飮"], "hint": "病機 腎陽虛·水氣不化 · 治法 溫腎陽·散水氣", "family": "少陰", "name": "陽虛水停", "note": "", "flag": ""}, "s27": {"sx": "心煩不得臥·口燥咽乾·舌紅·脈沈細數", "rx": "黃連阿膠湯", "tags": ["裏", "熱", "陰虛"], "hint": "病機 腎陰부족·心陽항성 · 治法 育陰淸熱", "family": "少陰", "name": "少陰熱化證", "note": "", "flag": ""}, "s28": {"sx": "消渴·氣上撞心·心中疼熱·飢而不欲食·食則吐蛔", "rx": "烏梅丸", "tags": ["裏", "寒熱錯雜"], "hint": "病機 肝木克土·上熱下寒 · 治法 淸上溫下", "family": "厥陰", "name": "寒熱錯雜(上熱下寒)", "note": "蛔厥", "flag": ""}, "s29": {"sx": "手足厥寒·脈細欲絶", "rx": "當歸四逆湯", "tags": ["裏", "寒", "血虛"], "hint": "病機 血虛 + 寒凝 · 治法 養血通脈·溫經散寒", "family": "厥陰", "name": "血虛寒厥", "note": "", "flag": ""}, "s30": {"sx": "乾嘔·吐涎沫·巓頂痛", "rx": "吳茱萸湯", "tags": ["裏", "寒", "肝寒"], "hint": "病機 肝寒犯胃·濁陰上逆 · 治法 溫降肝胃·通陽泄濁", "family": "厥陰", "name": "肝寒濁陰上逆", "note": "吳茱萸湯 두 자리(↔陽明虛寒)", "flag": ""}, "s31": {"sx": "下利膿血·裏急後重·肛門灼熱·渴欲飮水·舌紅苔黃膩", "rx": "白頭翁湯", "tags": ["裏", "熱", "濕熱"], "hint": "病機 肝熱下迫·濕熱鬱蒸 · 治法 淸熱燥濕·凉肝解毒", "family": "厥陰", "name": "厥陰熱利", "note": "太陰·少陰 虛寒下利와 본질 차이", "flag": ""}, "s32": {"sx": "發熱·微惡風寒·咳嗽·口微渴·脈浮數", "rx": "銀翹散", "tags": ["衛分", "風熱"], "hint": "溫病 風溫 · 邪襲肺衛", "family": "風溫", "name": "風溫·邪襲肺衛", "note": "", "flag": ""}, "s33": {"sx": "身熱·咳喘·氣急鼻煽·口渴", "rx": "麻杏甘石湯", "tags": ["氣分", "風熱", "肺"], "hint": "溫病 風溫 · 邪熱壅肺", "family": "風溫", "name": "風溫·邪熱壅肺", "note": "", "flag": ""}, "s34": {"sx": "壯熱·汗出·口渴·脈洪大", "rx": "白虎湯", "tags": ["氣分", "風熱"], "hint": "溫病 風溫 · 邪傳陽明(氣分熱盛)", "family": "風溫", "name": "風溫·邪傳陽明(氣分熱盛)", "note": "", "flag": ""}, "s35": {"sx": "潮熱·便秘·喘促", "rx": "宣白承氣湯", "tags": ["氣分", "風熱", "腑實"], "hint": "溫病 風溫 · 邪熱阻肺·腑有熱結", "family": "風溫", "name": "風溫·邪熱阻肺·腑有熱結", "note": "", "flag": ""}, "s36": {"sx": "神昏譫語 + 腑實", "rx": "牛黃承氣湯", "tags": ["營分", "風熱", "心包", "腑實"], "hint": "溫病 風溫 · 熱入心包 兼腑實", "family": "風溫", "name": "風溫·熱入心包 兼腑實", "note": "", "flag": ""}, "s37": {"sx": "神昏·舌絳", "rx": "淸營湯", "tags": ["營分", "風熱", "心包"], "hint": "溫病 風溫 · 逆傳心包", "family": "風溫", "name": "風溫·逆傳心包", "note": "", "flag": ""}, "s38": {"sx": "低熱·乾咳·口乾", "rx": "沙參麥冬湯", "tags": ["後期", "陰傷"], "hint": "溫病 風溫 · 餘熱未淨·肺胃陰傷", "family": "風溫", "name": "風溫·餘熱未淨·肺胃陰傷", "note": "", "flag": ""}, "s39": {"sx": "腑實 + 胸膈煩熱", "rx": "凉膈散", "tags": ["氣分", "腑實"], "hint": "溫病 春溫 · 陽明腑實 兼熱灼胸膈", "family": "春溫", "name": "春溫·陽明腑實 兼熱灼胸膈", "note": "", "flag": ""}, "s40": {"sx": "腑實 + 陰液虧", "rx": "增液承氣湯", "tags": ["氣分", "腑實", "陰傷"], "hint": "溫病 春溫 · 腑實 兼陰液虧損", "family": "春溫", "name": "春溫·腑實 兼陰液虧損", "note": "", "flag": ""}, "s41": {"sx": "腑實 + 氣液兩虛", "rx": "新加黃龍湯", "tags": ["氣分", "腑實", "氣陰兩虛"], "hint": "溫病 春溫 · 腑實 兼氣液兩虛", "family": "春溫", "name": "春溫·腑實 兼氣液兩虛", "note": "", "flag": ""}, "s42": {"sx": "腑實 + 小腸熱", "rx": "導赤承氣湯", "tags": ["氣分", "腑實", "下焦熱"], "hint": "溫病 春溫 · 腑實 兼下焦熱盛", "family": "春溫", "name": "春溫·腑實 兼下焦熱盛", "note": "", "flag": ""}, "s43": {"sx": "氣分·營分 동시 熱熾", "rx": "加減玉女煎", "tags": ["氣分", "營分", "兩燔"], "hint": "溫病 春溫 · 氣營(血)兩燔", "family": "春溫", "name": "春溫·氣營(血)兩燔", "note": "", "flag": ""}, "s44": {"sx": "發斑·出血·舌深絳", "rx": "犀角地黃湯", "tags": ["血分", "動血"], "hint": "溫病 春溫 · 熱盛動血", "family": "春溫", "name": "春溫·熱盛動血", "note": "", "flag": ""}, "s45": {"sx": "身熱·小腹硬滿·大便色黑·如狂·舌瘀斑", "rx": "桃仁承氣湯", "tags": ["血分", "蓄血"], "hint": "溫病 春溫 · 熱與血結", "family": "春溫", "name": "春溫·熱與血結", "note": "", "flag": "★溫病條辨 方(傷寒 桃核承氣湯과 구별)"}, "s46": {"sx": "高熱·抽搐有力·肢厥·神昏", "rx": "羚角鉤藤湯", "tags": ["血分", "動風", "實"], "hint": "溫病 春溫 · 熱盛動風(實)", "family": "春溫", "name": "春溫·熱盛動風(實)", "note": "", "flag": ""}, "s47": {"sx": "夜熱·舌乾絳而萎·脈虛", "rx": "加減復脈湯", "tags": ["下焦", "陰傷"], "hint": "溫病 春溫 · 腎陰耗損(邪少虛多)", "family": "春溫", "name": "春溫·腎陰耗損(邪少虛多)", "note": "炙甘草湯-人蔘桂枝生薑大棗+白芍藥", "flag": ""}, "s48": {"sx": "夜熱早凉·熱退無汗·能食形瘦", "rx": "靑蒿鱉甲湯", "tags": ["下焦", "陰分伏熱"], "hint": "溫病 春溫 · 餘熱留伏陰分", "family": "春溫", "name": "春溫·餘熱留伏陰分", "note": "", "flag": ""}, "s49": {"sx": "壯熱·自汗·口渴·面赤·脈洪大", "rx": "白虎湯", "tags": ["氣分", "暑"], "hint": "溫病 暑溫 · 暑入陽明", "family": "暑溫", "name": "暑溫·暑入陽明", "note": "", "flag": ""}, "s50": {"sx": "身熱·汗多·口渴·神倦", "rx": "王氏淸暑益氣湯", "tags": ["氣分", "暑", "津氣傷"], "hint": "溫病 暑溫 · 暑傷津氣", "family": "暑溫", "name": "暑溫·暑傷津氣", "note": "", "flag": ""}, "s51": {"sx": "津氣耗損 심해 虛脫", "rx": "生脈散", "tags": ["氣分", "暑", "欲脫"], "hint": "溫病 暑溫 · 津氣欲脫", "family": "暑溫", "name": "暑溫·津氣欲脫", "note": "斂補劑·暑熱 미제거 시 誤用 害", "flag": ""}, "s52": {"sx": "身熱·神昏·舌絳", "rx": "淸營湯", "tags": ["營分", "暑", "心營"], "hint": "溫病 暑溫 · 暑入心營", "family": "暑溫", "name": "暑溫·暑入心營", "note": "", "flag": ""}, "s53": {"sx": "發斑·出血·神昏", "rx": "神犀丹", "tags": ["血分", "暑"], "hint": "溫病 暑溫 · 暑入血分", "family": "暑溫", "name": "暑溫·暑入血分", "note": "", "flag": ""}, "s54": {"sx": "暑濕 경증", "rx": "淸凉滌暑法", "tags": ["變證", "暑濕"], "hint": "溫病 暑溫 · 冒暑(變證)", "family": "暑溫", "name": "暑溫·冒暑(變證)", "note": "", "flag": ""}, "s55": {"sx": "신혼·肢厥", "rx": "安宮牛黃丸", "tags": ["變證", "暑", "心包"], "hint": "溫病 暑溫 · 暑厥(變證)", "family": "暑溫", "name": "暑溫·暑厥(變證)", "note": "", "flag": ""}, "s56": {"sx": "경궐·抽搐", "rx": "羚羊鉤藤湯", "tags": ["變證", "暑", "動風"], "hint": "溫病 暑溫 · 暑風(變證)", "family": "暑溫", "name": "暑溫·暑風(變證)", "note": "", "flag": ""}, "s57": {"sx": "각혈", "rx": "淸絡飮", "tags": ["變證", "暑", "絡傷"], "hint": "溫病 暑溫 · 暑瘵(變證)", "family": "暑溫", "name": "暑溫·暑瘵(變證)", "note": "", "flag": ""}, "s58": {"sx": "暑濕穢濁", "rx": "雷氏芳香化濁法", "tags": ["變證", "暑濕"], "hint": "溫病 暑溫 · 暑穢(變證)", "family": "暑溫", "name": "暑溫·暑穢(變證)", "note": "", "flag": ""}, "s59": {"sx": "身熱不揚·胸悶脘痞·苔膩", "rx": "三仁湯", "tags": ["衛氣", "濕熱", "濕重"], "hint": "溫病 濕溫 · 邪遏衛氣(濕重于熱)", "family": "濕溫", "name": "濕溫·邪遏衛氣(濕重于熱)", "note": "", "flag": ""}, "s60": {"sx": "寒熱·苔白厚膩如積粉", "rx": "達原飮", "tags": ["膜原", "濕熱", "濕重"], "hint": "溫病 濕溫 · 邪在膜原(濕重于熱)", "family": "濕溫", "name": "濕溫·邪在膜原(濕重于熱)", "note": "", "flag": ""}, "s61": {"sx": "發熱·咽腫·身黃·苔黃膩", "rx": "甘露消毒丹", "tags": ["氣分", "濕熱", "幷重"], "hint": "溫病 濕溫 · 濕熱蘊毒(濕熱幷重)", "family": "濕溫", "name": "濕溫·濕熱蘊毒(濕熱幷重)", "note": "", "flag": ""}, "s62": {"sx": "脘痞·嘔惡·苔黃膩", "rx": "王氏連朴飮", "tags": ["中焦", "濕熱", "幷重"], "hint": "溫病 濕溫 · 鬱阻中焦(濕熱幷重)", "family": "濕溫", "name": "濕溫·鬱阻中焦(濕熱幷重)", "note": "", "flag": ""}, "s63": {"sx": "神識昏蒙·苔垢膩", "rx": "菖蒲鬱金湯", "tags": ["營分", "濕熱", "心包"], "hint": "溫病 濕溫 · 釀痰蒙蔽心包(濕熱幷重)", "family": "濕溫", "name": "濕溫·釀痰蒙蔽心包(濕熱幷重)", "note": "", "flag": ""}, "s64": {"sx": "三焦 濕熱 미만", "rx": "杏仁滑石湯", "tags": ["三焦", "濕熱"], "hint": "溫病 濕溫 · 蘊阻三焦", "family": "濕溫", "name": "濕溫·蘊阻三焦", "note": "", "flag": ""}, "s65": {"sx": "大便下血", "rx": "犀角地黃湯", "tags": ["變證", "血分", "絡傷"], "hint": "溫病 濕溫 · 傷絡便血(變證)", "family": "濕溫", "name": "濕溫·傷絡便血(變證)", "note": "", "flag": ""}, "s66": {"sx": "下血과다·氣脫", "rx": "蔘附湯", "tags": ["變證", "脫"], "hint": "溫病 濕溫 · 氣隨血脫(變證)", "family": "濕溫", "name": "濕溫·氣隨血脫(變證)", "note": "", "flag": ""}, "s67": {"sx": "身熱제거·脘悶·知饑不食·苔薄膩", "rx": "薛氏五汁蘆根湯", "tags": ["後期", "餘濕"], "hint": "溫病 濕溫 · 餘邪未淨(變證)", "family": "濕溫", "name": "濕溫·餘邪未淨(變證)", "note": "", "flag": ""}, "s68": {"sx": "寒熱如瘧·脘痞", "rx": "蒿芩淸膽湯", "tags": ["氣分", "少陽", "暑濕"], "hint": "溫病 伏暑 · 邪在少陽(瘧疾類)", "family": "伏暑", "name": "伏暑·邪在少陽(瘧疾類)", "note": "", "flag": ""}, "s69": {"sx": "大便溏滯·胸腹灼熱", "rx": "枳實導滯湯", "tags": ["氣分", "挾滯"], "hint": "溫病 伏暑 · 邪結腸腑", "family": "伏暑", "name": "伏暑·邪結腸腑", "note": "", "flag": ""}, "s70": {"sx": "身熱·神昏 + 小便短赤", "rx": "導赤淸心湯", "tags": ["營分", "心營"], "hint": "溫病 伏暑 · 熱在心營 下移小腸", "family": "伏暑", "name": "伏暑·熱在心營 下移小腸", "note": "", "flag": ""}, "s71": {"sx": "神昏·舌絳無苔而潤(或瘀紫而潤)", "rx": "犀地淸絡飮", "tags": ["營血", "心包", "瘀"], "hint": "溫病 伏暑 · 熱閉心包 血絡瘀滯", "family": "伏暑", "name": "伏暑·熱閉心包 血絡瘀滯", "note": "", "flag": ""}, "s72": {"sx": "發熱·乾咳·口鼻乾燥(風溫 근사)", "rx": "桑杏湯", "tags": ["衛分", "溫燥"], "hint": "溫病 秋燥 · 溫燥初起·邪襲肺衛", "family": "秋燥", "name": "秋燥·溫燥初起·邪襲肺衛", "note": "", "flag": ""}, "s73": {"sx": "惡寒·乾咳·無汗(風寒 근사)", "rx": "杏蘇散", "tags": ["衛分", "凉燥"], "hint": "溫病 秋燥 · 凉燥初起·邪襲肺衛", "family": "秋燥", "name": "秋燥·凉燥初起·邪襲肺衛", "note": "", "flag": ""}, "s74": {"sx": "身熱·乾咳·氣逆", "rx": "淸燥救肺湯", "tags": ["氣分", "燥熱", "肺"], "hint": "溫病 秋燥 · 燥熱傷肺", "family": "秋燥", "name": "秋燥·燥熱傷肺", "note": "", "flag": ""}, "s75": {"sx": "咳血·便血", "rx": "阿膠黃芩湯", "tags": ["燥熱", "絡傷"], "hint": "溫病 秋燥 · 肺燥腸熱·絡傷咳血", "family": "秋燥", "name": "秋燥·肺燥腸熱·絡傷咳血", "note": "", "flag": ""}, "s76": {"sx": "乾咳·大便閉", "rx": "五仁桔皮湯", "tags": ["燥熱", "腸閉"], "hint": "溫病 秋燥 · 肺燥腸閉", "family": "秋燥", "name": "秋燥·肺燥腸閉", "note": "", "flag": ""}, "s77": {"sx": "便秘 + 陰傷", "rx": "調胃承氣湯", "tags": ["氣分", "腑實", "陰傷"], "hint": "溫病 秋燥 · 腑實陰傷", "family": "秋燥", "name": "秋燥·腑實陰傷", "note": "", "flag": ""}, "s78": {"sx": "身熱不甚·乾咳·口舌乾燥·舌紅少苔", "rx": "沙參麥冬湯", "tags": ["後期", "陰傷"], "hint": "溫病 秋燥 · 肺胃陰傷(後期)", "family": "秋燥", "name": "秋燥·肺胃陰傷(後期)", "note": "", "flag": ""}, "s79": {"sx": "頭面紅腫·咽痛·口渴·舌赤苔黃", "rx": "普濟消毒飮+三黃二香散", "tags": ["氣分", "風熱毒", "頭面"], "hint": "溫病 大頭溫 · 風熱毒邪·肺胃熱盛", "family": "大頭溫", "name": "大頭溫·風熱毒邪·肺胃熱盛", "note": "", "flag": ""}, "s80": {"sx": "壯熱·咽腫腐·痧疹密布", "rx": "余氏淸心凉膈散", "tags": ["氣分", "溫毒"], "hint": "溫病 爛喉痧 · 熱壅氣分", "family": "爛喉痧", "name": "爛喉痧·熱壅氣分", "note": "", "flag": ""}, "s81": {"sx": "高熱·神昏·痧疹紫赤·舌乾絳起芒刺 狀如楊梅", "rx": "安宮牛黃丸", "tags": ["氣營", "溫毒"], "hint": "溫病 爛喉痧 · 毒燔氣營", "family": "爛喉痧", "name": "爛喉痧·毒燔氣營", "note": "", "flag": ""}, "s82": {"sx": "痧疹退·午後低熱·舌乾紅少津", "rx": "淸咽養陰湯", "tags": ["後期", "陰傷"], "hint": "溫病 爛喉痧 · 餘毒傷陰", "family": "爛喉痧", "name": "爛喉痧·餘毒傷陰", "note": "", "flag": ""}}, "info": {"桂枝湯": {"sx": "頭痛·發熱惡風寒·自汗出·脈浮緩(弱)", "hint": "病機 衛强營弱·營衛不和 · 治法 解肌祛風·調和營衛"}, "麻黃湯": {"sx": "發熱惡風寒·頭痛·身疼腰痛·無汗而喘·脈浮緊", "hint": "病機 衛陽閉遏·營陰鬱滯 · 治法 發汗解表·宣肺平喘"}, "桂枝加厚朴杏子湯": {"sx": "發熱惡風寒·汗出脈浮緩 + 氣喘", "hint": "病機 營衛不和·肺氣上逆 · 治法 解肌祛風·降氣定喘"}, "小靑龍湯": {"sx": "惡寒發熱無汗 + 咳而氣喘·乾嘔不渴", "hint": "病機 外感風寒 + 裏有水飮 · 治法 外解風寒·溫陽化飮"}, "大靑龍湯": {"sx": "惡寒發熱·身疼·無汗·脈浮緊 + 煩躁不安", "hint": "病機 表寒 + 裏鬱熱 · 治法 外散風寒·內淸鬱熱"}, "炙甘草湯": {"sx": "脈結代·心動悸", "hint": "病機 心陰心陽兩虛 · 治法 通陽益氣·滋陰養血"}, "小建中湯": {"sx": "表證 + 心悸·心煩", "hint": "病機 脾胃虛弱·氣血부족 + 邪侵 · 治法 溫中健脾·助補氣血"}, "五苓散": {"sx": "小便不利·渴欲飮水·水入卽吐·脈浮", "hint": "病機 膀胱 氣化不利 · 治法 溫陽化氣·利水和表"}, "大黃黃連瀉心湯": {"sx": "心下痞·按之濡軟·關脈浮", "hint": "病機 無形 邪熱 壅滯 · 治法 泄熱消痞"}, "生薑瀉心湯": {"sx": "心下痞硬·嘔逆·腸鳴·下利", "hint": "病機 脾胃虛弱 + 邪熱壅滯 · 治法 苦泄辛開·甘溫益氣"}, "附子瀉心湯": {"sx": "心下痞·按之濡軟 + 汗出惡寒", "hint": "病機 胃熱氣滯 + 陽氣不足 · 治法 泄熱消痞·溫經扶陽"}, "旋覆代赭石湯": {"sx": "心下痞硬·噫氣不除", "hint": "病機 胃氣虛弱·痰飮停聚 · 治法 和胃補中·滌痰降逆"}, "大陷胸湯": {"sx": "心下→小腹 硬滿疼痛 拒按·脈沈緊", "hint": "病機 熱 + 水 결합 · 治法 瀉熱逐水"}, "小陷胸湯": {"sx": "부위 心下 국한·按之則痛·脈浮滑", "hint": "病機 痰 + 熱 결합 · 治法 淸熱滌痰開結"}, "三物白散": {"sx": "心下硬滿·열상 없음·苔白膩而滑", "hint": "病機 寒 + 水 결합 · 治法 破寒實·逐水飮"}, "小柴胡湯": {"sx": "口苦咽乾目眩·往來寒熱·胸脇苦滿·黙黙不欲飮食·心煩喜嘔·脈弦", "hint": "病機 經氣鬱滯·樞機不利 · 治法 和解少陽"}, "柴胡桂枝湯": {"sx": "發熱微惡寒·肢節煩疼·微嘔·心下支結", "hint": "病機 太陽·少陽 合病 · 治法 和解 + 解表"}, "大柴胡湯": {"sx": "胸脇滿而嘔·心下急·鬱鬱微煩·潮熱·大便秘結", "hint": "病機 少陽 + 陽明腑實 · 治法 和解 + 攻裏實"}, "白虎湯": {"sx": "身大熱·汗大出·大煩渴·脈洪大", "hint": "病機 無形 邪熱 충만 · 治法 淸熱保津"}, "吳茱萸湯": {"sx": "不能食·噦逆·食穀欲嘔·舌淡苔白", "hint": "病機 체질 胃陽 부족 · 治法 溫胃散寒·降逆止嘔"}, "理中湯": {"sx": "腹滿而吐·食不下·自利口不渴·脈緩弱", "hint": "病機 脾虛中寒·健運失常 · 治法 溫中散寒·健脾燥濕"}, "桂枝加大黃湯": {"sx": "腹滿大實痛", "hint": "病機 脾土虛寒 + 食滯 · 治法 調和脾胃·通裏實"}, "四逆湯": {"sx": "惡寒踡臥·手足厥冷·下利淸穀·脈沈微細", "hint": "病機 陽氣衰微·陰寒內盛 · 治法 急溫回陽"}, "通脈四逆湯": {"sx": "內眞寒 + 身反不惡寒(外假熱)", "hint": "病機 陰盛於內·陽格於外 · 治法 破陰回陽·通達內外"}, "白通湯": {"sx": "內眞寒 + 面赤(假熱)", "hint": "病機 陰盛於下·陽格於上 · 治法 破陰回陽·宣通上下"}, "眞武湯": {"sx": "心下悸·頭眩·身瞤動·振振欲擗地·小便不利", "hint": "病機 腎陽虛·水氣不化 · 治法 溫腎陽·散水氣"}, "黃連阿膠湯": {"sx": "心煩不得臥·口燥咽乾·舌紅·脈沈細數", "hint": "病機 腎陰부족·心陽항성 · 治法 育陰淸熱"}, "烏梅丸": {"sx": "消渴·氣上撞心·心中疼熱·飢而不欲食·食則吐蛔", "hint": "病機 肝木克土·上熱下寒 · 治法 淸上溫下"}, "當歸四逆湯": {"sx": "手足厥寒·脈細欲絶", "hint": "病機 血虛 + 寒凝 · 治法 養血通脈·溫經散寒"}, "白頭翁湯": {"sx": "下利膿血·裏急後重·肛門灼熱·渴欲飮水·舌紅苔黃膩", "hint": "病機 肝熱下迫·濕熱鬱蒸 · 治法 淸熱燥濕·凉肝解毒"}, "銀翹散": {"sx": "發熱·微惡風寒·咳嗽·口微渴·脈浮數", "hint": "溫病 風溫 · 邪襲肺衛"}, "麻杏甘石湯": {"sx": "身熱·咳喘·氣急鼻煽·口渴", "hint": "溫病 風溫 · 邪熱壅肺"}, "宣白承氣湯": {"sx": "潮熱·便秘·喘促", "hint": "溫病 風溫 · 邪熱阻肺·腑有熱結"}, "牛黃承氣湯": {"sx": "神昏譫語 + 腑實", "hint": "溫病 風溫 · 熱入心包 兼腑實"}, "淸營湯": {"sx": "神昏·舌絳", "hint": "溫病 風溫 · 逆傳心包"}, "沙參麥冬湯": {"sx": "低熱·乾咳·口乾", "hint": "溫病 風溫 · 餘熱未淨·肺胃陰傷"}, "凉膈散": {"sx": "腑實 + 胸膈煩熱", "hint": "溫病 春溫 · 陽明腑實 兼熱灼胸膈"}, "增液承氣湯": {"sx": "腑實 + 陰液虧", "hint": "溫病 春溫 · 腑實 兼陰液虧損"}, "新加黃龍湯": {"sx": "腑實 + 氣液兩虛", "hint": "溫病 春溫 · 腑實 兼氣液兩虛"}, "導赤承氣湯": {"sx": "腑實 + 小腸熱", "hint": "溫病 春溫 · 腑實 兼下焦熱盛"}, "加減玉女煎": {"sx": "氣分·營分 동시 熱熾", "hint": "溫病 春溫 · 氣營(血)兩燔"}, "犀角地黃湯": {"sx": "發斑·出血·舌深絳", "hint": "溫病 春溫 · 熱盛動血"}, "桃仁承氣湯": {"sx": "身熱·小腹硬滿·大便色黑·如狂·舌瘀斑", "hint": "溫病 春溫 · 熱與血結"}, "羚角鉤藤湯": {"sx": "高熱·抽搐有力·肢厥·神昏", "hint": "溫病 春溫 · 熱盛動風(實)"}, "加減復脈湯": {"sx": "夜熱·舌乾絳而萎·脈虛", "hint": "溫病 春溫 · 腎陰耗損(邪少虛多)"}, "靑蒿鱉甲湯": {"sx": "夜熱早凉·熱退無汗·能食形瘦", "hint": "溫病 春溫 · 餘熱留伏陰分"}, "王氏淸暑益氣湯": {"sx": "身熱·汗多·口渴·神倦", "hint": "溫病 暑溫 · 暑傷津氣"}, "生脈散": {"sx": "津氣耗損 심해 虛脫", "hint": "溫病 暑溫 · 津氣欲脫"}, "神犀丹": {"sx": "發斑·出血·神昏", "hint": "溫病 暑溫 · 暑入血分"}, "淸凉滌暑法": {"sx": "暑濕 경증", "hint": "溫病 暑溫 · 冒暑(變證)"}, "安宮牛黃丸": {"sx": "신혼·肢厥", "hint": "溫病 暑溫 · 暑厥(變證)"}, "羚羊鉤藤湯": {"sx": "경궐·抽搐", "hint": "溫病 暑溫 · 暑風(變證)"}, "淸絡飮": {"sx": "각혈", "hint": "溫病 暑溫 · 暑瘵(變證)"}, "雷氏芳香化濁法": {"sx": "暑濕穢濁", "hint": "溫病 暑溫 · 暑穢(變證)"}, "三仁湯": {"sx": "身熱不揚·胸悶脘痞·苔膩", "hint": "溫病 濕溫 · 邪遏衛氣(濕重于熱)"}, "達原飮": {"sx": "寒熱·苔白厚膩如積粉", "hint": "溫病 濕溫 · 邪在膜原(濕重于熱)"}, "甘露消毒丹": {"sx": "發熱·咽腫·身黃·苔黃膩", "hint": "溫病 濕溫 · 濕熱蘊毒(濕熱幷重)"}, "王氏連朴飮": {"sx": "脘痞·嘔惡·苔黃膩", "hint": "溫病 濕溫 · 鬱阻中焦(濕熱幷重)"}, "菖蒲鬱金湯": {"sx": "神識昏蒙·苔垢膩", "hint": "溫病 濕溫 · 釀痰蒙蔽心包(濕熱幷重)"}, "杏仁滑石湯": {"sx": "三焦 濕熱 미만", "hint": "溫病 濕溫 · 蘊阻三焦"}, "蔘附湯": {"sx": "下血과다·氣脫", "hint": "溫病 濕溫 · 氣隨血脫(變證)"}, "薛氏五汁蘆根湯": {"sx": "身熱제거·脘悶·知饑不食·苔薄膩", "hint": "溫病 濕溫 · 餘邪未淨(變證)"}, "蒿芩淸膽湯": {"sx": "寒熱如瘧·脘痞", "hint": "溫病 伏暑 · 邪在少陽(瘧疾類)"}, "枳實導滯湯": {"sx": "大便溏滯·胸腹灼熱", "hint": "溫病 伏暑 · 邪結腸腑"}, "導赤淸心湯": {"sx": "身熱·神昏 + 小便短赤", "hint": "溫病 伏暑 · 熱在心營 下移小腸"}, "犀地淸絡飮": {"sx": "神昏·舌絳無苔而潤(或瘀紫而潤)", "hint": "溫病 伏暑 · 熱閉心包 血絡瘀滯"}, "桑杏湯": {"sx": "發熱·乾咳·口鼻乾燥(風溫 근사)", "hint": "溫病 秋燥 · 溫燥初起·邪襲肺衛"}, "杏蘇散": {"sx": "惡寒·乾咳·無汗(風寒 근사)", "hint": "溫病 秋燥 · 凉燥初起·邪襲肺衛"}, "淸燥救肺湯": {"sx": "身熱·乾咳·氣逆", "hint": "溫病 秋燥 · 燥熱傷肺"}, "阿膠黃芩湯": {"sx": "咳血·便血", "hint": "溫病 秋燥 · 肺燥腸熱·絡傷咳血"}, "五仁桔皮湯": {"sx": "乾咳·大便閉", "hint": "溫病 秋燥 · 肺燥腸閉"}, "調胃承氣湯": {"sx": "便秘 + 陰傷", "hint": "溫病 秋燥 · 腑實陰傷"}, "普濟消毒飮+三黃二香散": {"sx": "頭面紅腫·咽痛·口渴·舌赤苔黃", "hint": "溫病 大頭溫 · 風熱毒邪·肺胃熱盛"}, "余氏淸心凉膈散": {"sx": "壯熱·咽腫腐·痧疹密布", "hint": "溫病 爛喉痧 · 熱壅氣分"}, "淸咽養陰湯": {"sx": "痧疹退·午後低熱·舌乾紅少津", "hint": "溫病 爛喉痧 · 餘毒傷陰"}}}, "g16": {"stages": [{"key": "衛", "name": "衛分", "desc": "舌邊尖紅·苔薄白", "rx": "銀翹散", "tx": "辛凉解表(透邪)"}, {"key": "氣", "name": "氣分", "desc": "舌紅·苔黃", "rx": "白虎湯", "tx": "淸氣泄熱"}, {"key": "營", "name": "營分", "desc": "舌絳(필연)", "rx": "淸營湯", "tx": "淸營泄熱·透熱轉氣"}, {"key": "血", "name": "血分", "desc": "深絳·紫絳", "rx": "犀角地黃湯", "tx": "凉血散血·淸熱解毒"}], "source": "葉天士 溫熱論 제8조 (정본화)", "shvs": {"傷寒": "舌質正常·苔薄白", "溫病": "舌邊尖紅·苔薄白缺潤或薄黃"}, "variants": [{"tongue": "舌絳", "meaning": "熱入營分"}, {"tongue": "舌絳無苔而潤(或瘀紫而潤)", "meaning": "血絡瘀滯(熱入心包 兼瘀)·예: 犀地淸絡飮"}, {"tongue": "舌乾絳而萎", "meaning": "下焦 陰液 劫爍(春溫 후기)"}, {"tongue": "舌絳起芒刺·狀如楊梅", "meaning": "毒燔氣營(爛喉痧)"}]}, "g9": {"groups": [{"group": "靑龍", "axis": "裏熱 vs 裏水飮", "items": [{"rx": "大靑龍湯", "cue": "表寒 + 裏鬱熱(無汗而煩躁)"}, {"rx": "小靑龍湯", "cue": "表寒 + 裏水飮(咳喘·乾嘔不渴)"}], "flag": false}, {"group": "陷胸", "axis": "熱水 / 痰熱 / 寒水", "items": [{"rx": "大陷胸湯", "cue": "熱+水, 心下→小腹 硬滿拒按·脈沈緊"}, {"rx": "小陷胸湯", "cue": "痰+熱, 心下 국한·按之則痛·脈浮滑"}, {"rx": "三物白散", "cue": "寒+水(寒實結胸)·열상 없음·苔白膩滑"}], "flag": false}, {"group": "瀉心(痞)", "axis": "兼증(水飮/中虛/熱/陽虛)", "items": [{"rx": "半夏瀉心湯", "cue": "心下痞硬·嘔逆·腸鳴·下利(기본)"}, {"rx": "生薑瀉心湯", "cue": "+ 水飮食滯(음식썩은내 트림·腹中雷鳴)"}, {"rx": "甘草瀉心湯", "cue": "+ 中虛甚(乾嘔·心煩不安 심함)"}, {"rx": "大黃黃連瀉心湯", "cue": "胃熱氣滯(按之濡軟·關脈浮)"}, {"rx": "附子瀉心湯", "cue": "胃熱 + 陽虛(汗出惡寒)"}], "flag": false}, {"group": "承氣(陽明實)", "axis": "병정 輕重緩急", "items": [{"rx": "大承氣湯", "cue": "痞滿燥實 모두 구비·峻下"}, {"rx": "小承氣湯", "cue": "痞滿而實·能食·脈滑疾·和下"}, {"rx": "調胃承氣湯", "cue": "燥實초기·胃氣손상·心煩譫語·緩下"}], "flag": false}, {"group": "四逆(少陰寒化)", "axis": "格陽 / 戴陽", "items": [{"rx": "四逆湯", "cue": "陽氣衰·下利淸穀·脈沈微(기본)"}, {"rx": "通脈四逆湯", "cue": "格陽-身反不惡寒(外假熱)"}, {"rx": "白通湯", "cue": "戴陽-面赤(假熱)"}], "flag": false}, {"group": "桃承氣(축혈) 출전함정", "axis": "출전(傷寒論 / 溫病條辨)·한 글자 차이", "items": [{"rx": "桃核承氣湯", "cue": "傷寒論 太陽蓄血(如狂·小腹急結)"}, {"rx": "桃仁承氣湯", "cue": "溫病條辨 春溫 熱與血結(身熱·小腹硬滿·舌瘀斑)"}], "flag": true}, {"group": "蓄水 vs 蓄血", "axis": "小便 利/不利", "items": [{"rx": "五苓散", "cue": "氣分·膀胱기화불리·小便不利·脈浮"}, {"rx": "桃核承氣湯", "cue": "血分·기화 무영향·小便自利·脈沈·如狂"}], "flag": true}]}, "g17": {"stages": [{"stage": "衛分", "sx": "發熱·微惡風寒·咳嗽·口微渴·脈浮數", "tongue": "舌邊尖紅·苔薄白", "tx": "辛凉解表(透邪)", "rx": "銀翹散", "to": ["氣分(順傳)", "心包(逆傳)"]}, {"stage": "氣分", "sx": "壯熱·不惡寒·口渴·汗出·脈洪大(或譫語·腑實)", "tongue": "舌紅·苔黃", "tx": "淸氣泄熱", "rx": "白虎湯", "to": ["營分(內陷)", "(轉出=好轉)"]}, {"stage": "營分", "sx": "身熱夜甚·心煩不寐·斑疹隱隱·神昏譫語", "tongue": "舌絳·無苔(或少)", "tx": "淸營泄熱·透熱轉氣", "rx": "淸營湯", "to": ["血分(深入)", "氣分(轉出=好轉)"]}, {"stage": "血分", "sx": "身熱·發斑·出血(吐衄便血)·躁擾·甚則動風", "tongue": "舌深絳(紫絳)·無苔", "tx": "凉血散血·淸熱解毒", "rx": "犀角地黃湯", "to": ["(極期) 動血·動風"]}]}, "g19": [{"topic": "動風 虛實", "A": {"label": "熱盛動風", "cue": "熱極生風·實 — 극성기·抽搐有力·高熱·羚角鉤藤湯"}, "B": {"label": "虛風內動", "cue": "血虛生風·虛 — 후기·手足蠕動·神倦·脈虛·大定風珠"}}, {"topic": "半表半裏", "A": {"label": "少陽病", "cue": "太陽 表 벗어나 陽明 裏 미도달·和解(小柴胡湯)"}, "B": {"label": "膜原(瘟疫論)", "cue": "口鼻 침입·內不在臟腑 外不在經絡·疎利濕熱(達原飮)"}}, {"topic": "太陽 蓄證", "A": {"label": "蓄水", "cue": "氣分·기화불리·小便不利·脈浮·五苓散"}, "B": {"label": "蓄血", "cue": "血分·기화무영향·小便自利·脈沈·如狂·桃核承氣湯"}}, {"topic": "秋燥", "A": {"label": "溫燥", "cue": "초가을 편열·風溫 근사·桑杏湯(辛凉甘潤)"}, "B": {"label": "凉燥", "cue": "늦가을 西風肅殺·風寒 근사·杏蘇散(辛溫甘潤)"}}, {"topic": "傳變 방향", "A": {"label": "順傳", "cue": "肺 → 胃(陽明)"}, "B": {"label": "逆傳", "cue": "肺 → 心包(병변 危重·險惡)"}}, {"topic": "少陰 格拒", "A": {"label": "格陽", "cue": "陰盛於內·陽格於外·身反不惡寒(外假熱)·通脈四逆湯"}, "B": {"label": "戴陽", "cue": "陰盛於下·陽格於上·面赤·白通湯"}}, {"topic": "축혈 처방 출전", "A": {"label": "桃核承氣湯", "cue": "傷寒論·太陽蓄血"}, "B": {"label": "桃仁承氣湯", "cue": "溫病條辨·春溫 熱與血結"}}], "g24": [{"book": "溫熱論(葉天士)", "line": "溫邪上受 首先犯肺 逆傳心包", "blanks": ["首先犯肺", "逆傳心包"]}, {"book": "溫疫論(吳有性)", "line": "非風非寒非暑非濕 乃天地間別有一種異氣所感", "blanks": ["異氣"]}, {"book": "難經 제58難", "line": "傷寒有五 中風 傷寒 濕溫 熱病 溫病", "blanks": ["中風", "濕溫", "熱病", "溫病"]}, {"book": "素問 金匱眞言論", "line": "藏於精者 春不病溫", "blanks": ["春不病溫"]}, {"book": "素問(伏邪)", "line": "冬傷於寒 春必病溫", "blanks": ["春必病溫"]}], "jegang": [{"meridian": "太陽病", "nature": "表寒(表證)", "text": "太陽之爲病 其脈浮 頭項强痛 而惡寒", "tiles": ["太陽之爲病", "其脈浮", "頭項强痛", "而惡寒"], "blanks": ["其脈浮", "頭項强痛", "而惡寒"], "keywords": ["脈浮", "頭項强痛", "惡寒"]}, {"meridian": "陽明病", "nature": "裏熱裏實", "text": "陽明之爲病 胃家實也", "tiles": ["陽明之爲病", "胃家實也"], "blanks": ["胃家實"], "keywords": ["胃家實"]}, {"meridian": "少陽病", "nature": "半表半裏", "text": "少陽之爲病 口苦 咽乾 目眩也", "tiles": ["少陽之爲病", "口苦", "咽乾", "目眩也"], "blanks": ["口苦", "咽乾", "目眩"], "keywords": ["口苦", "咽乾", "目眩"]}, {"meridian": "太陰病", "nature": "裏虛寒(脾虛寒)", "text": "太陰之爲病 腹滿而吐 食不下 自利益甚 時腹自痛 若下之 必胸下結硬", "tiles": ["太陰之爲病", "腹滿而吐", "食不下", "自利益甚", "時腹自痛", "若下之", "必胸下結硬"], "blanks": ["腹滿而吐", "食不下", "自利益甚", "時腹自痛", "胸下結硬"], "keywords": ["腹滿而吐", "食不下", "自利益甚", "時腹自痛"]}, {"meridian": "少陰病", "nature": "心腎虛衰(虛寒爲主)", "text": "少陰之爲病 脈微細 但欲寐也", "tiles": ["少陰之爲病", "脈微細", "但欲寐也"], "blanks": ["脈微細", "但欲寐"], "keywords": ["脈微細", "但欲寐"]}, {"meridian": "厥陰病", "nature": "裏虛·寒熱錯雜(終期)", "text": "厥陰之爲病 消渴 氣上撞心 心中疼熱 飢而不欲食 食則吐蛔 下之利不止", "tiles": ["厥陰之爲病", "消渴", "氣上撞心", "心中疼熱", "飢而不欲食", "食則吐蛔", "下之利不止"], "blanks": ["消渴", "氣上撞心", "心中疼熱", "飢而不欲食", "食則吐蛔", "下之利不止"], "keywords": ["消渴", "氣上撞心", "心中疼熱", "食則吐蛔"]}], "terms": [{"term": "傳經", "def": "太陽病 발생 후 他經에 전하여지는 병", "decoy_pair": "本經自發"}, {"term": "合病", "def": "2개의 陽經이 동시에 나타나는 것", "decoy_pair": "兩感"}, {"term": "兩感", "def": "陽經과 陰經이 동시에 출현하는 것 (예: 太少兩感 → 麻黃附子細辛湯)", "decoy_pair": "合病"}, {"term": "本經自發", "def": "陽經 발병 시 太陽病 없이 바로 陽明證·少陽證을 나타낸 것", "decoy_pair": "傳經"}, {"term": "直中", "def": "三陽經을 통한 傳變 없이 三陰證이 바로 출현", "decoy_pair": "兩感"}]};
+
+/* ───────── storage ───────── */
+const SKEY='shdb_v1';
+let store=load();
+function load(){try{const r=localStorage.getItem(SKEY);if(r)return JSON.parse(r);}catch(e){}return{};}
+function save(){try{localStorage.setItem(SKEY,JSON.stringify(store));}catch(e){}}
+function ns(k,d){if(store[k]===undefined)store[k]=d;return store[k];}
+const today=new Date().toISOString().slice(0,10);
+(function(){const d=ns('daily',{date:today,n:0});if(d.date!==today){d.date=today;d.n=0;}})();
+function daily(){return ns('daily',{date:today,n:0});}
+['g1','g2','g3','g4','g9','g17','g19','g22','g23','g24'].forEach(k=>ns(k,{r:0,w:0}));
+ns('g6',{r:0,w:0,best:0});
+ns('g16',{r:0,w:0,best:0});
+ns('g7',{box:{},seen:{},r:0,w:0});
+ns('g15',{ax:{},r:0,w:0});
+ns('g21',{r:0,w:0,streak:0,best:0});
+ns('gstreak',0);ns('gbest',0);
+
+function $(id){return document.getElementById(id);}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function pct(r,w){const t=r+w;return t?Math.round(r/t*100)+'%':'—';}
+
+const GAMEKEYS=['g1','g2','g3','g4','g6','g7','g9','g15','g16','g17','g19','g21','g22','g23','g24'];
+function allRW(){let r=0,w=0;GAMEKEYS.forEach(k=>{if(store[k]){r+=store[k].r||0;w+=store[k].w||0;}});return[r,w];}
+function recordGlobal(ok){const d=daily();d.n++;store.gstreak=ok?(store.gstreak||0)+1:0;store.gbest=Math.max(store.gbest||0,store.gstreak);save();renderTop();}
+function renderTop(){const[r,w]=allRW();$('st-rate').textContent=pct(r,w);$('st-streak').textContent=store.gstreak||0;$('st-today').textContent=daily().n;}
+
+/* ───────── registry & router ───────── */
+const GAMES=[
+  {sec:'六經 입문', items:[
+    {id:'g1',cn:'提綱',name:'제강 빈칸',desc:'六經 제강 원문 채우기'},
+    {id:'g2',cn:'排列',name:'제강 타일',desc:'구절 순서 복원'},
+    {id:'g3',cn:'歸經',name:'증상→경',desc:'키워드로 六經 즉답'},
+    {id:'g4',cn:'傳變',name:'傳變 용어',desc:'合病·兩感·直中 판별'},
+  ]},
+  {sec:'方劑 변별', items:[
+    {id:'g6',cn:'診療',name:'辨證 진료',desc:'병동 진료 로그라이크'},
+    {id:'g7',cn:'證方',name:'증후→방제',desc:'5지선다 SRS'},
+    {id:'g9',cn:'方鑑',name:'처방군 변별',desc:'헷갈리는 군 한끗 가르기'},
+  ]},
+  {sec:'溫病 辨證', items:[
+    {id:'g15',cn:'分類',name:'溫病 분류',desc:'性質·類型·季節 + 함정'},
+    {id:'g16',cn:'舌診',name:'위기영혈 즉별',desc:'舌象으로 단계 판별'},
+    {id:'g17',cn:'階梯',name:'위기영혈 사다리',desc:'증상→단계·대표방'},
+    {id:'g19',cn:'辨別',name:'헷갈리는 쌍',desc:'단서로 A·B 가르기'},
+  ]},
+  {sec:'醫家', items:[
+    {id:'g21',cn:'醫家',name:'연결 찾기',desc:'틀린 연결 고르기'},
+    {id:'g22',cn:'人物',name:'카드 매칭',desc:'인물·저서·개념 잇기'},
+    {id:'g23',cn:'年表',name:'시대순 배치',desc:'연표에 인물 끼워넣기'},
+    {id:'g24',cn:'名言',name:'대표어 빈칸',desc:'저서의 대표 문구 인출'},
+  ]},
+];
+function renderHome(){
+  const root=$('home-grid');root.innerHTML='';
+  GAMES.forEach(g=>{
+    const h=document.createElement('div');h.className='sec';h.textContent=g.sec;root.appendChild(h);
+    const grid=document.createElement('div');grid.className='grid';
+    g.items.forEach(it=>{
+      const s=store[it.id]||{r:0,w:0};
+      const c=document.createElement('button');c.className='gcard';c.dataset.go=it.id;
+      c.innerHTML=`<span class="gcn">${it.cn}</span><span class="gtx"><span class="gnm">${it.name}</span><span class="gds">${it.desc}</span></span><span class="grt">${pct(s.r,s.w)}</span>`;
+      grid.appendChild(c);
+    });
+    root.appendChild(grid);
+  });
+  const rec=document.createElement('button');rec.className='gcard reccard';rec.dataset.go='stat';
+  rec.innerHTML=`<span class="gcn">記錄</span><span class="gtx"><span class="gnm">기록</span><span class="gds">게임별 정답률·약점</span></span><span class="grt">›</span>`;
+  root.appendChild(rec);
+  renderTop();
+}
+function showView(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
+  const el=$(id);if(el)el.classList.add('on');
+  if(id==='home')renderHome();
+  if(id==='stat')renderStats();
+  window.scrollTo(0,0);
+}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-go]');if(t)showView(t.dataset.go);});
+
+/* ═════════ G1 제강 빈칸 ═════════ */
+const JG=DATA.jegang;
+const ALLBLANK=[...new Set(JG.flatMap(j=>j.blanks))];
+let g1ans='',g1locked=false,g1last=-1;
+function g1render(){
+  let ji;do{ji=Math.floor(Math.random()*JG.length);}while(JG.length>1&&ji===g1last);g1last=ji;
+  const j=JG[ji];
+  const bi=Math.floor(Math.random()*j.blanks.length);
+  g1ans=j.blanks[bi];g1locked=false;
+  $('g1-meri').textContent=j.meridian;
+  $('g1-text').innerHTML=j.text.replace(g1ans,'<span class="blank">＿＿＿</span>');
+  let pool=ALLBLANK.filter(b=>b!==g1ans);
+  pool.sort((a,b)=>(Math.abs(a.length-g1ans.length)-Math.abs(b.length-g1ans.length))||(Math.random()-.5));
+  const opts=shuffle([g1ans,...pool.slice(0,3)]);
+  const labels=['ㄱ','ㄴ','ㄷ','ㄹ'];
+  const box=$('g1-choices');box.innerHTML='';
+  opts.forEach((o,i)=>{const b=document.createElement('button');b.className='opt';b.type='button';
+    b.innerHTML=`<span class="mk">${labels[i]}</span><span>${o}</span>`;
+    b.addEventListener('click',()=>g1answer(b,o));box.appendChild(b);});
+  $('g1-explain').classList.remove('show');$('g1-next').disabled=true;
+  g1prog();
+}
+function g1answer(btn,choice){
+  if(g1locked)return;g1locked=true;const ok=choice===g1ans;
+  if(ok)store.g1.r++;else store.g1.w++;
+  document.querySelectorAll('#g1-choices .opt').forEach(b=>{b.disabled=true;
+    const t=b.querySelector('span:last-child').textContent;
+    if(t===g1ans){b.classList.add('correct');if(t===choice){const s=document.createElement('span');s.className='stamp';s.textContent='中';b.appendChild(s);}}
+    else if(t===choice)b.classList.add('wrong');});
+  $('g1-explain').innerHTML=`<span class="ans">정답 · ${g1ans}</span>`;$('g1-explain').classList.add('show');
+  $('g1-next').disabled=false;save();recordGlobal(ok);g1prog();
+}
+$('g1-next').addEventListener('click',g1render);
+function g1prog(){const s=store.g1;$('g1-score').textContent='정답률 '+pct(s.r,s.w);const t=s.r+s.w;$('g1-fill').style.width=(t?s.r/t*100:0)+'%';}
+
+/* ═════════ G2 제강 타일 ═════════ */
+const J2=DATA.jegang;
+let g2cur=null,g2placed=[],g2locked=false,g2last=-1;
+function g2render(){
+  let ji;do{ji=Math.floor(Math.random()*J2.length);}while(J2.length>1&&ji===g2last);g2last=ji;
+  g2cur=J2[ji];g2placed=[];g2locked=false;
+  $('g2-meri').textContent=g2cur.meridian+' 제강 — 순서대로 맞추기';
+  const bank=$('g2-bank');bank.innerHTML='';
+  shuffle(g2cur.tiles).forEach(t=>{const b=document.createElement('button');b.className='tile';b.type='button';b.textContent=t;
+    b.addEventListener('click',()=>g2place(t,b));bank.appendChild(b);});
+  $('g2-answer').className='tileans';$('g2-answer').innerHTML='';
+  $('g2-explain').classList.remove('show');$('g2-check').disabled=true;
+  g2prog();
+}
+function g2syncCheck(){$('g2-check').disabled=(g2placed.length!==g2cur.tiles.length)||g2locked;}
+function g2place(t,btn){
+  if(g2locked)return;btn.remove();g2placed.push(t);
+  const ans=$('g2-answer');const b=document.createElement('button');b.className='tile';b.type='button';b.textContent=t;
+  b.addEventListener('click',()=>g2unplace(t,b));ans.appendChild(b);g2syncCheck();
+}
+function g2unplace(t,btn){
+  if(g2locked)return;btn.remove();const i=g2placed.lastIndexOf(t);if(i>-1)g2placed.splice(i,1);
+  const bank=$('g2-bank');const b=document.createElement('button');b.className='tile';b.type='button';b.textContent=t;
+  b.addEventListener('click',()=>g2place(t,b));bank.appendChild(b);g2syncCheck();
+}
+$('g2-clear').addEventListener('click',()=>{if(!g2locked)g2render();});
+$('g2-check').addEventListener('click',()=>{
+  if(g2locked)return;g2locked=true;
+  const ok=g2placed.join('｜')===g2cur.tiles.join('｜');
+  if(ok)store.g2.r++;else store.g2.w++;
+  $('g2-answer').classList.add(ok?'correct':'wrong');
+  $('g2-explain').innerHTML=(ok?'<span class="ans">정답</span> · ':'<span class="flag">다시 — </span>')+
+    `<b>${g2cur.meridian}</b> : ${g2cur.tiles.join(' ')}`;
+  $('g2-explain').classList.add('show');
+  // 확인 버튼을 다음으로
+  $('g2-check').textContent='다음 문항';$('g2-check').disabled=false;
+  $('g2-check').replaceWith($('g2-check').cloneNode(true));
+  $('g2-check').addEventListener('click',()=>{$('g2-check').textContent='확인';g2render();},{once:true});
+  save();recordGlobal(ok);g2prog();
+});
+function g2prog(){const s=store.g2;$('g2-score').textContent='정답률 '+pct(s.r,s.w);const t=s.r+s.w;$('g2-fill').style.width=(t?s.r/t*100:0)+'%';}
+
+/* ═════════ G3 증상→경 ═════════ */
+const J3=DATA.jegang;
+const MERIS=J3.map(j=>j.meridian);
+let g3ans='',g3locked=false,g3last=-1;
+function g3render(){
+  let ji;do{ji=Math.floor(Math.random()*J3.length);}while(J3.length>1&&ji===g3last);g3last=ji;
+  const j=J3[ji];
+  const kw=j.keywords[Math.floor(Math.random()*j.keywords.length)];
+  g3ans=j.meridian;g3locked=false;
+  $('g3-kw').textContent=kw;
+  const box=$('g3-meris');box.innerHTML='';
+  MERIS.forEach(m=>{const b=document.createElement('button');b.className='meri';b.type='button';b.textContent=m;
+    b.addEventListener('click',()=>g3answer(b,m));box.appendChild(b);});
+  $('g3-explain').classList.remove('show');$('g3-next').disabled=true;g3prog();
+}
+function g3answer(btn,m){
+  if(g3locked)return;g3locked=true;const ok=m===g3ans;
+  if(ok)store.g3.r++;else store.g3.w++;
+  document.querySelectorAll('#g3-meris .meri').forEach(b=>{b.disabled=true;
+    if(b.textContent===g3ans)b.classList.add(b===btn?'correct':'reveal');
+    else if(b===btn)b.classList.add('wrong');});
+  const j=J3.find(x=>x.meridian===g3ans);
+  $('g3-explain').innerHTML=`<span class="ans">정답 · ${g3ans}</span><br>제강: ${j.text}`;
+  $('g3-explain').classList.add('show');$('g3-next').disabled=false;save();recordGlobal(ok);g3prog();
+}
+$('g3-next').addEventListener('click',g3render);
+function g3prog(){const s=store.g3;$('g3-score').textContent='정답률 '+pct(s.r,s.w);const t=s.r+s.w;$('g3-fill').style.width=(t?s.r/t*100:0)+'%';}
+
+/* ═════════ G4 傳變 용어 ═════════ */
+const T4=DATA.terms;
+let g4ans='',g4locked=false,g4last=-1;
+function g4render(){
+  let ti;do{ti=Math.floor(Math.random()*T4.length);}while(T4.length>1&&ti===g4last);g4last=ti;
+  const t=T4[ti];g4ans=t.term;g4locked=false;$('g4-def').textContent=t.def;
+  let others=T4.filter(x=>x.term!==t.term&&x.term!==t.decoy_pair).map(x=>x.term);
+  others=shuffle(others).slice(0,2);
+  let opts=[t.term,t.decoy_pair,...others].filter((x,i,a)=>x&&a.indexOf(x)===i);
+  opts=shuffle(opts);
+  const labels=['ㄱ','ㄴ','ㄷ','ㄹ','ㅁ'];
+  const box=$('g4-choices');box.innerHTML='';
+  opts.forEach((o,i)=>{const b=document.createElement('button');b.className='opt';b.type='button';
+    b.innerHTML=`<span class="mk">${labels[i]}</span><span>${o}</span>`;
+    b.addEventListener('click',()=>g4answer(b,o));box.appendChild(b);});
+  $('g4-explain').classList.remove('show');$('g4-next').disabled=true;g4prog();
+}
+function g4answer(btn,choice){
+  if(g4locked)return;g4locked=true;const ok=choice===g4ans;
+  if(ok)store.g4.r++;else store.g4.w++;
+  const t=T4.find(x=>x.term===g4ans);
+  document.querySelectorAll('#g4-choices .opt').forEach(b=>{b.disabled=true;
+    const tx=b.querySelector('span:last-child').textContent;
+    if(tx===g4ans){b.classList.add('correct');if(tx===choice){const s=document.createElement('span');s.className='stamp';s.textContent='中';b.appendChild(s);}}
+    else if(tx===choice)b.classList.add('wrong');});
+  $('g4-explain').innerHTML=`<span class="ans">정답 · ${g4ans}</span><br>${t.def}`;
+  $('g4-explain').classList.add('show');$('g4-next').disabled=false;save();recordGlobal(ok);g4prog();
+}
+$('g4-next').addEventListener('click',g4render);
+function g4prog(){const s=store.g4;$('g4-score').textContent='정답률 '+pct(s.r,s.w);const t=s.r+s.w;$('g4-fill').style.width=(t?s.r/t*100:0)+'%';}
+
+/* ═════════ G6 辨證 진료 (로그라이크) ═════════ */
+const G6=DATA.g6;
+let g6run=null;
+function g6show(m){$('g6-select').style.display=m==='select'?'':'none';$('g6-play').style.display=m==='play'?'':'none';$('g6-result').style.display=m==='result'?'':'none';}
+function g6init(){g6show('select');g6renderWards();}
+function g6renderWards(){
+  const w=$('g6-wards');w.innerHTML='';
+  const mk=u=>{const b=document.createElement('button');b.className='ward';b.type='button';
+    b.innerHTML=`<span class="wtx"><span class="wn">${u.title}</span> <span class="wb">${u.badge||''}</span></span><span class="wc">${u.ids.length}명</span>`;
+    b.addEventListener('click',()=>g6start(u));return b;};
+  G6.units.forEach(u=>w.appendChild(mk(u)));
+  const all=G6.units.flatMap(u=>u.ids);
+  w.appendChild(mk({id:'all',title:'綜合',badge:'전체 무작위',ids:all}));
+}
+function g6start(u){g6run={pool:shuffle(u.ids.slice()),idx:0,lives:3,cure:0,streak:0,maxStreak:0,total:0,r:0,w:0,ward:u.id,wardName:u.title,locked:false,over:false};g6show('play');g6patient();}
+function g6patient(){
+  if(g6run.idx>=g6run.pool.length){g6run.pool=shuffle(g6run.pool);g6run.idx=0;
+    if(g6run.pool.length>1&&g6run.pool[0]===g6run.lastId){[g6run.pool[0],g6run.pool[1]]=[g6run.pool[1],g6run.pool[0]];}}
+  g6run.locked=false;g6run.total++;
+  const id=g6run.pool[g6run.idx];g6run.lastId=id;const st=G6.states[id];g6run.cur=st;
+  $('g6-ward').textContent=g6run.wardName;$('g6-no').textContent=g6run.total;
+  $('g6-sx').textContent=st.sx;
+  const tg=$('g6-tags');tg.innerHTML='';(st.tags||[]).forEach(t=>{const s=document.createElement('span');s.className='t';s.textContent=t;tg.appendChild(s);});
+  const box=$('g6-hand');box.innerHTML='';
+  g6hand(st).forEach(rx=>{const b=document.createElement('button');b.className='opt';b.type='button';b.innerHTML=`<span>${rx}</span>`;b.addEventListener('click',()=>g6answer(b,rx));box.appendChild(b);});
+  $('g6-fb').classList.remove('show');$('g6-next').disabled=true;$('g6-next').textContent='다음 환자';g6hud();
+}
+function g6hand(st){
+  const all=Object.values(G6.states);const ts=new Set(st.tags||[]);
+  let c=all.filter(s=>s.rx!==st.rx);
+  c.sort((a,b)=>{const oa=(a.tags||[]).filter(t=>ts.has(t)).length+(a.family===st.family?1:0);
+    const ob=(b.tags||[]).filter(t=>ts.has(t)).length+(b.family===st.family?1:0);return ob-oa||Math.random()-.5;});
+  const seen=new Set([st.rx]);const ds=[];
+  for(const x of c){if(!seen.has(x.rx)){seen.add(x.rx);ds.push(x.rx);}if(ds.length>=4)break;}
+  return shuffle([st.rx,...ds]);
+}
+function g6answer(btn,rx){
+  if(g6run.locked)return;g6run.locked=true;const st=g6run.cur;const ok=rx===st.rx;
+  if(ok){store.g6.r++;g6run.r++;g6run.cure++;g6run.streak++;g6run.maxStreak=Math.max(g6run.maxStreak,g6run.streak);}
+  else{store.g6.w++;g6run.w++;g6run.lives--;g6run.streak=0;}
+  document.querySelectorAll('#g6-hand .opt').forEach(b=>{b.disabled=true;const t=b.querySelector('span').textContent;
+    if(t===st.rx){b.classList.add('correct');if(t===rx){const s=document.createElement('span');s.className='stamp';s.textContent='中';b.appendChild(s);}}
+    else if(t===rx)b.classList.add('wrong');});
+  $('g6-fb').innerHTML=`<span class="ans">正治 · ${st.rx}</span> <b>${st.name}</b><br>${st.hint||''}`+(st.flag?`<br><span class="flag">※ ${st.flag}</span>`:'');
+  $('g6-fb').classList.add('show');g6run.idx++;save();recordGlobal(ok);g6hud();
+  if(g6run.lives<=0){g6run.over=true;$('g6-next').textContent='결과 보기';}
+  $('g6-next').disabled=false;
+}
+function g6hud(){let h='';for(let i=0;i<3;i++)h+=`<span class="${i<g6run.lives?'heart-on':'heart-off'}">●</span>`;
+  $('g6-hearts').innerHTML=h;$('g6-cure').textContent=g6run.cure;$('g6-streak').textContent=g6run.streak;}
+function g6end(){store.g6.best=Math.max(store.g6.best||0,g6run.cure);save();
+  $('g6-final-cure').textContent=g6run.cure;
+  $('g6-final-sub').textContent=`이번 최고 연속 ${g6run.maxStreak} · 정답률 ${pct(g6run.r,g6run.w)} · 최고 기록 ${store.g6.best}명`;
+  g6run.over=false;g6show('result');renderTop();}
+$('g6-next').addEventListener('click',()=>{if(g6run&&g6run.over)g6end();else g6patient();});
+$('g6-quit').addEventListener('click',()=>{if(g6run&&(g6run.r+g6run.w)>0)g6end();else g6init();});
+$('g6-again').addEventListener('click',()=>{const u=G6.units.find(x=>x.id===g6run.ward)||{id:'all',title:'綜合',ids:G6.units.flatMap(x=>x.ids)};g6start(u);});
+$('g6-back').addEventListener('click',g6init);
+
+/* ═════════ G7 증후→방제 (SRS) ═════════ */
+const G7=DATA.g7;
+let g7cur=null,g7locked=false,g7hintUsed=false;
+function g7pick(){
+  const box=store.g7.box;
+  let pool=G7.map(q=>{const b=box[q.id]||0;return{q,w:b===0?7:(6-Math.min(b,5))};});
+  if(G7.length>1&&g7cur)pool=pool.filter(p=>p.q.id!==g7cur.id);
+  let tot=pool.reduce((s,p)=>s+p.w,0),r=Math.random()*tot;
+  for(const p of pool){if((r-=p.w)<=0)return p.q;}return pool[0].q;
+}
+function g7render(){
+  g7cur=g7pick();g7locked=false;g7hintUsed=false;
+  $('g7-ctx').textContent=g7cur.ctx||'證候 변별';$('g7-stem').textContent=g7cur.stem;
+  const must=(g7cur.must||[]).filter(x=>x!==g7cur.answer);
+  const extra=shuffle(g7cur.pool||[]).filter(x=>x!==g7cur.answer&&!must.includes(x));
+  let ds=[...must,...extra];ds=ds.filter((x,i)=>ds.indexOf(x)===i).slice(0,4);
+  const opts=shuffle([g7cur.answer,...ds]);
+  const labels=['ㄱ','ㄴ','ㄷ','ㄹ','ㅁ'];
+  const box=$('g7-choices');box.innerHTML='';
+  opts.forEach((o,i)=>{const b=document.createElement('button');b.className='opt';b.type='button';
+    b.innerHTML=`<span class="mk">${labels[i]}</span><span>${o}</span>`;
+    b.addEventListener('click',()=>g7answer(b,o));box.appendChild(b);});
+  $('g7-hint').classList.remove('show');$('g7-hint').textContent='';
+  $('g7-explain').classList.remove('show');$('g7-next').disabled=true;$('g7-hintbtn').disabled=false;
+  g7prog();
+}
+function g7answer(btn,choice){
+  if(g7locked)return;g7locked=true;const ok=choice===g7cur.answer;
+  const box=store.g7,id=g7cur.id;box.seen[id]=box.seen[id]||{r:0,w:0};
+  if(ok){box.r++;box.seen[id].r++;if(!g7hintUsed)box.box[id]=Math.min((box.box[id]||0)+1,5);}
+  else{box.w++;box.seen[id].w++;box.box[id]=1;}
+  document.querySelectorAll('#g7-choices .opt').forEach(b=>{b.disabled=true;
+    const t=b.querySelector('span:last-child').textContent;
+    if(t===g7cur.answer){b.classList.add('correct');if(t===choice){const s=document.createElement('span');s.className='stamp';s.textContent='中';b.appendChild(s);}}
+    else if(t===choice)b.classList.add('wrong');});
+  $('g7-explain').innerHTML=`<span class="ans">정답 · ${g7cur.answer}</span><br>${g7cur.explain||''}`+(g7cur.flag?`<br><span class="flag">※ ${g7cur.flag}</span>`:'');
+  $('g7-explain').classList.add('show');$('g7-next').disabled=false;$('g7-hintbtn').disabled=true;
+  save();recordGlobal(ok);g7prog();
+}
+$('g7-hintbtn').addEventListener('click',()=>{if(g7locked||g7hintUsed)return;g7hintUsed=true;
+  $('g7-hint').textContent='힌트 — '+(g7cur.hint||'단서 없음');$('g7-hint').classList.add('show');$('g7-hintbtn').disabled=true;});
+$('g7-next').addEventListener('click',g7render);
+function g7prog(){const b=store.g7;$('g7-score').textContent='정답률 '+pct(b.r,b.w);const t=b.r+b.w;
+  $('g7-fill').style.width=(t?b.r/t*100:0)+'%';$('g7-box').textContent='숙련 '+Object.values(b.box).filter(x=>x>=4).length+'/'+G7.length;}
+
+/* ═════════ G9 처방군 변별 ═════════ */
+const G9=DATA.g9.groups;
+let g9grp=null,g9ans='',g9locked=false,g9last=-1;
+function g9render(){
+  let gi;do{gi=Math.floor(Math.random()*G9.length);}while(G9.length>1&&gi===g9last);g9last=gi;
+  g9grp=G9[gi];g9locked=false;
+  const it=g9grp.items[Math.floor(Math.random()*g9grp.items.length)];g9ans=it.rx;
+  $('g9-grp').textContent=g9grp.group+' — '+g9grp.items.length+'개 중';
+  $('g9-axis').textContent='변별축: '+g9grp.axis;
+  $('g9-cue').textContent=it.cue;
+  const labels=['ㄱ','ㄴ','ㄷ','ㄹ','ㅁ'];
+  const box=$('g9-choices');box.innerHTML='';
+  shuffle(g9grp.items.map(x=>x.rx)).forEach((rx,i)=>{const b=document.createElement('button');b.className='opt';b.type='button';
+    b.innerHTML=`<span class="mk">${labels[i]}</span><span>${rx}</span>`;
+    b.addEventListener('click',()=>g9answer(b,rx));box.appendChild(b);});
+  $('g9-explain').classList.remove('show');$('g9-next').disabled=true;g9prog();
+}
+function g9answer(btn,rx){
+  if(g9locked)return;g9locked=true;const ok=rx===g9ans;
+  if(ok)store.g9.r++;else store.g9.w++;
+  document.querySelectorAll('#g9-choices .opt').forEach(b=>{b.disabled=true;
+    const t=b.querySelector('span:last-child').textContent;
+    if(t===g9ans){b.classList.add('correct');if(t===rx){const s=document.createElement('span');s.className='stamp';s.textContent='中';b.appendChild(s);}}
+    else if(t===rx)b.classList.add('wrong');});
+  const contrast=g9grp.items.map(x=>`<b>${x.rx}</b> — ${x.cue}`).join('<br>');
+  $('g9-explain').innerHTML=`<span class="ans">정답 · ${g9ans}</span><br>${contrast}`;
+  $('g9-explain').classList.add('show');$('g9-next').disabled=false;save();recordGlobal(ok);g9prog();
+}
+$('g9-next').addEventListener('click',g9render);
+function g9prog(){const s=store.g9;$('g9-score').textContent='정답률 '+pct(s.r,s.w);const t=s.r+s.w;$('g9-fill').style.width=(t?s.r/t*100:0)+'%';}
+
+/* ═════════ G15 溫病 분류 ═════════ */
+const G15=DATA.g15;
+let g15order=[],g15i=0,g15cur=null,g15last=-1;
+function g15start(){g15order=shuffle(G15.diseases.map((_,i)=>i));
+  if(G15.diseases.length>1&&g15order[0]===g15last){[g15order[0],g15order[1]]=[g15order[1],g15order[0]];}
+  g15i=0;g15round();}
+function g15round(){
+  g15cur=G15.diseases[g15order[g15i]];g15last=g15order[g15i];
+  $('g15-name').textContent=g15cur.name;
+  const al=$('g15-alias');al.innerHTML='';
+  (g15cur.alias||[]).forEach(a=>{const s=document.createElement('span');s.className='a';s.textContent='別칭 '+a;al.appendChild(s);});
+  buildAxis('g15-ax-nature','性質',g15cur.nature,['溫熱','濕熱']);
+  buildAxis('g15-ax-onset','類型',g15cur.onset,['新感','伏邪']);
+  buildAxis('g15-ax-season','季節',g15cur.season,G15.seasons);
+  $('g15-trap').classList.remove('show');$('g15-trap').textContent='';$('g15-next').disabled=true;g15prog();
+}
+function buildAxis(elid,label,correct,options){
+  const wrap=$(elid);wrap.innerHTML='';wrap.dataset.done='0';delete wrap.dataset.locked;
+  const q=document.createElement('div');q.className='q';q.innerHTML=`<span class="co">${label}</span> 은?`;
+  const bk=document.createElement('div');bk.className='buckets';
+  options.forEach(o=>{const b=document.createElement('button');b.className='bucket';b.type='button';b.textContent=o;
+    b.addEventListener('click',()=>g15answer(wrap,bk,b,correct,label));bk.appendChild(b);});
+  wrap.appendChild(q);wrap.appendChild(bk);
+}
+function g15answer(wrap,group,btn,correct,axisLabel){
+  if(wrap.dataset.locked)return;wrap.dataset.locked='1';
+  const ok=btn.textContent===correct;const st=store.g15;st.ax[axisLabel]=st.ax[axisLabel]||{r:0,w:0};
+  group.querySelectorAll('.bucket').forEach(b=>{b.disabled=true;
+    if(b.textContent===correct)b.classList.add(b===btn?'correct':'reveal');else if(b===btn)b.classList.add('wrong');});
+  if(ok){st.r++;st.ax[axisLabel].r++;}else{st.w++;st.ax[axisLabel].w++;}
+  wrap.dataset.done='1';
+  if(!ok&&g15cur.trap){$('g15-trap').textContent='※ '+g15cur.trap;$('g15-trap').classList.add('show');}
+  const all=['g15-ax-nature','g15-ax-onset','g15-ax-season'].every(x=>$(x).dataset.done==='1');
+  if(all){$('g15-next').disabled=false;
+    if(g15cur.trap&&!$('g15-trap').classList.contains('show')){$('g15-trap').textContent='✓ '+g15cur.trap;$('g15-trap').classList.add('show');}}
+  save();recordGlobal(ok);g15prog();
+}
+$('g15-next').addEventListener('click',()=>{g15i++;if(g15i>=g15order.length)g15start();else g15round();});
+function g15prog(){const s=store.g15;$('g15-score').textContent='정답률 '+pct(s.r,s.w);const t=s.r+s.w;
+  $('g15-fill').style.width=(t?s.r/t*100:0)+'%';$('g15-round').textContent='8병 중 '+(g15i+1);}
+$('g15-reftog').addEventListener('click',()=>{const r=$('g15-ref');const open=r.classList.toggle('open');
+  $('g15-reftog').textContent='분류 규칙 '+(open?'숨기기 ▴':'보기 ▾');
+  if(open&&!r.dataset.built){const R=G15.rules;
+    r.innerHTML=`<b>濕熱性</b> : ${R['濕熱性'].join(' · ')} → 나머지 5병은 溫熱性<br><b>伏邪</b> : ${R['伏邪'].join(' · ')} → 나머지 6병은 新感<br><b>新感</b> 정의 : ${R['新感_정의']}<br><b>伏邪</b> 정의 : ${R['伏邪_정의']}`;
+    r.dataset.built='1';}});
+
+/* ═════════ G16 舌象 즉별 ═════════ */
+const G16=DATA.g16;
+const TONGUE={
+  '衛':{body:'#E8AC9E',edge:'#B23A2E',coat:'#F3F0E7',coatOp:0.62},
+  '氣':{body:'#C0392B',edge:'#94271D',coat:'#D7BE52',coatOp:0.60},
+  '營':{body:'#9E1F33',edge:'#7A1626',coat:null},
+  '血':{body:'#5E1430',edge:'#42101F',coat:null},
+};
+function tongueSVG(key){
+  const p=TONGUE[key]||TONGUE['營'];
+  const coat=p.coat?`<path d="M60,28 C39,28 29,49 29,82 C29,115 43,138 60,138 C77,138 91,115 91,82 C91,49 81,28 60,28 Z" fill="${p.coat}" opacity="${p.coatOp}"/>`:'';
+  return `<svg viewBox="0 0 120 168" width="146" height="204" xmlns="http://www.w3.org/2000/svg" aria-label="舌象">`+
+    `<path d="M60,12 C30,12 18,40 18,80 C18,122 36,152 60,152 C84,152 102,122 102,80 C102,40 90,12 60,12 Z" fill="${p.body}" stroke="${p.edge}" stroke-width="7" stroke-linejoin="round"/>`+
+    coat+
+    `<path d="M60,32 C58,72 58,108 60,142" stroke="${p.edge}" stroke-width="2" fill="none" opacity="0.3"/></svg>`;
+}
+let g16cur=null,g16locked=false,g16last=-1,g16streak=0;
+function g16render(){
+  let i;do{i=Math.floor(Math.random()*G16.stages.length);}while(G16.stages.length>1&&i===g16last);g16last=i;
+  g16cur=G16.stages[i];g16locked=false;
+  $('g16-tongue').innerHTML=tongueSVG(g16cur.key);
+  const box=$('g16-opts');box.innerHTML='';
+  G16.stages.forEach(s=>{const b=document.createElement('button');b.className='meri';b.type='button';b.textContent=s.name;
+    b.addEventListener('click',()=>g16answer(b,s.key));box.appendChild(b);});
+  $('g16-explain').classList.remove('show');$('g16-next').disabled=true;g16prog();
+}
+function g16answer(btn,key){
+  if(g16locked)return;g16locked=true;const ok=key===g16cur.key;
+  if(ok){store.g16.r++;g16streak++;store.g16.best=Math.max(store.g16.best||0,g16streak);}else{store.g16.w++;g16streak=0;}
+  document.querySelectorAll('#g16-opts .meri').forEach(b=>{b.disabled=true;
+    if(b.textContent===g16cur.name)b.classList.add(b===btn?'correct':'reveal');else if(b===btn)b.classList.add('wrong');});
+  $('g16-explain').innerHTML=`<span class="ans">${g16cur.name} · ${g16cur.desc}</span><br>治法 ${g16cur.tx||''} · 대표방 <b>${g16cur.rx||''}</b>`;
+  $('g16-explain').classList.add('show');$('g16-next').disabled=false;save();recordGlobal(ok);g16prog();
+}
+$('g16-next').addEventListener('click',g16render);
+function g16prog(){const s=store.g16;$('g16-score').textContent='정답률 '+pct(s.r,s.w);const t=s.r+s.w;
+  $('g16-fill').style.width=(t?s.r/t*100:0)+'%';$('g16-streak').textContent='연속 '+g16streak;}
+$('g16-reftog').addEventListener('click',()=>{const r=$('g16-ref');const open=r.classList.toggle('open');
+  $('g16-reftog').textContent=(open?'舌絳 변주·傷寒 비교 숨기기 ▴':'舌絳 변주·傷寒 비교 보기 ▾');
+  if(open&&!r.dataset.built){const v=G16.variants.map(x=>`<b>${x.tongue}</b> — ${x.meaning}`).join('<br>');const sh=G16.shvs;
+    r.innerHTML=`<b>舌絳 변주</b><br>${v}<br><br><b>傷寒 vs 溫病 초기 舌</b><br>傷寒: ${sh['傷寒']}<br>溫病: ${sh['溫病']}<br><span style="color:var(--ink-faint)">${G16.source}</span>`;
+    r.dataset.built='1';}});
+
+/* ═════════ G17 위기영혈 사다리 ═════════ */
+const G17=DATA.g17;
+let g17cur=null,g17locked=false,g17last=-1;
+function g17ladder(cur){
+  return '<div class="ladder">'+G17.stages.map((s,i)=>
+    `<span class="rung${s.stage===cur?' on':''}">${s.stage[0]}</span>`+(i<G17.stages.length-1?'<span class="arr">›</span>':'')
+  ).join('')+'</div>';
+}
+function g17render(){
+  let i;do{i=Math.floor(Math.random()*G17.stages.length);}while(G17.stages.length>1&&i===g17last);g17last=i;
+  g17cur=G17.stages[i];g17locked=false;
+  $('g17-sx').textContent=g17cur.sx;
+  const labels=['ㄱ','ㄴ','ㄷ','ㄹ'];
+  const box=$('g17-opts');box.innerHTML='';
+  shuffle(G17.stages.slice()).forEach((s,k)=>{const b=document.createElement('button');b.className='opt';b.type='button';
+    b.dataset.stage=s.stage;
+    b.innerHTML=`<span class="mk">${labels[k]}</span><span>${s.stage} · ${s.rx}</span>`;
+    b.addEventListener('click',()=>g17answer(b,s.stage));box.appendChild(b);});
+  $('g17-explain').classList.remove('show');$('g17-next').disabled=true;g17prog();
+}
+function g17answer(btn,stage){
+  if(g17locked)return;g17locked=true;const ok=stage===g17cur.stage;
+  if(ok)store.g17.r++;else store.g17.w++;
+  document.querySelectorAll('#g17-opts .opt').forEach(b=>{b.disabled=true;
+    if(b.dataset.stage===g17cur.stage){b.classList.add('correct');if(b===btn){const s=document.createElement('span');s.className='stamp';s.textContent='中';b.appendChild(s);}}
+    else if(b===btn)b.classList.add('wrong');});
+  $('g17-explain').innerHTML=`<span class="ans">${g17cur.stage} · ${g17cur.rx}</span><br>舌 ${g17cur.tongue} · 治法 ${g17cur.tx}`+
+    g17ladder(g17cur.stage)+(g17cur.to&&g17cur.to.length?`<div class="trans">傳變 → ${g17cur.to.join(' / ')}</div>`:'');
+  $('g17-explain').classList.add('show');$('g17-next').disabled=false;save();recordGlobal(ok);g17prog();
+}
+$('g17-next').addEventListener('click',g17render);
+function g17prog(){const s=store.g17;$('g17-score').textContent='정답률 '+pct(s.r,s.w);const t=s.r+s.w;$('g17-fill').style.width=(t?s.r/t*100:0)+'%';}
+
+/* ═════════ G19 헷갈리는 쌍 (2지선다) ═════════ */
+const G19=DATA.g19;
+let g19pair=null,g19side='',g19locked=false,g19last=-1;
+function g19render(){
+  let i;do{i=Math.floor(Math.random()*G19.length);}while(G19.length>1&&i===g19last);g19last=i;
+  g19pair=G19[i];g19locked=false;g19side=Math.random()<0.5?'A':'B';
+  $('g19-topic').textContent=g19pair.topic;
+  $('g19-cue').textContent=g19pair[g19side].cue;
+  const box=$('g19-opts');box.innerHTML='';
+  shuffle([['A',g19pair.A.label],['B',g19pair.B.label]]).forEach(([side,label])=>{
+    const b=document.createElement('button');b.className='meri';b.type='button';b.dataset.side=side;b.textContent=label;
+    b.addEventListener('click',()=>g19answer(b,side));box.appendChild(b);});
+  $('g19-explain').classList.remove('show');$('g19-next').disabled=true;g19prog();
+}
+function g19answer(btn,side){
+  if(g19locked)return;g19locked=true;const ok=side===g19side;
+  if(ok)store.g19.r++;else store.g19.w++;
+  document.querySelectorAll('#g19-opts .meri').forEach(b=>{b.disabled=true;
+    if(b.dataset.side===g19side)b.classList.add(b===btn?'correct':'reveal');else if(b===btn)b.classList.add('wrong');});
+  $('g19-explain').innerHTML=`<b>${g19pair.A.label}</b> — ${g19pair.A.cue}<br><b>${g19pair.B.label}</b> — ${g19pair.B.cue}`;
+  $('g19-explain').classList.add('show');$('g19-next').disabled=false;save();recordGlobal(ok);g19prog();
+}
+$('g19-next').addEventListener('click',g19render);
+function g19prog(){const s=store.g19;$('g19-score').textContent='정답률 '+pct(s.r,s.w);const t=s.r+s.w;$('g19-fill').style.width=(t?s.r/t*100:0)+'%';}
+
+/* ═════════ G21 醫家 미스매칭 ═════════ */
+const G21=DATA.g21.cards;
+let g21bad=-1,g21locked=false,g21fixHtml='';
+function g21make(){
+  g21locked=false;
+  const pick=shuffle(G21).slice(0,4).map(c=>({person:c.person,era:c.era,book:c.book,tag:c.tag,sBook:c.book,sTag:c.tag,stream:c.stream}));
+  g21bad=Math.floor(Math.random()*4);const victim=pick[g21bad];
+  const mode=Math.random()<0.5?'tag':'book';
+  let donors=G21.filter(c=>c.person!==victim.person&&c[mode]!==victim[mode]);
+  const same=donors.filter(c=>c.stream===victim.stream);if(same.length)donors=same;
+  const donor=donors[Math.floor(Math.random()*donors.length)];
+  if(mode==='tag'){victim.tag=donor.tag;g21fixHtml=`<b>${victim.person}</b> 의 개념은 <span class="corr">${victim.sTag}</span> (보기의 “${donor.tag}”는 ${donor.person}).`;}
+  else{victim.book=donor.book;g21fixHtml=`<b>${victim.person}</b> 의 저서는 <span class="corr">${victim.sBook}</span> (보기의 “${donor.book}”는 ${donor.person}).`;}
+  const box=$('g21-rows');box.innerHTML='';
+  pick.forEach((c,i)=>{const row=document.createElement('button');row.className='row';row.type='button';
+    row.innerHTML=`<span class="who">${c.person}<span class="era">${c.era}</span></span><span class="link"><span class="bk">${c.book}</span> · ${c.tag}</span>`;
+    row.addEventListener('click',()=>g21answer(i,row));box.appendChild(row);});
+  $('g21-fix').classList.remove('show');$('g21-next').disabled=true;g21prog();
+}
+function g21answer(i,row){
+  if(g21locked)return;g21locked=true;const ok=i===g21bad;const st=store.g21;
+  document.querySelectorAll('#g21-rows .row').forEach((r,idx)=>{r.classList.add('locked');r.disabled=true;
+    if(idx===g21bad)r.classList.add('bad');else if(idx===i&&!ok)r.classList.add('good');});
+  if(ok){st.r++;st.streak++;st.best=Math.max(st.best,st.streak);}else{st.w++;st.streak=0;}
+  $('g21-fix').innerHTML=(ok?'✓ 정답. ':'✗ ')+g21fixHtml;$('g21-fix').classList.add('show');
+  $('g21-next').disabled=false;save();recordGlobal(ok);g21prog();
+}
+$('g21-next').addEventListener('click',g21make);
+function g21prog(){const s=store.g21;$('g21-score').textContent='정답률 '+pct(s.r,s.w);const t=s.r+s.w;
+  $('g21-fill').style.width=(t?s.r/t*100:0)+'%';$('g21-streak').textContent='연속 '+(s.streak||0);}
+
+/* ═════════ G22 인물 카드 매칭 ═════════ */
+const G22=DATA.g21.cards;
+let g22st={people:[],combos:[],sel:-1,matched:new Set()};
+function g22render(){
+  const pick=shuffle(G22).slice(0,4);
+  g22st={people:pick.slice(),combos:shuffle(pick.slice()),sel:-1,matched:new Set()};
+  const pc=$('g22-people');pc.innerHTML='';
+  g22st.people.forEach((c,i)=>{const b=document.createElement('button');b.className='mcard';b.type='button';b.dataset.i=i;
+    b.innerHTML=`<span class="mp">${c.person}</span><span class="me">${c.era}</span>`;
+    b.addEventListener('click',()=>g22pick(i,b));pc.appendChild(b);});
+  const cc=$('g22-combos');cc.innerHTML='';
+  g22st.combos.forEach((c,j)=>{const b=document.createElement('button');b.className='mcard';b.type='button';b.dataset.j=j;
+    b.innerHTML=`<span class="mb">${c.book}</span><span class="mt">${c.tag}</span>`;
+    b.addEventListener('click',()=>g22match(j,b));cc.appendChild(b);});
+  $('g22-explain').classList.remove('show');$('g22-next').disabled=true;g22prog();
+}
+function g22pick(i,btn){
+  if(btn.disabled)return;g22st.sel=i;
+  document.querySelectorAll('#g22-people .mcard').forEach(b=>b.classList.toggle('sel',b===btn));
+}
+function g22match(j,btn){
+  if(btn.disabled||g22st.sel<0)return;
+  const ok=g22st.combos[j].person===g22st.people[g22st.sel].person;
+  if(ok){store.g22.r++;
+    const pb=document.querySelector(`#g22-people .mcard[data-i="${g22st.sel}"]`);
+    pb.classList.add('done');pb.classList.remove('sel');pb.disabled=true;
+    btn.classList.add('done');btn.disabled=true;
+    g22st.matched.add(j);g22st.sel=-1;
+    if(g22st.matched.size>=4){$('g22-explain').innerHTML='<span class="ans">완성!</span> 네 인물을 모두 이었습니다.';$('g22-explain').classList.add('show');$('g22-next').disabled=false;}
+  }else{store.g22.w++;btn.classList.add('miss');setTimeout(()=>btn.classList.remove('miss'),320);
+    document.querySelectorAll('#g22-people .mcard').forEach(b=>b.classList.remove('sel'));g22st.sel=-1;}
+  save();recordGlobal(ok);g22prog();
+}
+$('g22-next').addEventListener('click',g22render);
+function g22prog(){const s=store.g22;$('g22-score').textContent='정답률 '+pct(s.r,s.w);const t=s.r+s.w;$('g22-fill').style.width=(t?s.r/t*100:0)+'%';}
+
+/* ═════════ G23 연표 시대순 배치 (삽입형) ═════════ */
+const G23=DATA.g21.cards;
+const ERA_ORD={'先秦':0,'漢':1,'晉':2,'宋':3,'金':3,'元':3,'明':4,'明淸':4,'淸':5};
+let g23item=null,g23anchors=[],g23ans=-1,g23locked=false,g23lastItem='';
+function g23pickSet(){
+  const byOrd={};G23.forEach(c=>{const o=ERA_ORD[c.era];if(o===undefined)return;(byOrd[o]=byOrd[o]||[]).push(c);});
+  const ords=Object.keys(byOrd).map(Number);
+  const chosen=shuffle(ords).slice(0,5).sort((a,b)=>a-b);
+  return chosen.map(o=>{const arr=byOrd[o];return arr[Math.floor(Math.random()*arr.length)];});
+}
+function g23render(){
+  let set,tries=0;
+  do{set=g23pickSet();tries++;}while(tries<6&&set.length>1&&set.some(c=>c.person===g23lastItem)&&set.find(c=>c.person===g23lastItem)===set[0]);
+  const itemIdx=Math.floor(Math.random()*set.length);
+  g23item=set[itemIdx];g23lastItem=g23item.person;
+  g23anchors=set.filter((_,i)=>i!==itemIdx);
+  g23ans=g23anchors.filter(a=>ERA_ORD[a.era]<ERA_ORD[g23item.era]).length;
+  g23locked=false;
+  $('g23-item').innerHTML=`<span class="mp">${g23item.person}</span><span class="mb2">${g23item.book} · ${g23item.tag}</span>`;
+  const tl=$('g23-timeline');tl.innerHTML='';
+  for(let g=0;g<=g23anchors.length;g++){
+    const gap=document.createElement('button');gap.className='gapbtn';gap.type='button';gap.dataset.gap=g;gap.textContent='＋ 여기';
+    gap.addEventListener('click',()=>g23answer(g,gap));tl.appendChild(gap);
+    if(g<g23anchors.length){const a=g23anchors[g];const row=document.createElement('div');row.className='tlrow';
+      row.innerHTML=`<span class="me">${a.era}</span><span class="mp">${a.person}</span><span class="mb2">${a.book}</span>`;tl.appendChild(row);}
+  }
+  $('g23-explain').classList.remove('show');$('g23-next').disabled=true;g23prog();
+}
+function g23answer(g,btn){
+  if(g23locked)return;g23locked=true;const ok=g===g23ans;
+  if(ok)store.g23.r++;else store.g23.w++;
+  document.querySelectorAll('#g23-timeline .gapbtn').forEach(b=>{b.disabled=true;
+    if(+b.dataset.gap===g23ans)b.classList.add('gapok');else if(b===btn)b.classList.add('gapno');});
+  const full=g23anchors.slice();full.splice(g23ans,0,g23item);
+  const line=full.map(c=>`<b>${c.era}</b> ${c.person}`).join(' → ');
+  $('g23-explain').innerHTML=`<span class="ans">${ok?'정답':'위치 오답'} · ${g23item.person} = ${g23item.era}</span><br>${line}`;
+  $('g23-explain').classList.add('show');$('g23-next').disabled=false;save();recordGlobal(ok);g23prog();
+}
+$('g23-next').addEventListener('click',g23render);
+function g23prog(){const s=store.g23;$('g23-score').textContent='정답률 '+pct(s.r,s.w);const t=s.r+s.w;$('g23-fill').style.width=(t?s.r/t*100:0)+'%';}
+
+/* ═════════ G24 대표어 빈칸 ═════════ */
+const G24=DATA.g24;
+const ALLBLANK24=[...new Set(G24.flatMap(l=>l.blanks))];
+let g24line=null,g24ans='',g24locked=false,g24last=-1;
+function g24render(){
+  let i;do{i=Math.floor(Math.random()*G24.length);}while(G24.length>1&&i===g24last);g24last=i;
+  g24line=G24[i];g24locked=false;
+  const bi=Math.floor(Math.random()*g24line.blanks.length);g24ans=g24line.blanks[bi];
+  $('g24-book').textContent=g24line.book;
+  $('g24-line').innerHTML=g24line.line.replace(g24ans,'<span class="blank">＿＿＿</span>');
+  let pool=ALLBLANK24.filter(b=>b!==g24ans);
+  pool.sort((a,b)=>(Math.abs(a.length-g24ans.length)-Math.abs(b.length-g24ans.length))||(Math.random()-.5));
+  const opts=shuffle([g24ans,...pool.slice(0,3)]);
+  const labels=['ㄱ','ㄴ','ㄷ','ㄹ'];
+  const box=$('g24-choices');box.innerHTML='';
+  opts.forEach((o,k)=>{const b=document.createElement('button');b.className='opt';b.type='button';
+    b.innerHTML=`<span class="mk">${labels[k]}</span><span>${o}</span>`;
+    b.addEventListener('click',()=>g24answer(b,o));box.appendChild(b);});
+  $('g24-explain').classList.remove('show');$('g24-next').disabled=true;g24prog();
+}
+function g24answer(btn,choice){
+  if(g24locked)return;g24locked=true;const ok=choice===g24ans;
+  if(ok)store.g24.r++;else store.g24.w++;
+  document.querySelectorAll('#g24-choices .opt').forEach(b=>{b.disabled=true;
+    const t=b.querySelector('span:last-child').textContent;
+    if(t===g24ans){b.classList.add('correct');if(t===choice){const s=document.createElement('span');s.className='stamp';s.textContent='中';b.appendChild(s);}}
+    else if(t===choice)b.classList.add('wrong');});
+  $('g24-explain').innerHTML=`<span class="ans">${g24line.line}</span><br>— ${g24line.book}`;
+  $('g24-explain').classList.add('show');$('g24-next').disabled=false;save();recordGlobal(ok);g24prog();
+}
+$('g24-next').addEventListener('click',g24render);
+function g24prog(){const s=store.g24;$('g24-score').textContent='정답률 '+pct(s.r,s.w);const t=s.r+s.w;$('g24-fill').style.width=(t?s.r/t*100:0)+'%';}
+
+/* ═════════ STAT ═════════ */
+function renderStats(){
+  const list=$('stat-list');list.innerHTML='';
+  GAMES.forEach(g=>g.items.forEach(it=>{
+    const s=store[it.id]||{r:0,w:0};const t=s.r+s.w;
+    const row=document.createElement('div');row.className='stat-row';
+    let extra='';
+    if(it.id==='g6'){extra=` · 최고 ${store.g6.best||0}명`;}
+    if(it.id==='g16'){extra=` · 최고연속 ${store.g16.best||0}`;}
+    if(it.id==='g7'){const m=Object.values(store.g7.box||{}).filter(x=>x>=4).length;extra=` · 숙련 ${m}`;}
+    if(it.id==='g21'){extra=` · 최고연속 ${store.g21.best||0}`;}
+    row.innerHTML=`<span class="scn">${it.cn}</span><span class="snm">${it.name}${extra}</span><span class="srt">${pct(s.r,s.w)}</span><span class="sct">${t}문항</span>`;
+    list.appendChild(row);
+  }));
+  // 약한 축 (g15)
+  const b=store.g15;let weak=null,worst=2;
+  for(const k in (b.ax||{})){const o=b.ax[k];const t=o.r+o.w;if(t>=3){const rt=o.r/t;if(rt<worst){worst=rt;weak=k+' '+Math.round(rt*100)+'%';}}}
+  if(weak){const row=document.createElement('div');row.className='stat-row';
+    row.innerHTML=`<span class="scn">弱</span><span class="snm">溫病 분류 — 약한 축</span><span class="srt">${weak.split(' ')[1]}</span><span class="sct">${weak.split(' ')[0]}</span>`;
+    list.appendChild(row);}
+  const[r,w]=allRW();$('sm-r').textContent=r;$('sm-w').textContent=w;$('sm-day').textContent=daily().n;
+}
+$('reset').addEventListener('click',()=>{
+  if(!confirm('모든 게임 기록을 지울까요? 되돌릴 수 없습니다.'))return;
+  store={};try{localStorage.removeItem(SKEY);}catch(e){}
+  ns('daily',{date:today,n:0});['g1','g2','g3','g4','g9','g17','g19','g22','g23','g24'].forEach(k=>ns(k,{r:0,w:0}));ns('g6',{r:0,w:0,best:0});ns('g16',{r:0,w:0,best:0});
+  ns('g7',{box:{},seen:{},r:0,w:0});ns('g15',{ax:{},r:0,w:0});ns('g21',{r:0,w:0,streak:0,best:0});ns('gstreak',0);ns('gbest',0);
+  save();bootGames();renderStats();renderHome();
+});
+
+/* ───────── boot ───────── */
+function bootGames(){g1render();g2render();g3render();g4render();g6init();g7render();g9render();g15start();g16render();g17render();g19render();g21make();g22render();g23render();g24render();}
+bootGames();renderHome();
+</script>
+</body>
+</html>
