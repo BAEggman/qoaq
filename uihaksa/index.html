@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="醫學史">
+<meta name="theme-color" content="#0d0a07">
+<title>韓醫學 醫學史 — 매칭·순서 학습</title>
+<style>
+  :root{
+    --bg:#0d0a07; --panel:#171109; --card:#1f160c; --cardh:#2a1d0f;
+    --ink:#ece2cf; --muted:#b6a585; --dim:#7d6f57;
+    --zhu:#cf4a2c; --bronze:#c9962e; --jade:#6cae8b; --warn:#d6a23a;
+    --line:#3a2c1a; --line2:#503c22; --sect:#9a7b3a;
+    --serif:"Nanum Myeongjo","Noto Serif KR","Batang",AppleMyungjo,"Apple SD Gothic Neo",serif;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html{-webkit-text-size-adjust:100%;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--serif);
+    min-height:100vh; min-height:100dvh; overflow-x:hidden; -webkit-font-smoothing:auto;}
+  .bgglyph{position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
+    font-size:62vmin; color:#1c130a; z-index:0; pointer-events:none; user-select:none;
+    animation:breathe 9s ease-in-out infinite;}
+  @keyframes breathe{0%,100%{opacity:.5; transform:scale(1);}50%{opacity:.8; transform:scale(1.04);}}
+  .wrap{position:relative; z-index:1; max-width:980px; margin:0 auto; padding:18px 14px 92px;}
+  header{padding:6px 2px 12px; border-bottom:1px solid var(--line);}
+  .ttl{font-size:30px; font-weight:800; letter-spacing:2px;} .ttl .zhu{color:var(--zhu);}
+  .sub{font-size:13px; color:var(--muted); margin-top:5px; line-height:1.5;}
+  .tabs{display:flex; gap:7px; overflow-x:auto; -webkit-overflow-scrolling:touch;
+    touch-action:pan-x; padding:12px 2px 6px; margin-bottom:6px; scrollbar-width:none;}
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{flex:0 0 auto; padding:9px 13px; border:1px solid var(--line2); border-radius:11px;
+    background:var(--panel); color:var(--muted); font-size:14px; font-weight:700; cursor:pointer;
+    white-space:nowrap; touch-action:manipulation;}
+  .tab .n{display:block; font-size:10px; color:var(--dim); font-weight:600; letter-spacing:1px;}
+  .tab.sec-h .n{color:var(--sect);}
+  .tab.active{background:linear-gradient(180deg,#241809,#1a1108); color:var(--ink);
+    border-color:var(--bronze); box-shadow:0 0 0 1px rgba(201,150,46,.25);}
+  .panel{display:none;} .panel.active{display:block; animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(4px);}to{opacity:1; transform:none;}}
+  .gtitle{font-size:18px; font-weight:800; margin:8px 2px 3px; color:var(--bronze);}
+  .ghint{font-size:12.5px; color:var(--muted); margin:0 2px 12px; line-height:1.55;}
+  .gprog{font-size:12px; color:var(--dim); margin:2px 2px 10px; letter-spacing:.5px;}
+  .board{min-height:160px;}
+  .connect-wrap{display:flex; gap:10px;}
+  .col{flex:1; display:flex; flex-direction:column; gap:8px;}
+  .col-h{font-size:11px; color:var(--dim); text-align:center; letter-spacing:2px; margin-bottom:2px;}
+  .card{border:1px solid var(--line2); background:var(--card); color:var(--ink);
+    border-radius:10px; padding:11px 12px; font-size:15px; line-height:1.45; cursor:pointer;
+    user-select:none; touch-action:manipulation; transition:background .12s, border-color .12s, transform .08s;}
+  .card .hz{font-weight:700;}
+  .card.sel{border-color:var(--bronze); background:var(--cardh); box-shadow:0 0 0 1px rgba(201,150,46,.4);}
+  .card.locked{border-color:var(--jade); background:rgba(108,174,139,.13); color:var(--jade); cursor:default;}
+  .card.flash{border-color:var(--zhu); background:rgba(207,74,44,.18); animation:shake .3s;}
+  @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-4px);}75%{transform:translateX(4px);}}
+  .order-grid{display:flex; flex-wrap:wrap; gap:9px;}
+  .ocard{position:relative; flex:0 0 auto; max-width:100%; border:1px solid var(--line2); background:var(--card);
+    border-radius:10px; padding:11px 14px; font-size:15px; cursor:pointer; user-select:none; touch-action:manipulation;
+    transition:background .12s, border-color .12s;}
+  .ocard.locked{border-color:var(--jade); background:rgba(108,174,139,.13); color:var(--jade); cursor:default;}
+  .ocard.flash{border-color:var(--zhu); background:rgba(207,74,44,.18); animation:shake .3s;}
+  .ocard .ord{position:absolute; top:-9px; left:-9px; width:22px; height:22px; border-radius:50%;
+    background:var(--jade); color:#0d0a07; font-size:12px; font-weight:800; display:none;
+    align-items:center; justify-content:center;}
+  .ocard.locked .ord{display:flex;}
+  .pick-q{font-size:16.5px; line-height:1.55; margin:4px 2px 14px; color:var(--ink);}
+  .pick-q .hz{font-weight:700; color:var(--bronze);}
+  .opts{display:flex; flex-direction:column; gap:9px;}
+  .opt{border:1px solid var(--line2); background:var(--card); color:var(--ink);
+    border-radius:10px; padding:12px 14px; font-size:15.5px; cursor:pointer; text-align:left;
+    font-family:var(--serif); touch-action:manipulation; transition:background .12s, border-color .12s;}
+  .opt:disabled{cursor:default; opacity:.85;}
+  .opt.ok{border-color:var(--jade); background:rgba(108,174,139,.16); color:var(--jade);}
+  .opt.no{border-color:var(--zhu); background:rgba(207,74,44,.14); color:#e8907c; opacity:.7;}
+  .reveal{margin:14px 0 0; padding:12px 13px; border-left:3px solid var(--bronze);
+    background:rgba(201,150,46,.08); border-radius:0 8px 8px 0; font-size:13.5px; line-height:1.6;
+    color:var(--muted); display:none;}
+  .reveal.show{display:block; animation:fade .2s ease;} .reveal b{color:var(--ink);}
+  .nextbar{margin-top:16px; display:flex; justify-content:flex-end;}
+  .btn-next{display:none; padding:11px 20px; border:1px solid var(--bronze); border-radius:11px;
+    background:linear-gradient(180deg,#2a1c0b,#1c1208); color:var(--ink); font-size:15px; font-weight:800;
+    cursor:pointer; font-family:var(--serif); touch-action:manipulation;}
+  .btn-next.show{display:inline-block;} .btn-next:active{transform:scale(.97);}
+  .foot{position:fixed; left:0; right:0; bottom:0; z-index:2; background:rgba(13,10,7,.94);
+    border-top:1px solid var(--line); padding:9px 14px; backdrop-filter:blur(6px);
+    display:flex; justify-content:space-between; align-items:center; font-size:12px; color:var(--dim);}
+  .foot .sc{color:var(--jade); font-weight:700;}
+  .kbd{border:1px solid var(--line2); border-radius:5px; padding:1px 6px; font-size:11px; color:var(--muted);}
+  @media (hover:hover){
+    .card:hover:not(.locked){background:var(--cardh); border-color:var(--bronze);}
+    .ocard:hover:not(.locked){background:var(--cardh); border-color:var(--bronze);}
+    .opt:hover:not(:disabled){background:var(--cardh); border-color:var(--bronze);}
+    .tab:hover{color:var(--ink);} .btn-next:hover{border-color:var(--zhu);}
+  }
+  @media (min-width:768px){
+    .wrap{padding:24px 20px 96px;} .ttl{font-size:34px;}
+    .card,.ocard{font-size:16px;} .opt{font-size:16.5px;} .gtitle{font-size:20px;}
+  }
+  @media (max-width:380px){ .connect-wrap{gap:7px;} .card{padding:10px 9px; font-size:13.5px;} }
+</style>
+</head>
+<body>
+<div class="bgglyph">史</div>
+<div class="wrap">
+  <header>
+    <div class="ttl">韓醫學 <span class="zhu">醫學史</span></div>
+    <div class="sub">人 · 書 · 時代 · 業績 결합 + 學說 발전사 — 14개 게임으로 인출 · 시험 함정(미스매칭) 대비</div>
+  </header>
+  <nav class="tabs" id="tabs"></nav>
+  <main id="main"></main>
+</div>
+<div class="foot">
+  <span>탭/카드 <span class="kbd">탭</span> · 다음 <span class="kbd">Space</span></span>
+  <span class="sc" id="score">맞춤 0</span>
+</div>
+
+<script>
+(function(){
+"use strict";
+/* 출처: 「한의학개론 의학사」(제1장) · 장상학설 · 병인학설 · 본초 — 기본서 원문 기반. ※ = 기본서 표기 충돌 */
+
+/* ============ A. 본편: 저서 ↔ 저자 (Connect) ============ */
+var BOOK_AUTHOR = [
+ [ ["脈經","王叔和","晉·24맥·寸關尺 三部脈位·獨取寸口"],
+   ["黃帝鍼灸甲乙經","皇甫謐","晉·現存 최초 침구서·349혈"],
+   ["肘後備急方","葛洪","晉·도교 儒道合一論者"],
+   ["難經","秦越人(扁鵲)","戰國·81難·奇經八脈說·三焦有名無形"],
+   ["傷寒雜病論","張機(仲景)","漢·方書之祖·六經辨證"] ],
+ [ ["本草經集注","陶弘景","梁(南北朝)·730종·本草中興之祖"],
+   ["諸病源候論","巢元方","隋·최초의 病理 전문서"],
+   ["新修本草","蘇敬","唐·최초 官修本草·세계최초 국가약전"],
+   ["本草拾遺","陳藏器","唐·十劑說"],
+   ["備急千金要方","孫思邈","唐(※기본서 晉표기)·최초 臨床百科全書"] ],
+ [ ["外臺秘要","王燾","唐·종합성 醫書"],
+   ["黃帝內經素問(次注)","王冰","唐·運氣 7편 증보"],
+   ["黃帝內經太素","楊上善","隋·內經 분류 재편찬"],
+   ["中藏經","華陀","三焦 有名無形 언급"],
+   ["周易參同契","魏伯陽","後漢"] ],
+ [ ["注解傷寒論","成無已","金·傷寒論 최초 전면 주해"],
+   ["南陽活人書","朱肱","宋·經絡 중시"],
+   ["銅人腧穴鍼灸圖經","王惟一","北宋·銅人 주조·354혈"],
+   ["小兒藥證直訣","錢乙","北宋·五臟辨證 소아과 최초"],
+   ["三因極一病證方論","陳言(無擇)","南宋·三因致病說"] ],
+ [ ["鍼灸資生經","王執中","南宋·同身寸 取穴 표준·359혈"],
+   ["儒門事親","張從正(子和)","金元·攻下派(汗吐下)"],
+   ["脾胃論","李杲(東垣)","金元·補土派·百病皆由脾胃衰"],
+   ["格致餘論","朱震亨(丹溪)","金元·滋陰派·陽有餘陰不足"],
+   ["珍珠囊","張元素(潔古)","金元·易水學派·性味歸經"] ],
+ [ ["十四經發揮","滑壽(伯仁)","元·任督 더해 十四正經"],
+   ["世醫得效方","危亦林","元·正骨 기초"],
+   ["敖氏傷寒金鏡錄","杜本","元·舌象 36·舌診 전문서"],
+   ["脈訣","高陽生","脈經을 歌訣化"],
+   ["婦人大全良方","陳自明","南宋·대표 부인과서"] ],
+ [ ["本草綱目","李時珍","明·綱目체계 창안"],
+   ["普濟方","朱橚","明·역사상 最大 方書"],
+   ["醫方考","吳崑","明"],
+   ["類經","張介賓(景岳)","明·內經 12분류 주석"],
+   ["黃帝內經素問註證發微","馬蒔","明·內經 전체 최초 주석서"] ],
+ [ ["溫疫論","吳有性(又可)","明·戾氣致病·一病一氣說"],
+   ["溫熱論","葉桂(天士)","淸·溫病학파 창시·衛氣營血 창시"],
+   ["溫病條辨","吳瑭(鞠通)","淸·三焦辨證論治"],
+   ["溫熱經緯","王士雄(孟英)","淸·전염병 病例 서술"],
+   ["醫林改錯","王淸任","淸·解剖 공헌·活血祛瘀"] ],
+ [ ["本草綱目拾遺","趙學敏","淸"],
+   ["植物名實圖考","吳其濬","淸"],
+   ["醫方集解","汪昂","淸"],
+   ["證治準繩","王肯堂","明·종합 임상서"],
+   ["血證論","唐宗海(容川)","淸·瘀血"] ],
+ [ ["鍼灸大成","楊繼洲","明·종합 편찬·359혈"],
+   ["醫宗金鑑","吳謙","淸·361혈"],
+   ["赤水玄珠","孫一奎","明·小心命門說(無形)"],
+   ["傷寒論條辨","方有執","明·상한론 연구"],
+   ["醫學入門","李梴","明"] ]
+];
+
+/* ============ A. 저서 → 시대 (Pick) ============ */
+var BOOK_ERA = [
+ ["難經","戰國",["戰國","東漢","隋","唐"],"秦越人(扁鵲) 著. 81難. ※ 책 성립을 漢代로 보기도."],
+ ["神農本草經","東漢",["東漢","戰國","梁","唐"],"현존 最古의 본초서. 365종 上中下品."],
+ ["傷寒雜病論","漢",["漢","晉","隋","宋"],"張機(仲景). 晉 王叔和가 傷寒論·金匱要略으로 나눔."],
+ ["黃帝鍼灸甲乙經","晉",["晉","唐","北宋","明"],"皇甫謐. 現存 최초의 침구학서·349혈."],
+ ["脈經","晉",["晉","唐","北宋","南宋"],"王叔和. 24맥·獨取寸口 임상화."],
+ ["本草經集注","梁",["梁","唐","北宋","明"],"陶弘景(南北朝 梁). 730종·本草中興之祖."],
+ ["諸病源候論","隋",["隋","唐","南宋","明"],"巢元方. 최초의 病理 전문서."],
+ ["新修本草","唐",["唐","隋","北宋","明"],"蘇敬(659). 최초 官修本草·세계 최초 국가약전."],
+ ["備急千金要方","唐",["唐","晉","北宋","明"],"孫思邈. 최초 臨床百科全書. ※ 기본서엔 「晉」 표기 — 唐人이므로 오류."],
+ ["黃帝內經素問(次注)","唐",["唐","隋","金","明"],"王冰. 運氣 7편 증보."],
+ ["注解傷寒論","金",["金","北宋","南宋","元"],"成無已. 傷寒論 최초 전면 주해."],
+ ["銅人腧穴鍼灸圖經","北宋",["北宋","南宋","金","元"],"王惟一. 銅人 주조·354혈."],
+ ["小兒藥證直訣","北宋",["北宋","南宋","金","唐"],"錢乙. 五臟辨證을 소아과 최초 적용."],
+ ["三因極一病證方論","南宋",["南宋","北宋","金","元"],"陳言(無擇). 三因致病說."],
+ ["十四經發揮","元",["元","南宋","明","淸"],"滑壽. 任·督을 더해 十四正經."],
+ ["本草綱目","明",["明","元","淸","南宋"],"李時珍. 綱目체계."],
+ ["溫疫論","明",["明","淸","元","南宋"],"吳有性(又可). 戾氣·一病一氣說."],
+ ["溫病條辨","淸",["淸","明","元","南宋"],"吳瑭(鞠通). 三焦辨證."],
+ ["醫林改錯","淸",["淸","明","元","北宋"],"王淸任. 解剖·活血祛瘀."],
+ ["黃帝內經素問註證發微","明",["明","淸","元","唐"],"馬蒔. 內經 전체 최초의 주석서."]
+];
+
+/* ============ A. 인물 ↔ 핵심 業績 (Connect) ============ */
+var PERSON_DEED = [
+ [ ["劉完素(守眞)","主火·寒涼派 — 六氣致病→火熱, 病機19條"],
+   ["張從正(子和)","攻下派 — 汗·吐·下로 邪氣 驅逐"],
+   ["李杲(東垣)","補土派 — 脾胃元氣 근본, 益氣升陽"],
+   ["朱震亨(丹溪)","滋陰派 — 陽有餘陰不足, 相火妄動"] ],
+ [ ["吳有性(又可)","戾氣致病·一病一氣說"],
+   ["葉桂(天士)","溫病학파 창시·衛氣營血 辨證 창시"],
+   ["吳瑭(鞠通)","三焦辨證論治 발전"],
+   ["王士雄(孟英)","「溫熱經緯」 — 콜레라·페스트 病例"] ],
+ [ ["皇甫謐","「甲乙經」 — 현존 최초 침구서, 穴名 집대성(349)"],
+   ["王惟一","銅人 주조·穴位 정밀화(354)"],
+   ["滑壽","任·督 더해 十四正經"],
+   ["王執中","同身寸 取穴 표준 확립"] ],
+ [ ["陶弘景","本草中興之祖 — 730종 정리"],
+   ["李時珍","「本草綱目」 — 綱目체계 창안"],
+   ["蘇敬","「新修本草」 — 최초 官修·세계 최초 국가약전"],
+   ["王淸任","「醫林改錯」 — 解剖 공헌·活血祛瘀"] ],
+ [ ["王叔和","「脈經」 — 24맥·獨取寸口"],
+   ["張仲景","「傷寒雜病論」 — 方書之祖·六經辨證"],
+   ["巢元方","「諸病源候論」 — 최초 病理 전문서"],
+   ["錢乙","「小兒藥證直訣」 — 五臟辨證 소아과 최초"] ],
+ [ ["成無已","「注解傷寒論」 — 상한론 최초 전면 주해"],
+   ["馬蒔","「素問註證發微」 — 內經 전체 최초 주석"],
+   ["陳言(無擇)","「三因極一病證方論」 — 三因致病說"],
+   ["宋慈","「洗寃錄」 — 법의학"] ],
+ [ ["張元素(潔古)","易水學派 — 「珍珠囊」 歸經"],
+   ["杜本","「敖氏傷寒金鏡錄」 — 舌診 전문서"],
+   ["李濟馬","「東醫壽世保元」 — 四象醫學說"],
+   ["許浚","「東醫寶鑑」 — 內經 계통"] ]
+];
+
+/* ============ A. 同姓 변별 (Pick) ============ */
+var SURNAME = [
+ ["銅人을 주조·354혈로 정립한 王씨?","王惟一",["王惟一","王冰","王叔和","王執中"],"「銅人腧穴鍼灸圖經」(北宋)."],
+ ["運氣 7편을 증보하며 「素問」을 次注한 王씨?","王冰",["王冰","王叔和","王惟一","王燾"],"啓玄子(唐)."],
+ ["「脈經」·獨取寸口의 王씨?","王叔和",["王叔和","王冰","王惟一","王肯堂"],"晉·24맥."],
+ ["「醫林改錯」·活血祛瘀의 王씨?","王淸任",["王淸任","王叔和","王燾","王惟一"],"淸·解剖 공헌."],
+ ["「外臺秘要」를 지은 王씨?","王燾",["王燾","王叔和","王冰","王惟一"],"唐·종합성 醫書."],
+ ["方書之祖 「傷寒雜病論」의 張씨?","張機(仲景)",["張機(仲景)","張元素","張從正","張介賓"],"漢·六經辨證."],
+ ["攻下派·「儒門事親」의 張씨?","張從正(子和)",["張從正(子和)","張仲景","張元素","張介賓"],"금원사대가."],
+ ["易水學派·「珍珠囊」의 張씨?","張元素(潔古)",["張元素(潔古)","張仲景","張從正","張介賓"],"李杲의 스승."],
+ ["「類經」으로 內經 12분류한 張씨?","張介賓(景岳)",["張介賓(景岳)","張仲景","張元素","張從正"],"明·溫補派."],
+ ["「本草綱目」·綱目체계의 李씨?","李時珍",["李時珍","李杲","李中梓","李梴"],"明."],
+ ["「脾胃論」·補土派의 李씨?","李杲(東垣)",["李杲(東垣)","李時珍","李中梓","李梴"],"금원사대가."],
+ ["「醫學入門」의 李씨?","李梴",["李梴","李時珍","李杲","李中梓"],"明."],
+ ["「溫疫論」·一病一氣說의 吳씨?","吳有性(又可)",["吳有性(又可)","吳瑭","吳崑","吳謙"],"明·戾氣致病."],
+ ["「溫病條辨」·三焦辨證의 吳씨?","吳瑭(鞠通)",["吳瑭(鞠通)","吳有性","吳崑","吳謙"],"淸."],
+ ["「醫宗金鑑」(361혈)의 吳씨?","吳謙",["吳謙","吳有性","吳瑭","吳崑"],"淸."]
+];
+
+/* ============ A. 시대순 정렬 (Order) ============ */
+var SEQ_ERA = [
+ { title:"① 침구서 穴數 변천 (적은→많은/시대순)",
+   items:["甲乙經 349 (晉·皇甫謐)","銅人經 354 (北宋·王惟一)","資生經 359 (南宋·王執中)","醫宗金鑑 361 (淸·吳謙)"],
+   reveal:"349→354→359→361. ※ 明 鍼灸大成(楊繼洲)도 359혈." },
+ { title:"② 본초서 저작 순서",
+   items:["神農本草經","名醫別錄","新修本草","圖經本草","證類本草","湯液本草","本草綱目"],
+   reveal:"神農本草經(漢)→…→本草綱目(明). 출처: 본초편." },
+ { title:"③ 溫病學派 의가 순서",
+   items:["吳又可 溫疫論","葉天士 溫熱論","薛雪 溫熱病篇","吳鞠通 溫病條辨","王孟英 溫熱經緯"],
+   reveal:"戾氣→衛氣營血 창시→濕熱→三焦辨證→病例 집성." },
+ { title:"④ 金元四大家 生沒 순서",
+   items:["劉完素 寒涼派","張從正 攻下派","李杲 補土派","朱震亨 滋陰派"],
+   reveal:"劉(1120)→張(1151)→李(1180)→朱(1281)." },
+ { title:"⑤ 黃帝內經 정리·주석 시대순",
+   items:["全元起 (梁)","楊上善 太素 (隋)","王冰 運氣7편 (唐)","史崧 靈樞 개편 (宋)","馬蒔 註證發微 (明)"],
+   reveal:"全元起→楊上善→王冰→史崧→馬蒔." }
+];
+
+/* ============ A. 「최초·現存最古」 변별 (Pick) ============ */
+var FIRSTS = [
+ ["현존하는 最古의 醫書?","黃帝內經",["黃帝內經","難經","傷寒雜病論","神農本草經"],"素問+靈樞. 西漢 완성."],
+ ["現存 최초의 침구학 서적?","黃帝鍼灸甲乙經(皇甫謐)",["黃帝鍼灸甲乙經(皇甫謐)","銅人圖經(王惟一)","十四經發揮(滑壽)","鍼灸大成(楊繼洲)"],"晉·349혈."],
+ ["최초의 病理 전문서?","諸病源候論(巢元方)",["諸病源候論(巢元方)","脈經(王叔和)","千金方(孫思邈)","外臺秘要(王燾)"],"隋."],
+ ["중국 최초의 臨床百科全書?","備急千金要方(孫思邈)",["備急千金要方(孫思邈)","外臺秘要(王燾)","諸病源候論(巢元方)","太平聖惠方"],"唐·질병을 五臟六腑에 귀속."],
+ ["최초 官修本草·세계 최초 국가약전?","新修本草(蘇敬)",["新修本草(蘇敬)","本草經集注(陶弘景)","神農本草經","本草綱目(李時珍)"],"唐(659)."],
+ ["傷寒論에 전면 주해를 단 최초의 책?","注解傷寒論(成無已)",["注解傷寒論(成無已)","南陽活人書(朱肱)","傷寒論條辨(方有執)","尙論篇(喩昌)"],"金."],
+ ["최초의 旣成藥典?","太平惠民和劑局方",["太平惠民和劑局方","太平聖惠方","聖濟總錄","普濟方"],"宋·四物湯·四君子湯 등 수록."],
+ ["內經 전체에 대한 최초의 주석서?","素問·靈樞註證發微(馬蒔)",["素問·靈樞註證發微(馬蒔)","類經(張介賓)","內經知要(李中梓)","黃帝內經太素(楊上善)"],"明."],
+ ["方書之祖?","傷寒雜病論(張仲景)",["傷寒雜病論(張仲景)","神農本草經","黃帝內經","太平聖惠方"],"漢."],
+ ["本草中興之祖?","本草經集注(陶弘景)",["本草經集注(陶弘景)","新修本草(蘇敬)","本草綱目(李時珍)","神農本草經"],"梁·730종."],
+ ["五臟辨證을 소아과에 가장 먼저?","小兒藥證直訣(錢乙)",["小兒藥證直訣(錢乙)","幼幼新書(劉昉)","活幼心書(曾世榮)","幼科發揮(萬全)"],"北宋."],
+ ["현존하는 우리나라 最古의 醫書?","鄕藥救急方",["鄕藥救急方","鄕藥集成方","東醫寶鑑","醫方類聚"],"고려·민간구급."]
+];
+
+/* ============ A. 숫자 변별 (Connect 책↔숫자) ============ */
+var NUMBERS = [
+ [ ["難經","81難"], ["神農本草經","365종"], ["本草經集注","730종"],
+   ["黃帝鍼灸甲乙經","349혈"], ["銅人腧穴鍼灸圖經","354혈"] ],
+ [ ["鍼灸資生經","359혈"], ["醫宗金鑑","361혈"], ["脈經","24맥"],
+   ["紫虛脈訣(崔嘉彦)","28맥"], ["敖氏傷寒金鏡錄","36舌象"] ]
+];
+
+/* ============ B. 學說史 — 命門學說 (Pick) ============ */
+var MYEONGMUN = [
+ ["「命門」이란 글자가 처음 보이는 전적?","內經",["內經","難經","金匱要略","中藏經"],"素問 음양이합론·靈樞 근결. 단 「命門者目也」로 학설과는 무관."],
+ ["命門學說의 기원이 된 전적?","難經",["難經","內經","脾胃論","醫貫"],"36難·39難 — 左腎右命門."],
+ ["命門學說이 학설로 형성된 시기?","金元(相火論)",["金元(相火論)","戰國","東漢","隋唐"],"相火를 腎·命門과 연결하며 형성."],
+ ["相火와 腎·命門을 처음 연결한 의가?","劉完素",["劉完素","朱震亨","趙獻可","張介賓"],"素問病機氣宜保命集 — 右腎屬火."],
+ ["相火妄動을 강조하며 발전시킨 의가?","朱震亨",["朱震亨","劉完素","虞搏","陳氏"],"格致餘論 相火論 — 陽有餘陰不足."],
+ ["「右腎說」의 근거 전적은?","難經",["難經","醫貫","醫學正傳","石室秘錄"],"명대 이전 다수설."],
+ ["「腎間說」(독립기관)을 주장 — 조헌가·장개빈?","腎間說",["腎間說","右腎說","兩腎說","機能說"],"조헌가 七節之旁中有小心 / 장개빈 腎有精室是曰命門."],
+ ["우박(醫學正傳)이 兩腎을 모두 命門이라 본 설은?","兩腎說",["兩腎說","右腎說","腎間說","機能說"],"虞搏 — 兩腎總號命門."],
+ ["청 진씨(石室秘錄) — 命門은 腎機能의 하나라는 설은?","機能說",["機能說","右腎說","腎間說","兩腎說"],"해부부위·실질기관이 아님."]
+];
+
+/* ============ B. 三焦 有形/無形 분류 (Pick) ============ */
+var SAMCHO = [
+ ["三焦有名而無形說의 출전?","難經(25難)",["難經(25難)","內經","醫學正傳","類經"],"心主與三焦爲表裏 俱有名而無形."],
+ ["難經 — 삼초는?","無形",["無形","有形"],"有名無形의 시초."],
+ ["中藏經 — 삼초는?","無形",["無形","有形"],"人之三元之氣 有名而無形."],
+ ["孫思邈(千金要方) — 삼초는?","無形",["無形","有形"],"有名無形."],
+ ["滑壽(難經本義) — 삼초는?","無形",["無形","有形"],"外有經而內無形."],
+ ["李梴(醫學入門) — 삼초는?","無形",["無形","有形"],"如霧如漚如瀆, 有名而無形."],
+ ["張山雷(難經滙注箋正) — 삼초는?","無形",["無形","有形"],"有名無形 — 別使 기능도 부정."],
+ ["虞搏(醫學正傳) — 삼초는?","有形",["無形","有形"],"指腔子, 其體有脂膜 — 有名有形."],
+ ["章潢(圖書編) — 삼초는?","有形",["無形","有形"],"有形如膀胱."],
+ ["張介賓(類經) — 삼초는?","有形",["無形","有形"],"속 빈 커다란 孤腑 — 有形."],
+ ["唐宗海(血證論) — 삼초는?","有形",["無形","有形"],"油膜과 상관."]
+];
+
+/* ============ B. 藏象學說 발전 (Connect 인물·시대 ↔ 기여) ============ */
+var JANGSANG = [
+ [ ["內經","「藏象」 용어 처음(六節藏象論)·이론체계 기본틀"],
+   ["難經","장부의 해부학적 형태·기능 인식"],
+   ["張仲景","傷寒雜病論에 藏象학설 응용(예: 陽明病)"],
+   ["皇甫謐","甲乙經 349혈에 藏象 이론체계를 녹임"],
+   ["孫思邈","千金方 — 장부로 강령 잡아 계통화"] ],
+ [ ["宋慈","洗冤錄 — 해부도"],
+   ["楊介","存眞圖 — 해부도"],
+   ["劉完素","五臟六腑 應五運六氣說"],
+   ["趙獻可","醫貫 — 小心命門說"],
+   ["王淸任","醫林改錯 — 시체해부·靈機在腦不在心"] ]
+];
+
+/* ============ B. 病因學說 발전 (Order + Connect) ============ */
+var SEQ_BYUNGIN = [
+ { title:"병인 분류설의 전개 (시대순)",
+   items:["醫和 六氣說 (춘추)","內經 病發于陽·于陰","金匱要略 千般疢難不越三條","三因極一 三因說(陳無擇)","溫疫論 戾氣(吳有性)"],
+   reveal:"醫和(음양풍우회명)→內經(陽=풍우한서/陰=음식거처희노)→金匱(장중경 三條)→三因(진무택)→戾氣(오유성)." },
+ { title:"瘀血 개념의 발전 (시대순)",
+   items:["內經 — 명칭 없음(擧痛論)","金匱要略 — 瘀血·血痺·乾血","傷寒論 — 蓄血","醫林改錯 — 王淸任 活血祛瘀"],
+   reveal:"내경엔 瘀血 명칭 없이 擧痛論에 기술 → 금궤·상한 명칭 등장 → 의림개착에서 치법 풍부화." }
+];
+var BYUNGIN_PERSON = [
+ [ ["醫和(춘추)","六氣說 — 陰陽風雨晦明"],
+   ["張仲景(金匱)","千般疢難 不越三條"],
+   ["陳無擇(三因)","三因說 — 內因/外因/不內外因"],
+   ["巢元方(諸病源候論)","乖戾之氣 — 전염성 인식"],
+   ["吳有性(溫疫論)","戾氣·一病一氣說"] ]
+];
+
+/* ============ B. 醫易·陰陽五行 (Order) ============ */
+var SEQ_UIYEOK = [
+ { title:"道의 本體 차서(次序)",
+   items:["無極","太易","太初","太始","太素","太極","陰陽","四象","八卦"],
+   reveal:"無極→太易→太初→太始→太素→太極→陰陽→四象→八卦." },
+ { title:"五行의 생성 발전 순서",
+   items:["水 (1·6)","火 (2·7)","木 (3·8)","金 (4·9)","土 (5·10)"],
+   reveal:"水→火→木→金→土 / 1·6→2·7→3·8→4·9→5·10." }
+];
+
+/* ============ B. 經絡學說 기원 — 마왕퇴 vs 내경 (Pick) ============ */
+var GYEONGRAK = [
+ ["馬王堆 帛書가 출토된 시대?","漢(마왕퇴 무덤)",["漢(마왕퇴 무덤)","戰國","隋","唐"],"內經 이전의 저작."],
+ ["혈위(穴位) 명칭이 전혀 없는 것은?","馬王堆 帛書",["馬王堆 帛書","黃帝內經","難經","甲乙經"],"백서엔 혈위명 없음(내경엔 200여)."],
+ ["11맥만 수록, 手厥陰(심포)이 부족한 것은?","馬王堆 帛書",["馬王堆 帛書","黃帝內經","十四經發揮","難經"],"足臂十一脈灸經·陰陽十一脈灸經."],
+ ["맥 사이 연결·순환 개념이 없는 것은?","馬王堆 帛書",["馬王堆 帛書","黃帝內經","難經","脈經"],"백서 — 맥의 순환 개념 없음."],
+ ["十二經脈을 갖춘 것은?","黃帝內經",["黃帝內經","馬王堆 帛書","難經","甲乙經"],"160여 혈위명."],
+ ["「奇經八脈」을 단어로 구체화한 것은?","難經",["難經","黃帝內經","馬王堆 帛書","甲乙經"],"내경엔 직접 언급 없음·난경에서 구체화."]
+];
+
+/* ============ C. 韓國醫學史 (Connect) ============ */
+var KOREA = [
+ [ ["鄕藥救急方","現存하는 우리나라 最古의 醫書 (고려·민간구급)"],
+   ["濟衆立效方","김영석 (고려)"],
+   ["鄕藥集成方","세종 — 우리 향약 전통지식 고증"],
+   ["醫方類聚","세종 때 완성"],
+   ["桓雄天王","우리 醫藥의 創始祖"] ],
+ [ ["東醫寶鑑","許浚 — 內經 계통의 醫書"],
+   ["鍼灸經驗方","허임"],
+   ["麻科會通","鄭茶山(정약용)"],
+   ["濟衆新編","康命吉"],
+   ["方藥合編","黃度淵 — 醫宗損益·醫方活套 종합"] ],
+ [ ["東醫壽世保元","李濟馬(東武) — 四象醫學說 제창"],
+   ["扶陽論","이규준"],
+   ["診脈圖訣","鄭道傳"],
+   ["小兒醫方","崔圭憲"],
+   ["廣濟秘笈","李景華"] ]
+];
+
+/* ============================ TAB CONFIG ============================ */
+var TABS = [
+ {n:"본편·매칭",label:"저서↔저자",title:"저서 ↔ 저자",sec:true,
+  hint:"왼쪽 저서를 탭한 뒤 오른쪽 저자를 탭해 짝지어. 10라운드. 같은 성씨(王·張·吳)가 흩어져 나옴.",
+  type:"connect", data:BOOK_AUTHOR, lh:"저서", rh:"저자"},
+ {n:"본편·미스매칭",label:"저서→시대",title:"저서 → 시대",
+  hint:"이 책이 어느 시대인지 고르기. 難經=戰國, 新修本草=唐, 손사막=唐…",
+  type:"pick", data:BOOK_ERA},
+ {n:"본편·매칭",label:"인물↔업적",title:"인물 ↔ 핵심 업적",
+  hint:"인물과 핵심 업적·학파를 짝지어. 금원사대가·온병가 묶음.",
+  type:"connect", data:PERSON_DEED, lh:"인물", rh:"업적·학파"},
+ {n:"본편·함정",label:"同姓 변별",title:"同姓 변별 드릴",
+  hint:"王·張·李·吳 — 같은 성씨 중 누구인지. 미스매칭 함정 직격.",
+  type:"pick", data:SURNAME},
+ {n:"본편·순서",label:"시대순 정렬",title:"시대순 정렬",
+  hint:"이른 것부터 순서대로 탭. 穴數·본초서·온병가·금원사대가·내경 주석.",
+  type:"order", data:SEQ_ERA},
+ {n:"본편·변별",label:"최초·最古",title:"「최초·現存最古」 변별",
+  hint:"方書之祖·本草中興之祖·최초 官修본초·최초 病理서… 고수익 변별.",
+  type:"pick", data:FIRSTS},
+ {n:"본편·숫자",label:"숫자",title:"숫자 변별 (책 ↔ 數)",
+  hint:"81難·365종·730종·혈수·맥수·설상. 숫자 함정 대비.",
+  type:"connect", data:NUMBERS, lh:"저서", rh:"숫자"},
+
+ {n:"학설사",label:"命門學說",title:"命門學說",sec:true,
+  hint:"기원(難經)→형성(상화론)→발전. 우신/신간/양신/기능 4설을 의가별로 분류.",
+  type:"pick", data:MYEONGMUN},
+ {n:"학설사",label:"三焦 유무형",title:"三焦 有形·無形 분류",
+  hint:"각 의가가 三焦를 有形으로 봤나 無形으로 봤나. 두 진영 변별.",
+  type:"pick", data:SAMCHO},
+ {n:"학설사·매칭",label:"藏象 발전",title:"藏象學說 발전",
+  hint:"시대·인물과 장상학설 기여를 짝지어.",
+  type:"connect", data:JANGSANG, lh:"인물·시대", rh:"기여"},
+ {n:"학설사",label:"病因 발전",title:"病因學說 발전",
+  hint:"분류설·어혈 개념의 시대순 + 의가↔학설.",
+  type:"order", data:SEQ_BYUNGIN, extra:{type:"connect", data:BYUNGIN_PERSON, lh:"인물", rh:"학설"}},
+ {n:"학설사·순서",label:"醫易·五行",title:"醫易·陰陽五行",
+  hint:"무극→팔괘 차서, 오행 생성 순서.",
+  type:"order", data:SEQ_UIYEOK},
+ {n:"학설사",label:"經絡 기원",title:"經絡學說 기원 — 마왕퇴 vs 내경",
+  hint:"마왕퇴 백서와 내경의 차이 변별.",
+  type:"pick", data:GYEONGRAK},
+
+ {n:"한국",label:"韓國醫學史",title:"韓國 醫學史",sec:true,
+  hint:"우리나라 의서·의가 짝짓기. 3라운드.",
+  type:"connect", data:KOREA, lh:"저서", rh:"인물·특징"}
+];
+
+/* ============================ STATE / HELPERS ============================ */
+var totalMatched=0;
+function addScore(n){ totalMatched+=n; var s=document.getElementById('score'); if(s) s.textContent='맞춤 '+totalMatched; }
+function el(t,c,h){ var e=document.createElement(t); if(c)e.className=c; if(h!=null)e.innerHTML=h; return e; }
+function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function flash(n){ if(!n)return; n.classList.add('flash'); setTimeout(function(){ if(n)n.classList.remove('flash'); },320); }
+function hzCard(t){ var c=el('div','card'); c.innerHTML='<span class="hz">'+t+'</span>'; return c; }
+
+/* ============================ ENGINES ============================ */
+function ConnectGame(panel, rounds, lh, rh, onDone){
+  var board=panel.querySelector('.board'), reveal=panel.querySelector('.reveal');
+  var nextBtn=panel.querySelector('.btn-next'), prog=panel.querySelector('.gprog');
+  if(!board||!nextBtn) return;
+  var ri=0, sel=null, lockedInRound=0, totalPairs=0, donePairs=0;
+  rounds.forEach(function(r){ totalPairs+=r.length; });
+  function updProg(){ if(prog) prog.textContent='라운드 '+(ri+1)+' / '+rounds.length+'  ·  맞춘 짝 '+donePairs+' / '+totalPairs; }
+  function renderRound(){
+    sel=null; lockedInRound=0;
+    if(reveal){ reveal.classList.remove('show'); reveal.innerHTML=''; }
+    nextBtn.classList.remove('show');
+    var pairs=rounds[ri];
+    var lefts=pairs.map(function(p,i){ return {t:p[0],i:i}; });
+    var rights=pairs.map(function(p,i){ return {t:p[1],i:i,rev:p[2]||''}; });
+    shuffle(rights);
+    board.innerHTML='';
+    var wrap=el('div','connect-wrap'), colL=el('div','col'), colR=el('div','col');
+    colL.appendChild(el('div','col-h',lh||'')); colR.appendChild(el('div','col-h',rh||''));
+    lefts.forEach(function(L){ var c=hzCard(L.t); c.dataset.idx=L.i; c.dataset.side='L';
+      c.addEventListener('click',function(){ pick(c,'L',L.i,''); }); colL.appendChild(c); });
+    rights.forEach(function(R){ var c=hzCard(R.t); c.dataset.idx=R.i; c.dataset.side='R'; c.dataset.rev=R.rev;
+      c.addEventListener('click',function(){ pick(c,'R',R.i,R.rev); }); colR.appendChild(c); });
+    wrap.appendChild(colL); wrap.appendChild(colR); board.appendChild(wrap); updProg();
+  }
+  function pick(c,side,idx,rev){
+    if(c.classList.contains('locked')) return;
+    if(!sel){ sel={c:c,side:side,idx:idx,rev:rev}; c.classList.add('sel'); return; }
+    if(sel.side===side){ sel.c.classList.remove('sel'); if(sel.c===c){ sel=null; return; }
+      sel={c:c,side:side,idx:idx,rev:rev}; c.classList.add('sel'); return; }
+    if(sel.idx===idx){
+      sel.c.classList.remove('sel'); sel.c.classList.add('locked'); c.classList.add('locked');
+      var r=rev||sel.rev||''; if(reveal&&r){ reveal.innerHTML='<b>✓</b> '+r; reveal.classList.add('show'); }
+      sel=null; lockedInRound++; donePairs++; addScore(1); updProg();
+      if(lockedInRound===rounds[ri].length){ nextBtn.textContent=(ri<rounds.length-1)?'다음 라운드 →':'다음 게임 →'; nextBtn.classList.add('show'); }
+    } else { flash(sel.c); flash(c); sel.c.classList.remove('sel'); sel=null; }
+  }
+  nextBtn.addEventListener('click',function(){ if(ri<rounds.length-1){ ri++; renderRound(); } else { onDone(); } });
+  renderRound();
+}
+
+function OrderGame(panel, sets, onDone){
+  var board=panel.querySelector('.board'), gsub=panel.querySelector('.gsub');
+  var reveal=panel.querySelector('.reveal'), nextBtn=panel.querySelector('.btn-next'), prog=panel.querySelector('.gprog');
+  if(!board||!nextBtn) return;
+  var si=0;
+  function renderSet(){
+    if(reveal){ reveal.classList.remove('show'); reveal.innerHTML=''; }
+    nextBtn.classList.remove('show');
+    var s=sets[si], next=0;
+    if(gsub) gsub.textContent=s.title;
+    if(prog) prog.textContent='세트 '+(si+1)+' / '+sets.length;
+    board.innerHTML='';
+    var grid=el('div','order-grid');
+    var order=s.items.map(function(t,i){ return {t:t,i:i}; });
+    var shown=order.slice(); shuffle(shown);
+    shown.forEach(function(o){ var c=el('div','ocard'); c.innerHTML='<span class="ord"></span>'+o.t;
+      c.addEventListener('click',function(){
+        if(c.classList.contains('locked')) return;
+        if(o.i===next){ c.classList.add('locked'); next++; var b=c.querySelector('.ord'); if(b)b.textContent=next; addScore(1);
+          if(next===s.items.length){ if(reveal){ reveal.innerHTML='<b>✓</b> '+s.reveal; reveal.classList.add('show'); }
+            nextBtn.textContent=(si<sets.length-1)?'다음 세트 →':'다음 게임 →'; nextBtn.classList.add('show'); } }
+        else { flash(c); }
+      }); grid.appendChild(c); });
+    board.appendChild(grid);
+  }
+  nextBtn.addEventListener('click',function(){ if(si<sets.length-1){ si++; renderSet(); } else { onDone(); } });
+  renderSet();
+}
+
+function PickGame(panel, qs, onDone){
+  var board=panel.querySelector('.board'), reveal=panel.querySelector('.reveal');
+  var nextBtn=panel.querySelector('.btn-next'), prog=panel.querySelector('.gprog');
+  if(!board||!nextBtn) return;
+  var qi=0;
+  function renderQ(){
+    if(reveal){ reveal.classList.remove('show'); reveal.innerHTML=''; }
+    nextBtn.classList.remove('show');
+    var q=qs[qi];
+    if(prog) prog.textContent='문제 '+(qi+1)+' / '+qs.length;
+    board.innerHTML='';
+    var qd=el('div','pick-q'); qd.innerHTML='<span class="hz">Q'+(qi+1)+'.</span> '+q[0]; board.appendChild(qd);
+    var wrap=el('div','opts'), opts=q[2].slice(); shuffle(opts); var answered=false;
+    opts.forEach(function(o){ var b=el('button','opt'); b.type='button'; b.textContent=o;
+      b.addEventListener('click',function(){
+        if(answered||b.disabled) return;
+        if(o===q[1]){ b.classList.add('ok'); answered=true; addScore(1);
+          Array.prototype.forEach.call(wrap.children,function(x){ x.disabled=true; });
+          if(reveal){ reveal.innerHTML='<b>✓ '+q[1]+'</b> — '+q[3]; reveal.classList.add('show'); }
+          nextBtn.textContent=(qi<qs.length-1)?'다음 문제 →':'다음 게임 →'; nextBtn.classList.add('show'); }
+        else { b.classList.add('no'); b.disabled=true; }
+      }); wrap.appendChild(b); });
+    board.appendChild(wrap);
+  }
+  nextBtn.addEventListener('click',function(){ if(qi<qs.length-1){ qi++; renderQ(); } else { onDone(); } });
+  renderQ();
+}
+
+/* ============================ HUB CONTROLLER ============================ */
+var tabsEl=document.getElementById('tabs'), mainEl=document.getElementById('main');
+var panels=[], inited=[];
+function buildTab(cfg, idx){
+  var t=el('div','tab'+(cfg.sec?' sec-h':'')); t.innerHTML='<span class="n">'+cfg.n+'</span>'+cfg.label;
+  t.addEventListener('click',function(){ show(idx); }); tabsEl.appendChild(t);
+  var p=el('section','panel');
+  var hintHtml=(cfg.type==='order')?'<div class="ghint">'+cfg.hint+'</div><div class="ghint gsub"></div>':'<div class="ghint">'+cfg.hint+'</div>';
+  p.innerHTML='<div class="gtitle">'+cfg.title+'</div>'+hintHtml+'<div class="gprog"></div><div class="board"></div><div class="reveal"></div>'+
+    '<div class="nextbar"><button type="button" class="btn-next">다음 →</button></div>';
+  mainEl.appendChild(p); panels.push(p);
+}
+function initPanel(idx){
+  if(inited[idx]) return; inited[idx]=true;
+  var cfg=TABS[idx], p=panels[idx];
+  var onDone=function(){ show((idx+1)%TABS.length); };
+  // if a panel has an "extra" 2nd game, chain: finish main -> run extra -> onDone
+  var finish=onDone;
+  if(cfg.extra){
+    finish=function(){
+      var ex=cfg.extra;
+      if(ex.type==='connect') ConnectGame(p, ex.data, ex.lh, ex.rh, onDone);
+      else if(ex.type==='order') OrderGame(p, ex.data, onDone);
+      else if(ex.type==='pick') PickGame(p, ex.data, onDone);
+    };
+  }
+  if(cfg.type==='connect') ConnectGame(p, cfg.data, cfg.lh, cfg.rh, finish);
+  else if(cfg.type==='order') OrderGame(p, cfg.data, finish);
+  else if(cfg.type==='pick') PickGame(p, cfg.data, finish);
+}
+function show(idx){
+  panels.forEach(function(p,i){ p.classList.toggle('active', i===idx); });
+  Array.prototype.forEach.call(tabsEl.children,function(t,i){ t.classList.toggle('active', i===idx); });
+  initPanel(idx); if(window.scrollTo) window.scrollTo(0,0);
+}
+TABS.forEach(buildTab); show(0);
+
+document.addEventListener('keydown',function(e){
+  if(e.code!=='Space' && e.key!==' ') return;
+  var tag=(document.activeElement&&document.activeElement.tagName)||'';
+  if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT') return;
+  var active=panels.filter(function(p){ return p.classList.contains('active'); })[0];
+  if(!active) return;
+  var btn=active.querySelector('.btn-next.show'); if(btn){ e.preventDefault(); btn.click(); }
+});
+
+window.__HUB__={ TABS:TABS, panels:panels, show:show, score:function(){ return totalMatched; } };
+})();
+</script>
+</body>
+</html>
