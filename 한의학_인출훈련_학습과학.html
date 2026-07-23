@@ -1390,6 +1390,7 @@ function openSongModal(dateStr){
     card.appendChild(eb); card.appendChild(b); return card;
   }
   const sum=document.getElementById('summary'); if(sum) sum.appendChild(mkCard());
+  const st=document.getElementById('start');    if(st)  st.appendChild(mkCard());
 })();
 window.songFromWrong = openSongModal;
 
