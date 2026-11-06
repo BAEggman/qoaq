@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0d0a07">
+<title>醫家 도감 — 名·字·號·著書</title>
+<style>
+:root{--bg:#0d0a07;--panel:#171109;--card:#1f160c;--cardh:#2a1d0f;--ink:#ece2cf;--muted:#b6a585;--dim:#7d6f57;--zhu:#cf4a2c;--bronze:#c9962e;--jade:#6cae8b;--warn:#d6a23a;--line:#3a2c1a;--line2:#503c22;
+ --serif:"Nanum Myeongjo","Noto Serif KR","Batang",AppleMyungjo,"Apple SD Gothic Neo",serif;--sans:"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",system-ui,sans-serif}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--serif);min-height:100vh}
+.wrap{max-width:980px;margin:0 auto;padding:16px 14px 90px}
+header{padding:4px 2px 12px;border-bottom:1px solid var(--line)}
+.ttl{font-size:28px;font-weight:800;letter-spacing:2px}.ttl .zhu{color:var(--zhu)}
+.sub{font-size:13px;color:var(--muted);margin-top:5px;line-height:1.55}
+.sub a{color:var(--bronze)}
+.tabs{display:flex;gap:7px;overflow-x:auto;padding:12px 2px 8px;scrollbar-width:none}
+.tab{flex:0 0 auto;padding:9px 13px;border:1px solid var(--line2);border-radius:11px;background:var(--panel);color:var(--muted);font:700 14px var(--serif);cursor:pointer;white-space:nowrap}
+.tab .n{display:block;font-size:10px;color:var(--dim);font-weight:600;letter-spacing:1px}
+.tab.active{color:var(--ink);border-color:var(--bronze);background:linear-gradient(180deg,#241809,#1a1108)}
+.panel{display:none}.panel.active{display:block}
+.ghint{font-size:12.5px;color:var(--muted);margin:2px 2px 12px;line-height:1.6}
+.stat{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 14px}
+.stat span{font:12px var(--sans);color:var(--muted);border:1px solid var(--line2);border-radius:14px;padding:4px 10px;background:var(--panel)}
+.stat b{color:var(--bronze)}
+button{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line2);border-radius:10px;padding:10px 14px;cursor:pointer}
+button:hover{border-color:var(--bronze)}
+button.pri{border-color:var(--bronze);background:#2a1d0f;font-weight:800}
+button:disabled{opacity:.4;cursor:default}
+/* 도감 */
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.filters button{padding:6px 10px;font-size:13px}
+.filters button.on{border-color:var(--bronze);color:var(--bronze)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px}
+.pc{border:1px solid var(--line2);background:var(--card);border-radius:12px;padding:12px 14px}
+.pc .h{display:flex;justify-content:space-between;align-items:baseline}
+.pc .nm{font-size:22px;font-weight:800}
+.pc .nm small{font-size:12px;color:var(--dim);font-weight:400;margin-left:6px;font-family:var(--sans)}
+.pc .era{font:12px var(--sans);color:var(--dim)}
+.row{display:flex;gap:8px;margin-top:6px;font-size:14.5px;line-height:1.45}
+.row .k{flex:0 0 34px;font:700 11px var(--sans);color:var(--dim);padding-top:3px;letter-spacing:1px}
+.row .v{flex:1}
+.zi{color:var(--jade);font-weight:700}.hao{color:var(--bronze);font-weight:700}
+.why{font:12px var(--sans);color:var(--muted);margin-left:4px}
+.tag{display:inline-block;font:11px var(--sans);padding:1px 6px;border-radius:8px;border:1px solid var(--line2);color:var(--dim);margin-left:4px}
+.hook{margin-top:8px;font-size:13px;color:var(--muted);border-top:1px dashed var(--line);padding-top:7px}
+.flag{color:var(--warn);font:12px var(--sans)}
+.mask .zi,.mask .hao,.mask .bk{filter:blur(6px);cursor:pointer}
+.mask .zi.show,.mask .hao.show,.mask .bk.show{filter:none}
+/* 훈련 */
+.qcard{border:1px solid var(--line2);background:var(--card);border-radius:14px;padding:18px 18px 16px;max-width:680px}
+.qk{font:12px var(--sans);color:var(--dim);letter-spacing:1px}
+.qq{font-size:20px;line-height:1.55;margin:8px 0 14px}
+.qq b{color:var(--bronze);font-size:26px}
+.inrow{display:flex;gap:8px}
+.inrow input{flex:1;font:18px var(--serif);background:#120d07;color:var(--ink);border:1px solid var(--line2);border-radius:10px;padding:10px 12px}
+.inrow input:focus{outline:none;border-color:var(--bronze)}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.opts button{text-align:left;font-size:16px}
+.opts button.ok{border-color:var(--jade);background:rgba(108,174,139,.15)}
+.opts button.no{border-color:var(--zhu);background:rgba(207,74,44,.15)}
+.fb{margin-top:12px;border-top:1px solid var(--line);padding-top:10px;font-size:14px;line-height:1.6}
+.fb .v{font-weight:800;font-size:16px}.fb .v.ok{color:var(--jade)}.fb .v.no{color:var(--zhu)}.fb .v.half{color:var(--warn)}
+.grade{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.small{font:12px var(--sans);color:var(--dim)}
+kbd{font:11px var(--sans);border:1px solid var(--line2);border-bottom-width:2px;border-radius:4px;padding:0 5px;margin-left:4px;color:var(--muted)}
+/* 표 */
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{border-bottom:1px solid var(--line);padding:7px 6px;text-align:left;vertical-align:top}
+th{font:700 12px var(--sans);color:var(--dim);letter-spacing:1px}
+.rules{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px}
+.rules .pc h3{margin:0 0 6px;font-size:16px;color:var(--bronze)}
+.rules .pc p{margin:4px 0;font-size:13.5px;line-height:1.6;color:var(--muted)}
+.rules .pc p b{color:var(--ink)}
+@media(max-width:600px){.opts{grid-template-columns:1fr}.qq{font-size:18px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="ttl">醫家 <span class="zhu">도감</span></div>
+  <div class="sub">名·字·號·著書를 사람 단위로 묶어 네 방향으로 꺼낸다. 字는 名을 풀이하고, 號는 땅이거나 뜻이다 — 규칙으로 외울 양을 줄인다. <a href="./">← 醫學史 허브</a></div>
+</header>
+<div class="tabs" id="tabs"></div>
+<div id="main"></div>
+</div>
+<script>
+(function(){
+"use strict";
+/* ─────────── 데이터 ───────────
+ n 名 · nk 독음 · zi 字 · zk · why 名字相應 풀이 · hao 號[] · hk · era · sch 학파·별칭 · bk 著書[] · hook 한 줄 · flag ※(교재 대조 필요)
+ 字·號는 통설 기준. ※가 붙은 칸은 교재 표기와 대조할 것. */
+var P=[
+ {n:"秦越人",nk:"진월인",zi:"",hao:["扁鵲"],hk:["편작"],haoNote:"稱號(호칭) — 號가 아니라 별칭",era:"戰國",sch:"",bk:["難經"],hook:"편작이라 불린 진월인 — 81難"},
+ {n:"張機",nk:"장기",zi:"仲景",zk:"중경",why:"",hao:[],era:"東漢",sch:"醫聖",bk:["傷寒雜病論"],hook:"이름보다 字(仲景)로 불린다 — 方書之祖, 醫聖"},
+ {n:"華佗",nk:"화타",zi:"元化",zk:"원화",why:"",hao:[],era:"東漢",sch:"외과·麻沸散·五禽戲",bk:["中藏經(託名)"],hook:"元化 — 마비산으로 몸을 바꾼(化) 외과의",flag:"中藏經은 후대 託名"},
+ {n:"王熙",nk:"왕희",zi:"叔和",zk:"숙화",why:"熙(화락할 희) ↔ 和",hao:[],era:"晉",sch:"",bk:["脈經"],hook:"王叔和의 叔和는 字 — 本名은 熙. 脈經·獨取寸口",alias:"王叔和"},
+ {n:"皇甫謐",nk:"황보밀",zi:"士安",zk:"사안",why:"謐(고요할 밀) ↔ 安",hao:["玄晏先生"],hk:["현안선생"],era:"晉",sch:"",bk:["黃帝鍼灸甲乙經"],hook:"고요한(謐) 선비(士)가 편안히(安) 349혈을 모았다"},
+ {n:"葛洪",nk:"갈홍",zi:"稚川",zk:"치천",why:"洪(큰물) ↔ 川(내)",hao:["抱朴子"],hk:["포박자"],era:"晉",sch:"道家",bk:["肘後備急方","抱朴子"],hook:"큰물(洪)이 어린 내(稚川)에서 시작해 박(朴)을 품는다"},
+ {n:"陶弘景",nk:"도홍경",zi:"通明",zk:"통명",why:"景(햇빛) ↔ 明",hao:["華陽隱居"],hk:["화양은거"],era:"梁(南北朝)",sch:"本草中興之祖",bk:["本草經集注"],hook:"큰 빛(弘景)이 밝게 통해(通明) 730종을 엮고 화양에 숨었다"},
+ {n:"孫思邈",nk:"손사막",zi:"",hao:[],era:"唐",sch:"藥王·孫眞人(尊稱)",bk:["備急千金要方","千金翼方"],hook:"藥王 — 사람 목숨은 千金보다 귀하다",flag:"字·號 대신 尊稱으로 출제"},
+ {n:"王冰",nk:"왕빙",zi:"",hao:["啓玄子"],hk:["계현자"],era:"唐",sch:"",bk:["黃帝內經素問(次注)"],hook:"얼음(冰)이 깨져 玄을 연다(啓玄) — 運氣 7편 보충"},
+ {n:"錢乙",nk:"전을",zi:"仲陽",zk:"중양",why:"",hao:[],era:"北宋",sch:"소아과",bk:["小兒藥證直訣"],hook:"小兒는 純陽 — 仲陽이 五臟辨證을 소아에"},
+ {n:"王執中",nk:"왕집중",zi:"叔權",zk:"숙권",why:"執中 ↔ 權 (孟子 執中無權)",hao:[],era:"南宋",sch:"",bk:["鍼灸資生經"],hook:"가운데를 잡되(執中) 저울질(權)한다 — 同身寸"},
+ {n:"陳言",nk:"진언",zi:"無擇",zk:"무택",why:"言 ↔ 無擇 (口無擇言, 孝經)",hao:[],era:"南宋",sch:"",bk:["三因極一病證方論"],hook:"말(言)에 가릴 것 없다(無擇) — 病因을 셋으로"},
+ {n:"朱肱",nk:"주굉",zi:"翼中",zk:"익중",why:"肱(팔뚝) ↔ 翼(날개)",hao:["無求子"],hk:["무구자"],era:"北宋",sch:"",bk:["南陽活人書"],hook:"팔뚝(肱)이 날개(翼) — 바라는 것 없이(無求) 사람을 살린다(活人)"},
+ {n:"成無己",nk:"성무기",zi:"",hao:[],era:"金",sch:"",bk:["注解傷寒論"],hook:"나(己)를 없애고 傷寒論을 처음 전부 주해",flag:"허브 표기 成無已 — 통용 표기는 成無己"},
+ {n:"劉完素",nk:"유완소",zi:"守眞",zk:"수진",why:"完素(바탕을 온전히) ↔ 守眞(참을 지킴)",hao:["通玄處士"],hk:["통현처사"],era:"金元",sch:"寒涼派 · 劉河間(河間은 地名)",bk:["素問玄機原病式","宣明論方"],hook:"河間 선비가 참(眞)을 지켜 火熱을 식힌다 — 寒涼"},
+ {n:"張元素",nk:"장원소",zi:"潔古",zk:"결고",why:"素(흴 소) ↔ 潔",hao:[],era:"金元",sch:"易水學派(易水는 地名)",bk:["珍珠囊","醫學啓源"],hook:"깨끗한 옛것(潔古) — 珍珠 주머니에 歸經을 담다. 李杲의 스승"},
+ {n:"張從正",nk:"장종정",zi:"子和",zk:"자화",why:"正 ↔ 和 (中正和平)",hao:["戴人"],hk:["대인"],era:"金元",sch:"攻下派",bk:["儒門事親"],hook:"바르게(正) 쳐서 화(和)하게 — 汗吐下"},
+ {n:"李杲",nk:"이고",zi:"明之",zk:"명지",why:"杲(밝을 고) ↔ 明",hao:["東垣老人"],hk:["동원노인"],haoNote:"東垣은 고향 眞定의 옛 이름",era:"金元",sch:"補土派",bk:["脾胃論","內外傷辨惑論","蘭室秘藏"],hook:"해 뜨는(杲) 동쪽 담(東垣) 밑에서 脾胃를 補한다"},
+ {n:"王好古",nk:"왕호고",zi:"進之",zk:"진지",why:"好古 ↔ 進 (論語 好古敏以求之)",hao:["海藏"],hk:["해장"],era:"金元",sch:"易水學派",bk:["湯液本草","此事難知","陰證略例"],hook:"옛것을 좋아해(好古) 나아간다(進) — 바다에 감춘(海藏) 湯液本草"},
+ {n:"朱震亨",nk:"주진형",zi:"彦修",zk:"언수",why:"",hao:["丹溪"],hk:["단계"],haoNote:"고향 義烏의 시내 이름",era:"金元",sch:"滋陰派",bk:["格致餘論","局方發揮","丹溪心法(門人 편)"],hook:"붉은 시내(丹溪) — 陽有餘陰不足, 陰을 기른다"},
+ {n:"滑壽",nk:"활수",zi:"伯仁",zk:"백인",why:"仁者壽 (論語)",hao:["攖寧生"],hk:["영녕생"],era:"元",sch:"",bk:["十四經發揮","難經本義","診家樞要"],hook:"어진 이(仁)는 오래 산다(壽) — 任督을 더해 十四經"},
+ {n:"危亦林",nk:"위역림",zi:"達齋",zk:"달재",why:"",hao:[],era:"元",sch:"正骨",bk:["世醫得效方"],hook:"대대로 의사(世醫) — 골절 整復",flag:"字 교재 대조"},
+ {n:"李時珍",nk:"이시진",zi:"東璧",zk:"동벽",why:"珍(보배) ↔ 璧(구슬)",hao:["瀕湖"],hk:["빈호"],haoNote:"晩號 瀕湖山人 — 물가(瀕) 호수",era:"明",sch:"",bk:["本草綱目","瀕湖脈學","奇經八脈考"],hook:"보배(珍)가 호숫가(瀕湖)에서 本草를 綱目으로 꿴다"},
+ {n:"楊濟時",nk:"양제시",zi:"繼洲",zk:"계주",why:"濟(물을 건넘) ↔ 洲(물가 땅)",hao:[],era:"明",sch:"",bk:["鍼灸大成"],hook:"楊繼洲의 繼洲는 字 — 本名 濟時. 鍼灸大成 359혈",alias:"楊繼洲"},
+ {n:"張介賓",nk:"장개빈",zi:"會卿",zk:"회경",why:"賓(손님) ↔ 會(모임)",hao:["景岳","通一子"],hk:["경악","통일자"],era:"明",sch:"溫補派",bk:["類經","景岳全書"],hook:"손님(賓)이 모여(會) 景岳에 오른다 — 內經을 12類로"},
+ {n:"吳有性",nk:"오유성",zi:"又可",zk:"우가",why:"",hao:[],era:"明",sch:"溫疫",bk:["溫疫論"],hook:"또(又) 가능(可) — 하나의 병에 하나의 戾氣"},
+ {n:"吳崑",nk:"오곤",zi:"山甫",zk:"산보",why:"崑(崑崙山) ↔ 山",hao:["鶴皐"],hk:["학고"],era:"明",sch:"",bk:["醫方考"],hook:"곤륜산(崑)에서 方을 상고한다(考)"},
+ {n:"王肯堂",nk:"왕긍당",zi:"宇泰",zk:"우태",why:"堂(집) ↔ 宇(집)",hao:["損庵"],hk:["손암"],era:"明",sch:"",bk:["證治準繩"],hook:"집(堂)과 집(宇) — 證治의 먹줄(準繩)"},
+ {n:"李中梓",nk:"이중재",zi:"士材",zk:"사재",why:"梓(가래나무·재목) ↔ 材",hao:["念莪"],hk:["염아"],era:"明",sch:"",bk:["醫宗必讀"],hook:"재목(梓·材)이 반드시 읽을 醫宗"},
+ {n:"李梴",nk:"이천",zi:"健齋",zk:"건재",why:"",hao:[],era:"明",sch:"",bk:["醫學入門"],hook:"醫學의 문(入門)",flag:"字 교재 대조"},
+ {n:"孫一奎",nk:"손일규",zi:"文垣",zk:"문원",why:"奎(文星) ↔ 文",hao:["東宿","生生子"],hk:["동숙","생생자"],era:"明",sch:"命門 無形(動氣)",bk:["赤水玄珠"],hook:"文星(奎)이 붉은 물(赤水)에서 구슬을 — 命門은 腎間動氣"},
+ {n:"方有執",nk:"방유집",zi:"中行",zk:"중행",why:"有執 ↔ 中 (允執厥中)",hao:[],era:"明",sch:"錯簡重訂派",bk:["傷寒論條辨"],hook:"가운데를 잡고(執中) 傷寒論 條文을 가린다"},
+ {n:"馬蒔",nk:"마시",zi:"仲化",zk:"중화",why:"",hao:["玄臺子"],hk:["현대자"],era:"明",sch:"",bk:["黃帝內經素問註證發微","靈樞註證發微"],hook:"內經 전체를 처음 주석",flag:"字·號 교재 대조"},
+ {n:"葉桂",nk:"엽계",zi:"天士",zk:"천사",why:"",hao:["香巖"],hk:["향암"],era:"淸",sch:"溫病 · 衛氣營血",bk:["溫熱論","臨證指南醫案"],hook:"계수나무(桂) 향기 바위(香巖) — 衛氣營血"},
+ {n:"薛雪",nk:"설설",zi:"生白",zk:"생백",why:"雪 ↔ 白",hao:["一瓢"],hk:["일표"],era:"淸",sch:"溫病 · 濕熱",bk:["濕熱病篇"],hook:"눈(雪)에서 흰빛(白) — 濕熱 한 바가지(一瓢)"},
+ {n:"吳瑭",nk:"오당",zi:"配珩",zk:"배형",why:"瑭·珩 모두 옥",hao:["鞠通"],hk:["국통"],era:"淸",sch:"溫病 · 三焦辨證",bk:["溫病條辨"],hook:"鞠通은 號 — 三焦로 溫病을 條辨"},
+ {n:"王士雄",nk:"왕사웅",zi:"孟英",zk:"맹영",why:"雄 ↔ 英 (英雄)",hao:["潛齋","半癡山人"],hk:["잠재","반치산인"],era:"淸",sch:"溫病",bk:["溫熱經緯","霍亂論"],hook:"英雄(雄·英)이 溫熱을 經과 緯로 짠다 — 霍亂"},
+ {n:"吳謙",nk:"오겸",zi:"六吉",zk:"육길",why:"謙卦는 六爻가 모두 吉",hao:[],era:"淸",sch:"太醫院",bk:["醫宗金鑑"],hook:"겸손(謙)하면 여섯이 다 길하다 — 361혈 醫宗金鑑"},
+ {n:"汪昂",nk:"왕앙",zi:"訒庵",zk:"인암",why:"",hao:[],era:"淸",sch:"",bk:["醫方集解","本草備要"],hook:"方을 모아 풀고(集解) 本草를 갖춘다(備要)"},
+ {n:"王淸任",nk:"왕청임",zi:"勳臣",zk:"훈신",why:"任(맡음) ↔ 臣",hao:[],era:"淸",sch:"解剖 · 活血祛瘀",bk:["醫林改錯"],hook:"맡은(任) 신하(臣)가 醫林의 錯을 고친다 — 血府逐瘀"},
+ {n:"唐宗海",nk:"당종해",zi:"容川",zk:"용천",why:"海 ↔ 川 (海容百川)",hao:[],era:"淸",sch:"中西匯通",bk:["血證論"],hook:"바다는 내를 받아들인다(容川) — 血證"},
+ {n:"趙學敏",nk:"조학민",zi:"恕軒",zk:"서헌",why:"",hao:[],era:"淸",sch:"",bk:["本草綱目拾遺"],hook:"綱目이 흘린 것을 줍는다(拾遺)",flag:"字 교재 대조"},
+ {n:"許浚",nk:"허준",zi:"淸源",zk:"청원",why:"浚(깊이 파냄) ↔ 源",hao:["龜巖"],hk:["구암"],era:"朝鮮",sch:"",bk:["東醫寶鑑"],hook:"깊이 파서(浚) 맑은 근원(淸源) — 東醫寶鑑"},
+ {n:"李濟馬",nk:"이제마",zi:"務平",zk:"무평",why:"",hao:["東武"],hk:["동무"],era:"朝鮮",sch:"四象醫學",bk:["東醫壽世保元","格致藁"],hook:"東武 — 四象으로 壽世保元"},
+ {n:"丁若鏞",nk:"정약용",zi:"美庸",zk:"미용",why:"",hao:["茶山","與猶堂"],hk:["다산","여유당"],era:"朝鮮",sch:"",bk:["麻科會通"],hook:"茶山 — 홍역(麻) 통달서"},
+ {n:"黃度淵",nk:"황도연",zi:"",hao:["惠庵"],hk:["혜암"],era:"朝鮮",sch:"",bk:["醫宗損益","醫方活套","方藥合編(아들 黃泌秀 편)"],hook:"惠庵 — 方藥合編의 뿌리",flag:"字 생략·方藥合編 편자 교재 대조"},
+];
+/* 名만으로 부르지 않는 사람: 王叔和(=王熙)·楊繼洲(=楊濟時)·張仲景(=張機) — 이름 함정 */
+P.forEach(function(p,i){p.i=i;p.label=p.alias||p.n;});
+var SURNAMES=["王","張","李","吳","朱","孫","陳","楊","劉","葉"];
+var ERAS=["戰國","東漢","晉","梁(南北朝)","唐","北宋","南宋","金","金元","元","明","淸","朝鮮"];
+
+/* ─────────── 저장 (SRS) ─────────── */
+var KEY="uihaksa_uiga_v1",INT=[0,1,2,4,7,14,30,60];
+function iso(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function today(){return iso(new Date());}
+function addDays(s,n){var d=new Date(s+"T00:00:00");d.setDate(d.getDate()+n);return iso(d);}
+var DB;try{DB=JSON.parse(localStorage.getItem(KEY))||{};}catch(e){DB={};}DB.c=DB.c||{};DB.log=DB.log||{};
+function save(){try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){}}
+function sched(id,grade){ /* grade: 0 틀림 · 1 반쯤(선지로 맞춤) · 2 맞음 */
+  var c=DB.c[id]||{lv:0,due:null,n:0,w:0}; c.n++;
+  if(grade===2){c.lv=Math.min(INT.length-1,c.lv+1);} else if(grade===1){c.lv=Math.max(1,c.lv);} else {c.lv=1;c.w++;}
+  c.due=addDays(today(),grade===0?1:INT[c.lv]); c.last=today(); DB.c[id]=c;
+  var t=today();DB.log[t]=DB.log[t]||{a:0,c:0};DB.log[t].a++;if(grade===2)DB.log[t].c++;save();
+  try{window.HubHome&&HubHome.record&&HubHome.record("uiga",id,{wrong:grade===0});}catch(e){}
+}
+
+/* ─────────── 문항 생성: 사람 × 방향 ─────────── */
+function items(){
+  var out=[];
+  P.forEach(function(p){
+    if(p.zi) out.push({id:p.i+"|zi",p:p,dir:"名→字",q:"<b>"+p.label+"</b>의 字는?",ans:[p.zi,p.zk],show:p.zi,pool:"zi"});
+    if(p.hao.length) out.push({id:p.i+"|hao",p:p,dir:"名→號",q:"<b>"+p.label+"</b>의 號는?",ans:p.hao.concat(p.hk||[]),show:p.hao.join(" · "),pool:"hao"});
+    out.push({id:p.i+"|bk",p:p,dir:"名→著書",q:"<b>"+p.label+"</b>의 著書 하나는?",ans:p.bk.map(clean),show:p.bk.join(" · "),pool:"bk"});
+    out.push({id:p.i+"|rbk",p:p,dir:"著書→名",q:"「<b>"+p.bk[0]+"</b>」의 저자는?",ans:[p.n,p.nk].concat(p.alias?[p.alias]:[]),show:p.label,pool:"n"});
+    if(p.zi||p.hao.length){var t=p.hao.length&&(p.i%2||!p.zi)?p.hao[0]:p.zi;out.push({id:p.i+"|rzh",p:p,dir:(t===p.zi?"字":"號")+"→名",q:"<b>"+t+"</b>(은)는 누구의 "+(t===p.zi?"字":"號")+"인가?",ans:[p.n,p.nk].concat(p.alias?[p.alias]:[]),show:p.label,pool:"n"});}
+  });
+  return out;
+}
+function clean(s){return String(s).replace(/\(.*?\)/g,"").trim();}
+var ITEMS=items(),BYID={};ITEMS.forEach(function(it){BYID[it.id]=it;});
+function norm(s){return String(s||"").replace(/[\s·・,()（）「」『』]/g,"").replace(/先生|老人|山人|居士$/,function(m){return m;}).toLowerCase();}
+function loose(x,a){var y=norm(a);x=norm(x);return !!x&&!!y&&(y===x||(y.length>=3&&x.length>=2&&y.indexOf(x)===0&&x.length>=y.length-2));}
+function matchAns(input,it){return it.ans.some(function(a){return loose(input,a);});}
+function distractors(it,n){
+  var pool=[],p=it.p;
+  P.forEach(function(o){if(o===p)return;
+    if(it.pool==="zi"&&o.zi)pool.push([o.zi,o.n[0]===p.n[0]?3:(o.era===p.era?2:1)]);
+    if(it.pool==="hao")o.hao.forEach(function(h){pool.push([h,o.n[0]===p.n[0]?3:(o.era===p.era?2:1)]);});
+    if(it.pool==="bk")pool.push([o.bk[0],o.n[0]===p.n[0]?3:(o.era===p.era?2:1)]);
+    if(it.pool==="n")pool.push([o.label,o.n[0]===p.n[0]?3:(o.era===p.era?2:1)]);
+  });
+  // 字↔號 혼동 유도: 같은 사람의 다른 칸을 오답으로
+  if(it.pool==="zi"&&p.hao.length)pool.push([p.hao[0],5]);
+  if(it.pool==="hao"&&p.zi)pool.push([p.zi,5]);
+  pool.sort(function(a,b){return b[1]-a[1]+Math.random()*1.6-0.8;});
+  var seen={},out=[];seen[it.show]=1;
+  pool.forEach(function(x){if(out.length<n&&!seen[x[0]]){seen[x[0]]=1;out.push(x[0]);}});
+  return out;
+}
+
+/* ─────────── UI ─────────── */
+var TABS=[{n:"훈련",k:"drill",l:"오늘의 인출"},{n:"도감",k:"book",l:"醫家 도감"},{n:"함정",k:"sur",l:"同姓·字號 함정"},{n:"규칙",k:"rule",l:"字·號 규칙"}];
+var tabsEl=document.getElementById("tabs"),main=document.getElementById("main"),cur=null;
+TABS.forEach(function(t){var b=document.createElement("button");b.className="tab";b.innerHTML='<span class="n">'+t.n+'</span>'+t.l;b.onclick=function(){go(t.k);};b.dataset.k=t.k;tabsEl.appendChild(b);});
+function go(k){cur=k;[].forEach.call(tabsEl.children,function(b){b.classList.toggle("active",b.dataset.k===k);});({drill:drill,book:book,sur:sur,rule:rule})[k]();}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+
+function stats(){var t=today(),due=0,newc=0,learn=0,solid=0;ITEMS.forEach(function(it){var c=DB.c[it.id];if(!c)newc++;else{if(c.due<=t)due++;if(c.lv>=5)solid++;else learn++;}});return{due:due,newc:newc,learn:learn,solid:solid,total:ITEMS.length};}
+
+/* 훈련 — 2단계 인출: ① 직접 쓰기(한자 또는 독음) → ② 못 떠오르면 선지 */
+var Q=null;
+function buildQueue(){var t=today(),due=[],fresh=[];ITEMS.forEach(function(it){var c=DB.c[it.id];if(c&&c.due<=t)due.push(it);else if(!c)fresh.push(it);});
+  shuffle(due);
+  // 새 문항은 사람 단위로 — 한 사람의 네 방향이 하루에 흩어져 나오게
+  var people={};fresh.forEach(function(it){(people[it.p.i]=people[it.p.i]||[]).push(it);});var ids=Object.keys(people);shuffle(ids);
+  var newToday=[];ids.slice(0,6).forEach(function(i){newToday=newToday.concat(people[i]);});shuffle(newToday);
+  return due.concat(newToday).slice(0,40);}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var x=a[i];a[i]=a[j];a[j]=x;}return a;}
+function drill(){
+  var s=stats();
+  main.innerHTML='<div class="panel active"><div class="ghint">이름을 보고 <b>먼저 직접 쓴다</b>(한자 또는 한글 독음). 안 떠오르면 「선지 보기」 — 선지로 맞히면 반쯤 안 것으로, 내일 다시 나온다. 字를 묻는데 號를 쓰면 그것도 알려 준다.</div>'+
+   '<div class="stat"><span>오늘 복습 <b>'+s.due+'</b></span><span>새 사람 <b>'+Math.min(6,Math.ceil(s.newc/4))+'</b>명</span><span>익히는 중 '+s.learn+'</span><span>단단함(30일+) <b>'+s.solid+'</b>/'+s.total+'</span></div>'+
+   '<div id="qbox"></div></div>';
+  Q={list:buildQueue(),i:0,ok:0,half:0,no:0};
+  if(!Q.list.length){document.getElementById("qbox").innerHTML='<div class="qcard"><div class="qq">오늘 할 것이 없다. 도감에서 가리고 훑어보거나 내일 다시.</div><button class="pri" id="more">새 사람 6명 더</button></div>';document.getElementById("more").onclick=function(){Q.list=ITEMS.filter(function(it){return!DB.c[it.id];}).slice(0,24);if(Q.list.length)showQ();};return;}
+  showQ();
+}
+function showQ(){
+  var box=document.getElementById("qbox");if(Q.i>=Q.list.length){box.innerHTML='<div class="qcard"><div class="qq">끝 — 맞음 <b style="font-size:20px">'+Q.ok+'</b> · 선지로 '+Q.half+' · 틀림 '+Q.no+'</div><div class="small">틀린 사람은 도감에서 갈고리 한 줄을 직접 고쳐 써 보라. 자기 말로 쓴 갈고리가 남는다.</div><div class="grade"><button class="pri" id="again">한 번 더</button><button id="tobook">도감으로</button></div></div>';document.getElementById("again").onclick=drill;document.getElementById("tobook").onclick=function(){go("book");};return;}
+  var it=Q.list[Q.i];
+  box.innerHTML='<div class="qcard"><div class="qk">'+it.dir+' · '+(Q.i+1)+'/'+Q.list.length+' · '+esc(it.p.era)+'</div><div class="qq">'+it.q+'</div>'+
+   '<div class="inrow"><input id="ans" autocomplete="off" placeholder="한자 또는 독음으로 쓰기"><button class="pri" id="sub">확인 <kbd>Enter</kbd></button></div>'+
+   '<div class="grade"><button id="opt">선지 보기 <kbd>Tab</kbd></button><button id="idk">모르겠다</button></div><div id="optbox"></div><div id="fb"></div></div>';
+  var inp=document.getElementById("ans");inp.focus();
+  inp.onkeydown=function(e){if(e.key==="Enter"){e.preventDefault();submit(inp.value,2);}if(e.key==="Tab"){e.preventDefault();showOpts();}};
+  document.getElementById("sub").onclick=function(){submit(inp.value,2);};
+  document.getElementById("opt").onclick=showOpts;document.getElementById("idk").onclick=function(){finish(0,"");};
+}
+function showOpts(){var it=Q.list[Q.i];if(Q.answered)return;var o=shuffle([it.show].concat(distractors(it,3)));var ob=document.getElementById("optbox");
+  ob.innerHTML='<div class="opts">'+o.map(function(x,k){return'<button data-v="'+esc(x)+'">'+(k+1)+'. '+esc(x)+'</button>';}).join("")+'</div>';
+  [].forEach.call(ob.querySelectorAll("button"),function(b){b.onclick=function(){var ok=b.dataset.v===it.show;b.classList.add(ok?"ok":"no");[].forEach.call(ob.querySelectorAll("button"),function(x){if(x.dataset.v===it.show)x.classList.add("ok");x.disabled=true;});finish(ok?1:0,b.dataset.v);};});
+  document.addEventListener("keydown",optKey);}
+function optKey(e){var ob=document.getElementById("optbox");if(!ob||Q.answered){document.removeEventListener("keydown",optKey);return;}var n=+e.key;if(n>=1&&n<=4){var b=ob.querySelectorAll("button")[n-1];if(b)b.click();}}
+function submit(v,grade){var it=Q.list[Q.i];if(Q.answered||!v.trim())return;var ok=matchAns(v,it);finish(ok?2:0,v);}
+function finish(grade,given){
+  var it=Q.list[Q.i];if(Q.answered)return;Q.answered=true;document.removeEventListener("keydown",optKey);sched(it.id,grade);
+  if(grade===2)Q.ok++;else if(grade===1)Q.half++;else Q.no++;
+  var p=it.p,note="";
+  // 字/號 혼동 진단
+  if(grade===0&&given){var g=norm(given);if(it.pool==="zi"&&p.hao.concat(p.hk||[]).some(function(h){return loose(given,h);}))note="그건 <span class='hao'>號</span>다 — 字를 물었다.";
+   else if(it.pool==="hao"&&[p.zi,p.zk].some(function(h){return h&&loose(given,h);}))note="그건 <span class='zi'>字</span>다 — 號를 물었다.";
+   else{var other=P.find(function(o){return o!==p&&([o.zi,o.zk].concat(o.hao,o.hk||[],o.bk.map(clean),[o.n,o.nk,o.alias]).some(function(h){return h&&loose(given,h);}));});if(other)note="그건 <b>"+esc(other.label)+"</b>("+esc(other.era)+")의 것 — "+esc(other.n[0]===p.n[0]?"同姓 함정":"다른 사람");}}
+  var v=grade===2?'<span class="v ok">맞음</span>':grade===1?'<span class="v half">선지로 맞춤 — 내일 다시</span>':'<span class="v no">'+(given?'틀림':'모름')+' — '+esc(it.show)+'</span>';
+  document.getElementById("fb").innerHTML='<div class="fb">'+v+(note?'<div>'+note+'</div>':'')+card(p,true)+'<div class="grade"><button class="pri" id="nx">다음 <kbd>Enter</kbd></button>'+(grade===2?'':'')+'</div></div>';
+  var nx=document.getElementById("nx");nx.focus();nx.onclick=function(){Q.answered=false;Q.i++;showQ();};
+}
+function card(p,inline){
+  return '<div class="'+(inline?'':'pc')+'" style="'+(inline?'margin-top:8px':'')+'">'+
+   (inline?'':'<div class="h"><span class="nm">'+esc(p.n)+'<small>'+esc(p.nk)+'</small></span><span class="era">'+esc(p.era)+'</span></div>')+
+   (p.alias?'<div class="row"><span class="k">通稱</span><span class="v">'+esc(p.alias)+' <span class="why">— 字로 불린다</span></span></div>':'')+
+   '<div class="row"><span class="k">字</span><span class="v">'+(p.zi?'<span class="zi">'+esc(p.zi)+'</span> <span class="small">'+esc(p.zk)+'</span>'+(p.why?'<span class="why">— '+esc(p.why)+'</span>':''):'<span class="small">—</span>')+'</span></div>'+
+   '<div class="row"><span class="k">號</span><span class="v">'+(p.hao.length?'<span class="hao">'+p.hao.map(esc).join(' · ')+'</span> <span class="small">'+esc((p.hk||[]).join(' · '))+'</span>'+(p.haoNote?'<span class="why">— '+esc(p.haoNote)+'</span>':''):'<span class="small">—</span>')+'</span></div>'+
+   (p.sch?'<div class="row"><span class="k">稱·派</span><span class="v">'+esc(p.sch)+'</span></div>':'')+
+   '<div class="row"><span class="k">著書</span><span class="v bk">'+p.bk.map(function(b){return'「'+esc(b)+'」';}).join(' ')+'</span></div>'+
+   '<div class="hook">'+esc(p.hook)+(p.flag?' <span class="flag">※ '+esc(p.flag)+'</span>':'')+'</div></div>';
+}
+/* 도감 */
+var F={era:"전체",mask:false};
+function book(){
+  var eras=["전체"].concat(ERAS.filter(function(e){return P.some(function(p){return p.era===e;});}));
+  main.innerHTML='<div class="panel active"><div class="ghint">'+P.length+'명. 「가리기」를 켜면 字·號·著書가 흐려진다 — 떠올린 뒤 눌러서 확인. 같은 시대끼리 보면 학파의 그림이 보인다.</div>'+
+   '<div class="filters">'+eras.map(function(e){return'<button data-e="'+e+'" class="'+(F.era===e?'on':'')+'">'+e+'</button>';}).join('')+'<button id="mask" class="'+(F.mask?'on':'')+'">가리기 '+(F.mask?'켜짐':'꺼짐')+'</button></div>'+
+   '<div class="grid '+(F.mask?'mask':'')+'">'+P.filter(function(p){return F.era==="전체"||p.era===F.era;}).map(function(p){return card(p);}).join('')+'</div></div>';
+  [].forEach.call(main.querySelectorAll(".filters button[data-e]"),function(b){b.onclick=function(){F.era=b.dataset.e;book();};});
+  document.getElementById("mask").onclick=function(){F.mask=!F.mask;book();};
+  [].forEach.call(main.querySelectorAll(".mask .zi,.mask .hao,.mask .bk"),function(x){x.onclick=function(){x.classList.toggle("show");};});
+}
+/* 함정 — 同姓 표 + 字號 판별 */
+function sur(){
+  var rows=SURNAMES.map(function(s){var ps=P.filter(function(p){return p.n[0]===s||(p.alias&&p.alias[0]===s);});if(ps.length<2)return'';return'<tr><td style="font-size:22px;font-weight:800;color:var(--bronze)">'+s+'</td><td>'+ps.map(function(p){return'<div><b>'+esc(p.label)+'</b> <span class="small">'+esc(p.era)+'</span> — '+(p.zi?'<span class="zi">'+esc(p.zi)+'</span> ':'')+(p.hao.length?'<span class="hao">'+esc(p.hao[0])+'</span> ':'')+'「'+esc(p.bk[0])+'」</div>';}).join('')+'</td></tr>';}).join('');
+  main.innerHTML='<div class="panel active"><div class="ghint">출제자가 오답을 만드는 재료는 같은 성씨와, 같은 사람의 字·號 뒤섞기다. 아래 표를 가리고 성씨만 보며 몇 명이 떠오르는지 세어 보라.</div><table><tr><th>姓</th><th>사람 — 字 · 號 · 대표 著書</th></tr>'+rows+'</table>'+
+   '<h3 style="color:var(--bronze);margin:22px 2px 6px">字인가 號인가 — 30초</h3><div class="ghint">단어 하나를 보고 字·號·地名(稱)·尊稱 중 무엇인지 고른다. 規則(접미사·풀이)로 풀 수 있는 것만 낸다.</div><div id="zh"></div></div>';
+  zhRound();
+}
+function zhPool(){var o=[];P.forEach(function(p){if(p.zi)o.push({w:p.zi,t:"字",p:p});p.hao.forEach(function(h){o.push({w:h,t:"號",p:p});});});
+  o.push({w:"河間",t:"地名",p:P.find(function(p){return p.n==="劉完素";})},{w:"易水",t:"地名",p:P.find(function(p){return p.n==="張元素";})},{w:"扁鵲",t:"稱號",p:P[0]},{w:"醫聖",t:"稱號",p:P[1]},{w:"藥王",t:"稱號",p:P.find(function(p){return p.n==="孫思邈";})});return shuffle(o);}
+var ZH=null;
+function zhRound(){ZH={list:zhPool().slice(0,12),i:0,ok:0};zhShow();}
+function zhShow(){var box=document.getElementById("zh");if(!box)return;if(ZH.i>=ZH.list.length){box.innerHTML='<div class="qcard"><div class="qq">'+ZH.ok+'/'+ZH.list.length+'</div><button class="pri" id="zhr">다시</button></div>';document.getElementById("zhr").onclick=zhRound;return;}
+  var x=ZH.list[ZH.i];box.innerHTML='<div class="qcard"><div class="qk">'+(ZH.i+1)+'/'+ZH.list.length+'</div><div class="qq"><b>'+esc(x.w)+'</b> — 누구의 무엇?</div><div class="opts">'+["字","號","地名","稱號"].map(function(t){return'<button data-t="'+t+'">'+t+'</button>';}).join('')+'</div><div id="zhfb"></div></div>';
+  [].forEach.call(box.querySelectorAll(".opts button"),function(b){b.onclick=function(){var ok=b.dataset.t===x.t;if(ok)ZH.ok++;[].forEach.call(box.querySelectorAll(".opts button"),function(y){y.disabled=true;if(y.dataset.t===x.t)y.classList.add("ok");else if(y===b)y.classList.add("no");});
+   document.getElementById("zhfb").innerHTML='<div class="fb"><span class="v '+(ok?'ok':'no')+'">'+esc(x.w)+' = '+esc(x.p.label)+'의 '+x.t+'</span>'+card(x.p,true)+'<div class="grade"><button class="pri" id="zhn">다음</button></div></div>';document.getElementById("zhn").onclick=function(){ZH.i++;zhShow();};document.getElementById("zhn").focus();};});}
+/* 규칙 */
+function rule(){
+  var hasWhy=P.filter(function(p){return p.why;});
+  main.innerHTML='<div class="panel active"><div class="rules">'+
+   '<div class="pc"><h3>① 字는 名을 풀이한다</h3><p>名字相應 — 字는 이름의 뜻을 다른 글자로 받는다. 이 도감에서 풀이가 붙은 사람이 <b>'+hasWhy.length+'명</b>.</p><p><b>李杲→明之</b>(밝을 고) · <b>皇甫謐→士安</b>(고요할 밀) · <b>葛洪→稚川</b>(큰물→내) · <b>滑壽→伯仁</b>(仁者壽) · <b>薛雪→生白</b> · <b>唐宗海→容川</b> · <b>吳謙→六吉</b>(謙卦 六爻皆吉)</p><p>字를 묻는 문제는 名의 뜻을 아는 문제다.</p></div>'+
+   '<div class="pc"><h3>② 號는 땅이거나 뜻이다</h3><p><b>땅</b>: 東垣(李杲 고향 옛이름) · 丹溪(朱震亨 고향의 시내) · 瀕湖(李時珍, 호숫가)</p><p><b>뜻</b>: 抱朴子 · 攖寧生 · 通玄處士 · 玄晏先生 · 華陽隱居 · 啓玄子 · 無求子 · 生生子</p><p><b>접미사가 보이면 號</b>: 子 · 生 · 先生 · 老人 · 山人 · 處士 · 隱居 · 翁</p></div>'+
+   '<div class="pc"><h3>③ 號도 字도 아닌 것</h3><p><b>地名으로 부르는 稱</b>: 劉河間(劉完素) · 易水(張元素)</p><p><b>尊稱</b>: 醫聖(張機) · 藥王·孫眞人(孫思邈) · 扁鵲(秦越人)</p><p>「다음 중 號가 아닌 것」은 이 셋에서 나온다.</p></div>'+
+   '<div class="pc"><h3>④ 字로 불리는 사람 — 이름 함정</h3><p><b>王叔和</b>: 本名 熙, 叔和는 字 · <b>楊繼洲</b>: 本名 濟時, 繼洲는 字 · <b>張仲景</b>: 本名 機</p><p>「王熙」「楊濟時」로 바꿔 내면 못 알아보는 것이 이 함정이다.</p></div>'+
+   '<div class="pc"><h3>⑤ 책 제목에 號가 박힌 경우</h3><p>丹溪心法 · 東垣十書 · 瀕湖脈學 · 景岳全書 · 抱朴子 — 號만 알면 책이 따라온다. 나머지 책만 따로 외운다.</p></div>'+
+   '<div class="pc"><h3>⑥ 하루 순서</h3><p>훈련 탭: 쓰기 → 못 하면 선지. 새 사람은 하루 6명, 한 사람의 네 방향(名→字·名→號·名→著書·著書/字號→名)이 흩어져 나온다. 간격 1·2·4·7·14·30·60일.</p><p class="flag">※ 표시는 교재 표기와 대조가 필요한 칸이다. 字·號는 통설로 적었다.</p></div>'+
+   '</div></div>';
+}
+go("drill");
+window.__UIGA={P:P,ITEMS:ITEMS,DB:DB,matchAns:matchAns,distractors:distractors};
+})();
+</script>
+</body>
+</html>
